@@ -49,17 +49,17 @@ const TestAuth = () => {
         {/* E-Mail Sign up */}
         <button
           onClick={async () =>  {
-            const res = await firebase.auth().createUserWithEmailAndPassword("pass_mail39-fake@yahoo.co.jp", "t4169N5175")
+            const res = await firebase.auth().createUserWithEmailAndPassword(process.env.REACT_APP_LOGIN_EMAIL, process.env.REACT_APP_LOGIN_PASSWORD)
             res.user.sendEmailVerification()
             console.log(res)
           }}
         >
-          Sign In with Mail
+          Sign Up with Mail
         </button>
 
         {/* E-Mail Sign in */}
         <button
-          onClick={() => {firebase.auth().signInWithEmailAndPassword("pass_mail39-fake@yahoo.co.jp", "t4169N5175")}}
+          onClick={() => {firebase.auth().signInWithEmailAndPassword(process.env.REACT_APP_LOGIN_EMAIL, process.env.REACT_APP_LOGIN_PASSWORD)}}
           >
           Log In with Mail
         </button>
