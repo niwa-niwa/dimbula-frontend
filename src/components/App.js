@@ -1,4 +1,6 @@
 import React from "react"
+import { Router, Route, Switch } from 'react-router-dom'
+import history from '../history'
 
 import Header from "./layouts/Header"
 import LeftDrawer from "./layouts/LeftDrawer"
@@ -8,14 +10,17 @@ import TestAuth from "./auth/TestAuth"
 const App = () => {
 
   return (
-    <React.Fragment>
+    <Router history={history}>
+
       <Header />
       <LeftDrawer>
         <div>Dimbula Login</div>
-        <br />
-        <TestAuth />
+        <Switch>
+          <Route path="/" exact component={TestAuth} />
+        </Switch>
       </LeftDrawer>
-    </React.Fragment>
+
+    </Router>
   )
 }
 export default App

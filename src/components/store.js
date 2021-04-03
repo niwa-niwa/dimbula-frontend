@@ -1,10 +1,10 @@
-import {configureStore} from '@reduxjs/toolkit'
+import { configureStore } from "@reduxjs/toolkit"
 
 import drawerReducer from "./slices/drawerSlice"
 
 
 export default configureStore({
-  reducer:{
+  reducer: {
     drawer: drawerReducer,
-  }
+  },
 })
