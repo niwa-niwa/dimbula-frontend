@@ -10,11 +10,12 @@ import {
 } from "@react-firebase/auth";
 
 
-const TestAuth = () => {
+const Login = () => {
   return (
     <FirebaseAuthProvider {...firebase_config} firebase={firebase}>
+      
       <div>
-
+        <h1>ようこそDimbula</h1>
         {/* Google Sign in */}
         <button
           onClick={() => {
@@ -122,4 +123,4 @@ const TestAuth = () => {
 
   )
 }
-export default TestAuth
+export default Login
