@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from "react-redux"
 
 import clsx from "clsx"
 import { makeStyles } from "@material-ui/core/styles"
@@ -11,8 +12,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
 import InboxIcon from "@material-ui/icons/MoveToInbox"
 import MailIcon from "@material-ui/icons/Mail"
-
-import { useSelector } from "react-redux"
 
 
 const drawerWidth = 240;
@@ -53,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PersistentDrawer({children}) {
   const isOpen = useSelector((state) => state.drawer.isOpen)
-
   const classes = useStyles()
 
   return (

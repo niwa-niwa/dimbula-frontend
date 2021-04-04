@@ -1,4 +1,5 @@
 import React from "react"
+import { useSelector, useDispatch } from "react-redux"
 
 import { fade, makeStyles } from "@material-ui/core/styles"
 import AppBar from "@material-ui/core/AppBar"
@@ -16,8 +17,8 @@ import MailIcon from "@material-ui/icons/Mail"
 import NotificationsIcon from "@material-ui/icons/Notifications"
 import MoreIcon from "@material-ui/icons/MoreVert"
 
-import { useSelector, useDispatch } from "react-redux"
-import { setIsOpen } from "../slices/drawerSlice"
+import { setIsOpen } from "../../slices/drawerSlice"
+import { signOut } from "../../slices/authSlice"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -90,6 +91,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PrimarySearchAppBar() {
   const classes = useStyles()
+  const dispatch = useDispatch()
+  
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
 
@@ -97,7 +100,7 @@ export default function PrimarySearchAppBar() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
   const isOpen = useSelector((state) => state.drawer.isOpen)
-  const dispatch = useDispatch()
+
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
@@ -129,6 +132,7 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={() =>{dispatch(signOut())}}>Sign Out</MenuItem>
     </Menu>
   )
 
