@@ -74,29 +74,37 @@ const SignIn = () => {
             Sign In With Google
           </Button>
 
-          <Box mb={5}>
+          <Box mb={3}>
             <Divider variant="middle"/>
           </Box>
 
           <form className={classes.signin_form} autoComplete="off">
-            <TextField required name="mail" label="Mail Address" variant="outlined" />
-            <TextField required name="password" label="Password" type="password" autoComplete="off" variant="outlined" />
-            <Button variant="contained" color="primary">
-              Sign In
-            </Button>
+            <TextField required name="mail" label="Mail Address" variant="outlined" margin="normal" />
+            <TextField required name="password" label="Password" type="password" autoComplete="off" variant="outlined" margin="normal" />
+            <Box mt={3}>
+              <Button variant="contained" color="primary" fullWidth="true">
+                Sign In
+              </Button>
+            </Box>
           </form>
 
           <FormControlLabel
             control={<Checkbox color="primary" name="checked" />}
             label="Save login information"
             />
-          <span >Forget your password?</span>
 
-          <Box mb={4}>
+          <Box mt={4} mb={4}>
             <Divider variant="middle" />
           </Box>
+          
+          <Box textAlign={"right"} mb={4}>
+            <span >Forget your password?</span>
+            <br/>
+            <br/>
+            <p>Don't have an account?<span>  Sign Up</span></p>
+          </Box>
 
-          <p>Don't have an account?<span>  Sign Up</span></p>
+
       </Container>
       
 
