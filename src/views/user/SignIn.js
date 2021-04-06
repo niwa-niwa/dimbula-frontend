@@ -1,4 +1,4 @@
-import React from "react"
+import React,{useState} from "react"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -20,6 +20,35 @@ import "firebase/auth";
 // Todo redirect Task-page after signIn
 const SignIn = () => {
   const classes = useStyles()
+  const [info, setInfo] = useState(
+    {
+      "mail":"",
+      "password":"",
+      "save":false,
+    }
+  )
+
+  const signInWithGoogle = () => {
+    const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
+    firebase.auth().signInWithPopup(googleAuthProvider)
+  }
+
+  const handleInputChange = (event)=>{
+    if("save" === event.target.name){
+      setInfo({...info, [event.target.name]:!info.save})
+      return
+    }
+    setInfo({...info, [event.target.name]:event.target.value})
+  }
+
+  const submit = ()=>{
+    // Todo it'll can be login
+    firebase.auth().signInWithEmailAndPassword(
+      process.env.REACT_APP_LOGIN_EMAIL,
+      process.env.REACT_APP_LOGIN_PASSWORD
+    )
+    console.log("click on submit!")
+  }
 
   return(
     <React.Fragment>
@@ -35,11 +64,16 @@ const SignIn = () => {
 
         <Box mb={4}>
           <Button 
+            fullWidth
             variant="outlined"
+            onClick={()=>{signInWithGoogle()}}
             className={classes.google_button}
-            fullWidth="true"
             >
-            <img className={classes.google_logo} src={google_img} alt="Sign in with google" />
+            <img 
+              className={classes.google_logo}
+              src={google_img}
+              alt="Sign in with google"
+            />
             Sign In With Google
           </Button>
         </Box>
@@ -50,23 +84,50 @@ const SignIn = () => {
           <div className={classes.border}></div>
         </Box>
 
-        <Box>
-          <form className={classes.signin_form} autoComplete="off">
-            <TextField required name="mail" label="Mail Address" variant="outlined" margin="none" fullWidth="true" />
-            <TextField required name="password" label="Password" type="password" autoComplete="off" variant="outlined" margin="normal" fullWidth="true" />
+        <Box className={classes.signin_form} autoComplete="off">
+            <TextField
+              required
+              fullWidth
+              name="mail"
+              label="Mail Address"
+              variant="outlined"
+              margin="none"
+              defaultValue={info.mail}
+              onChange={handleInputChange}
+              />
+            <TextField
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              autoComplete="off"
+              variant="outlined"
+              margin="normal"
+              value={info.password}
+              onChange={handleInputChange}
+            />
             <Box mt={2}>
-              <Button variant="contained" color="primary" fullWidth="true">
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={submit}
+                >
                 Sign In
               </Button>
             </Box>
-          </form>
         </Box>
 
         <Box>
           <FormControlLabel
-            control={<Checkbox color="primary" name="checked" />}
-            label="Save login information"
-            fullWidth="true"
+            control={<Checkbox
+                      color="primary"
+                      name="save" 
+                      onChange={handleInputChange}
+                      checked={info.save}
+                    />}
+            label="Save login information"            
           />
         </Box>
 
