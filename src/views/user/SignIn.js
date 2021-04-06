@@ -16,46 +16,6 @@ import firebase from "firebase/app"
 import "firebase/auth";
 
 
-const useStyles = makeStyles((theme) => ({
-  signin_container:{
-    display:'flex',
-    flexFlow:'column',
-    border:'solid 2px #f0f0f0',
-    borderRadius:'16px',
-  },
-  title:{
-    fontSize:'32px',
-    textAlign:"center",
-    padding:"32px 0",
-    fontWeight:"bold",
-  },
-  sub_title:{
-    fontSize:'24px',
-    padding:"24px 0"
-  },
-  google_button:{
-    fontSize:"14px",
-    padding:"12px",
-    margin:"0 0 24px 0",
-    '&:before':{
-      backgroundImage:`url(${google_img})`,
-      content:'',
-      display:'inline-block',
-      backgroundSize: 'contain',
-      verticalAlign: 'middle',
-    },
-  },
-  google_logo:{
-    position:"absolute",
-    left:"16px"
-  },
-  signin_form:{
-    display:"flex",
-    flexFlow:"column",
-  }
-
-}))
-
 // Todo add layout
 // Todo redirect Task-page after signIn
 const SignIn = () => {
@@ -63,47 +23,62 @@ const SignIn = () => {
 
   return(
     <React.Fragment>
+      <Box my={4}>
         <h1 className={classes.title} >Dimbula</h1>
+      </Box>
+
       <Container className={classes.signin_container} maxWidth="sm" >
+
+        <Box my={3}>
           <h2 className={classes.sub_title}>Sign In</h2>
+        </Box>
+
+        <Box mb={4}>
           <Button 
             variant="outlined"
             className={classes.google_button}
-          >
+            fullWidth="true"
+            >
             <img className={classes.google_logo} src={google_img} alt="Sign in with google" />
             Sign In With Google
           </Button>
+        </Box>
 
-          <Box mb={3}>
-            <Divider variant="middle"/>
-          </Box>
+        <Box mb={4} display="flex" alignItems="center">
+          <div className={classes.border}></div>
+          <span>OR</span>
+          <div className={classes.border}></div>
+        </Box>
 
+        <Box>
           <form className={classes.signin_form} autoComplete="off">
-            <TextField required name="mail" label="Mail Address" variant="outlined" margin="normal" />
-            <TextField required name="password" label="Password" type="password" autoComplete="off" variant="outlined" margin="normal" />
-            <Box mt={3}>
+            <TextField required name="mail" label="Mail Address" variant="outlined" margin="none" fullWidth="true" />
+            <TextField required name="password" label="Password" type="password" autoComplete="off" variant="outlined" margin="normal" fullWidth="true" />
+            <Box mt={2}>
               <Button variant="contained" color="primary" fullWidth="true">
                 Sign In
               </Button>
             </Box>
           </form>
+        </Box>
 
+        <Box>
           <FormControlLabel
             control={<Checkbox color="primary" name="checked" />}
             label="Save login information"
-            />
+            fullWidth="true"
+          />
+        </Box>
 
-          <Box mt={4} mb={4}>
-            <Divider variant="middle" />
-          </Box>
-          
-          <Box textAlign={"right"} mb={4}>
-            <span >Forget your password?</span>
-            <br/>
-            <br/>
-            <p>Don't have an account?<span>  Sign Up</span></p>
-          </Box>
-
+        <Box my={3}>
+          <Divider variant="middle" />
+        </Box>
+        
+        <Box textAlign={"right"} mb={4}>
+          <p>Forget your password?</p>
+          <br/>
+          <p>Don't have an account?<span>  Sign Up</span></p>
+        </Box>
 
       </Container>
       
@@ -137,3 +112,41 @@ const SignIn = () => {
 
 }
 export default SignIn
+
+
+const useStyles = makeStyles((theme) => ({
+  signin_container:{
+    display:'flex',
+    flexFlow:'column',
+    border:'solid 2px #f0f0f0',
+    borderRadius:'16px',
+  },
+  title:{
+    fontSize:'32px',
+    textAlign:"center",
+    fontWeight:"bold",
+  },
+  sub_title:{
+    fontSize:'24px',
+  },
+  google_button:{
+    fontSize:"14px",
+    '&:before':{
+      backgroundImage:`url(${google_img})`,
+      content:'',
+      display:'inline-block',
+      backgroundSize: 'contain',
+      verticalAlign: 'middle',
+    },
+  },
+  google_logo:{
+    position:"absolute",
+    left:"16px"
+  },
+  border:{
+    borderBottom:" 1px solid #c0c0c0",
+    width: "100%",
+    margin:"0 12px",
+  },
+
+}))
