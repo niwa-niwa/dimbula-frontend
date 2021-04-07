@@ -17,6 +17,7 @@ import firebase from "firebase/app"
 import "firebase/auth";
 
 
+// Todo reject user if user confirm email to signup 
 const SignIn = () => {
   const classes = useStyles()
   const history = useHistory()
