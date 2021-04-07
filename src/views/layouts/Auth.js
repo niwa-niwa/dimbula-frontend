@@ -10,17 +10,19 @@ const Auth = ({ children }) => {
   const [ isChecking, setIsChecking ] = useState(true)
   const isSignedIn = useSelector((state) => state.auth.isSignedIn)
 
-
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        dispatch(signIn())
-        setIsChecking(false)
-      }else{
-        dispatch(signOut())
-        setIsChecking(false)
-      }
-    })
+    const getStatus = async () => {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          dispatch(signIn())
+          setIsChecking(false)
+        }else{
+          dispatch(signOut())
+          setIsChecking(false)
+        }
+      })
+    }
+  getStatus()
   }, [dispatch])
 
 
