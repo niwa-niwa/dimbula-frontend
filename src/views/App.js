@@ -6,6 +6,7 @@ import Auth from "./layouts/Auth"
 import Header from "./layouts/Header"
 import LeftDrawer from "./layouts/LeftDrawer"
 import SignIn from "./user/SignIn"
+import SignUp from "./user/SignUp"
 
 import Task from "./task/Index"
 
@@ -29,6 +30,7 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={MainLayout} />
         <Route exact path="/signin/" component={SignIn} />
+        <Route exact path="/signup/" component={SignUp} />
       </Switch>
 
     </Router>
