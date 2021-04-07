@@ -1,4 +1,5 @@
-import React,{useState} from "react"
+import React,{useState, useEffect} from "react"
+import { useHistory } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -16,17 +17,24 @@ import firebase from "firebase/app"
 import "firebase/auth";
 
 
-// Todo add layout
-// Todo redirect Task-page after signIn
 const SignIn = () => {
   const classes = useStyles()
+  const history = useHistory()
   const [info, setInfo] = useState(
     {
-      "mail":"",
+      "email":"",
       "password":"",
       "save":false,
     }
   )
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        history.push("/");
+      }
+    })
+  },[history])
 
   const signInWithGoogle = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
@@ -42,12 +50,10 @@ const SignIn = () => {
   }
 
   const submit = ()=>{
-    // Todo it'll can be login
     firebase.auth().signInWithEmailAndPassword(
-      process.env.REACT_APP_LOGIN_EMAIL,
-      process.env.REACT_APP_LOGIN_PASSWORD
+      info.email,
+      info.password
     )
-    console.log("click on submit!")
   }
 
   return(
@@ -88,11 +94,11 @@ const SignIn = () => {
             <TextField
               required
               fullWidth
-              name="mail"
+              name="email"
               label="Mail Address"
               variant="outlined"
               margin="none"
-              defaultValue={info.mail}
+              defaultValue={info.email}
               onChange={handleInputChange}
               />
             <TextField
@@ -142,32 +148,6 @@ const SignIn = () => {
         </Box>
 
       </Container>
-      
-
-      {/* Google Sign in */}
-      <button
-        onClick={() => {
-          const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
-          firebase.auth().signInWithPopup(googleAuthProvider)
-        }}
-      >
-        Sign In with Google
-      </button>
-
-
-      <br />
-      <br />
-
-      {/* E-Mail Sign in */}
-      <button
-        onClick={() => {firebase.auth().signInWithEmailAndPassword(process.env.REACT_APP_LOGIN_EMAIL, process.env.REACT_APP_LOGIN_PASSWORD)}}
-        >
-        Log In with Mail
-      </button>
-
-      <br />
-      <br />
-
     </React.Fragment>
   )
 
