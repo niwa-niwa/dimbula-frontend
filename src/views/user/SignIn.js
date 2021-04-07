@@ -11,6 +11,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core'
+import { signStyle } from './userStyle'
 import google_img from '../../img/google-icon-mini.svg'
 
 import firebase from "firebase/app"
@@ -156,39 +157,4 @@ const SignIn = () => {
 export default SignIn
 
 
-const useStyles = makeStyles((theme) => ({
-  signin_container:{
-    display:'flex',
-    flexFlow:'column',
-    border:'solid 2px #f0f0f0',
-    borderRadius:'16px',
-  },
-  title:{
-    fontSize:'32px',
-    textAlign:"center",
-    fontWeight:"bold",
-  },
-  sub_title:{
-    fontSize:'24px',
-  },
-  google_button:{
-    fontSize:"14px",
-    '&:before':{
-      backgroundImage:`url(${google_img})`,
-      content:'',
-      display:'inline-block',
-      backgroundSize: 'contain',
-      verticalAlign: 'middle',
-    },
-  },
-  google_logo:{
-    position:"absolute",
-    left:"16px"
-  },
-  border:{
-    borderBottom:" 1px solid #c0c0c0",
-    width: "100%",
-    margin:"0 12px",
-  },
-
-}))
+const useStyles = makeStyles((theme) => ({ ...signStyle }))

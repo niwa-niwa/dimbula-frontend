@@ -12,6 +12,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core'
 import google_img from '../../img/google-icon-mini.svg'
+import { signStyle } from './userStyle'
 
 import firebase from "firebase/app"
 import "firebase/auth";
@@ -140,39 +141,6 @@ const SignUp = () => {
 export default SignUp
 
 
-const useStyles = makeStyles((theme) => ({
-  signin_container:{
-    display:'flex',
-    flexFlow:'column',
-    border:'solid 2px #f0f0f0',
-    borderRadius:'16px',
-  },
-  title:{
-    fontSize:'32px',
-    textAlign:"center",
-    fontWeight:"bold",
-  },
-  sub_title:{
-    fontSize:'24px',
-  },
-  google_button:{
-    fontSize:"14px",
-    '&:before':{
-      backgroundImage:`url(${google_img})`,
-      content:'',
-      display:'inline-block',
-      backgroundSize: 'contain',
-      verticalAlign: 'middle',
-    },
-  },
-  google_logo:{
-    position:"absolute",
-    left:"16px"
-  },
-  border:{
-    borderBottom:" 1px solid #c0c0c0",
-    width: "100%",
-    margin:"0 12px",
-  },
-
-}))
+const useStyles = makeStyles((theme) => ({ ...signStyle }))
+// Example it could change style that is scope in this component.
+// put syntax google_logo:{...signStyle.google_logo, width:"32px"} in argument
