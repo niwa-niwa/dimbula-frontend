@@ -1,5 +1,5 @@
-import React,{useState, useEffect} from "react"
-import { useHistory, Link } from "react-router-dom"
+import React,{ useState } from "react"
+import { Link } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -18,23 +18,12 @@ import "firebase/auth";
 
 const SignUp = () => {
   const classes = useStyles()
-  const history = useHistory()
   const [info, setInfo] = useState(
     {
       email:"",
       password:"",
     }
   )
-
-
-  useEffect(() => {
-    // Todo : implement try/catch
-  //   firebase.auth().onAuthStateChanged(user => {
-  //     if (user) {
-  //       history.push("/");
-  //     }
-  //   })
-  },[history])
 
   const signUpWithGoogle = () => {
     // Todo : implement try/catch

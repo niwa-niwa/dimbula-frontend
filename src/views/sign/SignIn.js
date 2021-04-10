@@ -1,5 +1,5 @@
-import React,{useState, useEffect} from "react"
-import { useHistory, Link } from "react-router-dom"
+import React,{ useState } from "react"
+import { Link } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -21,7 +21,6 @@ import "firebase/auth";
 // Todo reject user if user confirm email to signup 
 const SignIn = () => {
   const classes = useStyles()
-  const history = useHistory()
   const [info, setInfo] = useState(
     {
       "email":"",
@@ -29,17 +28,6 @@ const SignIn = () => {
       "save":false,
     }
   )
-
-  useEffect(() => {
-    const checkState = () => {
-      firebase.auth().onAuthStateChanged( user => {
-        if (user) {
-          history.push("/");
-        }
-      })
-    }
-    checkState()
-  },[history])
 
   const signInWithGoogle = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
