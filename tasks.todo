@@ -1,21 +1,11 @@
 Todos:
+  - Todo by this Sunday
+    [] reject the user who does not confirm email
+    [] make Sign modules
+    [] implement try/catch
+    [] implement validations
+
   - SignUp.js
     [] redirect Email-Confirm.js page after submit email and pw
-  - error process
-    [] if the email is not confirmed
 
-  - SignIn.js
-    [] reject the user who does not confirm email
-    - error process
-      [] if the user is not authenticated
-    
-  - EmailConfirm.js
-    [] create page
-    [] add function to resend e-mail for confirmig
-    - error process
-      [] if the email that was inputed has not signed up
-
-  - PwReset.js
-    [] create page
-    [] add function to send e-mail for reseting pw
 
