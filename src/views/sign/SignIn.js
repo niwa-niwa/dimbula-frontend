@@ -31,11 +31,14 @@ const SignIn = () => {
   )
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        history.push("/");
-      }
-    })
+    const checkState = () => {
+      firebase.auth().onAuthStateChanged( user => {
+        if (user) {
+          history.push("/");
+        }
+      })
+    }
+    checkState()
   },[history])
 
   const signInWithGoogle = () => {

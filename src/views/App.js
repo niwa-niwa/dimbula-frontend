@@ -9,7 +9,6 @@ import SignIn from "./sign/SignIn"
 import SignUp from "./sign/SignUp"
 import ResendEmail from "./sign/ResendEmail"
 import ForgetPw from "./sign/ForgetPw"
-import ConfirmEmail from "./sign/ConfirmEmail"
 
 import Task from "./task/Index"
 
@@ -35,7 +34,6 @@ const App = () => {
         <Route exact path="/signin/" component={SignIn} />
         <Route exact path="/signup/" component={SignUp} />
         <Route exact path="/resend-email/" component={ResendEmail} />
-        <Route exact path="/confirm-email/" component={ConfirmEmail} />
         <Route exact path="/forget-password" component={ForgetPw} />
       </Switch>
 
