@@ -5,11 +5,11 @@ import history from '../history'
 import Auth from "./layouts/Auth"
 import Header from "./layouts/Header"
 import LeftDrawer from "./layouts/LeftDrawer"
-import SignIn from "./user/SignIn"
-import SignUp from "./user/SignUp"
-import ResendEmail from "./user/ResendEmail"
-import ForgetPw from "./user/ForgetPw"
-import ConfirmEmail from "./user/ConfirmEmail"
+import SignIn from "./sign/SignIn"
+import SignUp from "./sign/SignUp"
+import ResendEmail from "./sign/ResendEmail"
+import ForgetPw from "./sign/ForgetPw"
+import ConfirmEmail from "./sign/ConfirmEmail"
 
 import Task from "./task/Index"
 
