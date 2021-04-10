@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from "react"
+import React,{ useState } from "react"
 import { useHistory } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -26,18 +26,7 @@ const SignIn = () => {
     }
   )
 
-  useEffect(() => {
-    // Todo implement try/catch
-    firebase.auth().onAuthStateChanged(user => {
-      // Todo : redirect HOME if user was authenticated
-      // if (user) {
-      //   history.push("/");
-      // }
-    })
-  },[history])
-
-
-  const handleInputChange = (event)=>{
+  const handleInputChange = ( event ) => {
     if("save" === event.target.name){
       setInfo({...info, [event.target.name]:!info.save})
       return

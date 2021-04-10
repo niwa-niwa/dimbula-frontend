@@ -1,5 +1,5 @@
-import React,{ useState, useEffect } from "react"
-import { useHistory, Link } from "react-router-dom"
+import React,{ useState } from "react"
+import { Link } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -17,20 +17,7 @@ import "firebase/auth";
 
 const ForgetPw = () => {
   const classes = useStyles()
-  const history = useHistory()
   const [pw, setPw] = useState('')
-
-
-  useEffect(() => {
-    // Todo implement try/catch
-    firebase.auth().onAuthStateChanged(user => {
-      // Todo : redirect HOME if user was authenticated
-      // if (user) {
-      //   history.push("/");
-      // }
-    })
-  },[history])
-
 
   const handleInputChange = (event) => {
     setPw( event.target.value )
@@ -38,6 +25,7 @@ const ForgetPw = () => {
 
   const submit = async () => {
     // Todo implement try/catch
+    // Todo display pop-up that say confirm email
     await firebase.auth().sendPasswordResetEmail(pw)
   }
 
