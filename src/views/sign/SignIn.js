@@ -18,7 +18,6 @@ import firebase from "firebase/app"
 import "firebase/auth";
 
 
-// Todo reject user if user confirm email to signup 
 const SignIn = () => {
   const classes = useStyles()
   const [info, setInfo] = useState(
@@ -46,7 +45,10 @@ const SignIn = () => {
     firebase.auth().signInWithEmailAndPassword(
       info.email,
       info.password
-    )
+    ).catch(e=>{
+      console.warn(e)
+      // Todo : display pop-up that notice error
+    })
   }
 
   return(

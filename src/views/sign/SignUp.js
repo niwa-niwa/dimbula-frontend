@@ -26,7 +26,6 @@ const SignUp = () => {
   )
 
   const signUpWithGoogle = () => {
-    // Todo : implement try/catch
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
     firebase.auth().signInWithPopup(googleAuthProvider)
   }
@@ -36,15 +35,18 @@ const SignUp = () => {
   }
 
   const submit = async () => {
-    // Todo : implement try/catch
-    const res = await firebase.auth().createUserWithEmailAndPassword(
+    await firebase.auth().createUserWithEmailAndPassword(
       info.email,
       info.password
-    )
-    // Todo : write redirect URL
-    // Todo : display pop-up that notice confirm email
-    res.user.sendEmailVerification()
+    ).then(({user})=>{
+      user.sendEmailVerification()
+      // Todo : display pop-up that notice confirm email
+    }).catch(e=>{
+      console.warn(e)
+      // Todo : display pop-up that notice error
+    })
   }
+
 
   return(
     <React.Fragment>

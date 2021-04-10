@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import firebase from '../api/firebase'
 
-
+// Todo reject user if user confirm email to signup 
 const authSlice = createSlice({
   name:'auth',
   initialState: {
