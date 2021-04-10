@@ -11,18 +11,20 @@ const Auth = ({ children }) => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn)
 
   useEffect(() => {
-    const getStatus = async () => {
+    // the flag is prevented to leak memory
+    let isMounted = true
+    const getStatus =  () => {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           dispatch(signIn())
-          setIsChecking(false)
         }else{
           dispatch(signOut())
-          setIsChecking(false)
         }
+        if(isMounted){setIsChecking(false)}
       })
     }
-  getStatus()
+    getStatus()
+    return () => {isMounted=false}
   }, [dispatch])
 
 
