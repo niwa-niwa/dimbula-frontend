@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, Link } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -8,8 +8,6 @@ import {
   Button,
   Divider,
   TextField,
-  Checkbox,
-  FormControlLabel,
 } from '@material-ui/core'
 import google_img from '../../img/google-icon-mini.svg'
 import { signStyle } from './userStyle'
@@ -18,7 +16,6 @@ import firebase from "firebase/app"
 import "firebase/auth";
 
 
-// Todo redirect email-confirm-page
 const SignUp = () => {
   const classes = useStyles()
   const history = useHistory()
@@ -28,17 +25,19 @@ const SignUp = () => {
       password:"",
     }
   )
-  
 
-  // useEffect(() => {
+
+  useEffect(() => {
+    // Todo : implement try/catch
   //   firebase.auth().onAuthStateChanged(user => {
   //     if (user) {
   //       history.push("/");
   //     }
   //   })
-  // },[history])
+  },[history])
 
   const signUpWithGoogle = () => {
+    // Todo : implement try/catch
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
     firebase.auth().signInWithPopup(googleAuthProvider)
   }
@@ -48,10 +47,13 @@ const SignUp = () => {
   }
 
   const submit = async () => {
+    // Todo : implement try/catch
     const res = await firebase.auth().createUserWithEmailAndPassword(
       info.email,
       info.password
     )
+    // Todo : write redirect URL
+    // Todo : display pop-up that notice confirm email
     res.user.sendEmailVerification()
   }
 
@@ -129,9 +131,25 @@ const SignUp = () => {
         </Box>
         
         <Box textAlign={"right"} mb={4}>
-          <p>If you have an account?<span>  Sign In</span></p>
+          <p>
+            If you have an account?
+            <span>
+              <Link to="/signin/">  Sign In</Link>
+            </span>
+          </p>
           <br/>
-          <p>Forget your password?</p>
+          <p>
+            Forget your password?
+            <span>
+              <Link to="/forget-password">  Here</Link>
+            </span>
+          </p>
+          <br/>
+          <p>Re-send confirm email?
+            <span>
+              <Link to="/resend-email/">  Here</Link>
+            </span>
+          </p> 
         </Box>
 
       </Container>

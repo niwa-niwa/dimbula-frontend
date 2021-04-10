@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, Link } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -144,9 +144,25 @@ const SignIn = () => {
         </Box>
         
         <Box textAlign={"right"} mb={4}>
-          <p>Forget your password?</p>
+          <p>
+            If you have an account?
+            <span>
+              <Link to="/signin/">  Sign In</Link>
+            </span>
+          </p>
           <br/>
-          <p>Don't have an account?<span>  Sign Up</span></p>
+          <p>
+            Forget your password?
+            <span>
+              <Link to="/forget-password">  Here</Link>
+            </span>
+          </p>
+          <br/>
+          <p>Re-send confirm email?
+            <span>
+              <Link to="/resend-email/">  Here</Link>
+            </span>
+          </p> 
         </Box>
 
       </Container>
