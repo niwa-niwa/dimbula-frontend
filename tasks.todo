@@ -1,6 +1,6 @@
 Todos:
   - SignUp.js
-  ☐ redirect Email-Confirm.js page after submit email and pw
+    [] redirect Email-Confirm.js page after submit email and pw
   - error process
     [] if the email is not confirmed
 
