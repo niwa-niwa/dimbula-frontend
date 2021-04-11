@@ -8,13 +8,14 @@ import {
   Divider,
   TextField,
 } from '@material-ui/core'
-import { signStyle } from './signStyle'
-import SignLayout from "./SignLayout"
+import { signStyle } from './styles/signStyle'
+import SignLayout from "./layouts/SignLayout"
 
 import firebase from "firebase/app"
 import "firebase/auth";
 
-import { SignUpLink, SignInLink, ForgetPwLink } from '../layouts/link-texts/SignLinks'
+import SignLink from './parts/SignLinks'
+import PATHS from '../../const/paths'
 
 
 const SignIn = () => {
@@ -102,11 +103,11 @@ const SignIn = () => {
       </Box>
       
       <Box textAlign={"right"} mb={4}>
-        <SignUpLink component="p" underline="always" />
+        <SignLink path={PATHS.SIGN_UP} />
         <br/>
-        <SignInLink component="p" underline="always" />
+        <SignLink path={PATHS.SIGN_IN} />
         <br/>
-        <ForgetPwLink component="p" underline="always" />
+        <SignLink path={PATHS.FORGET_PASSWORD} />
       </Box>
 
     </SignLayout>

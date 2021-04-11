@@ -8,13 +8,14 @@ import {
   TextField,
 } from '@material-ui/core'
 import google_img from '../../img/google-icon-mini.svg'
-import SignLayout from "./SignLayout"
-import { signStyle } from './signStyle'
+import SignLayout from "./layouts/SignLayout"
+import { signStyle } from './styles/signStyle'
 
 import firebase from "firebase/app"
 import "firebase/auth";
 
-import { ForgetPwLink, SignInLink, ResendMailLink } from '../layouts/link-texts/SignLinks'
+import SignLink from './parts/SignLinks'
+import PATHS from '../../const/paths'
 
 
 const SignUp = () => {
@@ -117,11 +118,11 @@ const SignUp = () => {
       </Box>
       
       <Box textAlign={"right"} mb={4}>
-        <SignInLink component="p" underline="always" />
+        <SignLink path={PATHS.SIGN_IN} />
         <br/>
-        <ResendMailLink component="p" underline="always" />
+        <SignLink path={PATHS.RESEND_EMAIL} />
         <br/>
-        <ForgetPwLink component="p" underline="always" />
+        <SignLink path={PATHS.FORGET_PASSWORD} />
       </Box>
 
     </SignLayout>

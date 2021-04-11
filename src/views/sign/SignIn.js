@@ -9,15 +9,16 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core'
-import { signStyle } from './signStyle'
-import SignLayout from "./SignLayout"
+import { signStyle } from './styles/signStyle'
+import SignLayout from "./layouts/SignLayout"
 
 import google_img from '../../img/google-icon-mini.svg'
 
 import firebase from "firebase/app"
 import "firebase/auth";
 
-import { ForgetPwLink, SignUpLink, ResendMailLink } from '../layouts/link-texts/SignLinks'
+import SignLink from './parts/SignLinks'
+import PATHS from '../../const/paths'
 
 
 const SignIn = () => {
@@ -133,11 +134,11 @@ const SignIn = () => {
       </Box>
       
       <Box textAlign={"right"} mb={4}>
-        <SignUpLink component="p" underline="always" />
+        <SignLink path={PATHS.SIGN_UP} />
         <br/>
-        <ResendMailLink component="p" underline="always" />
+        <SignLink path={PATHS.RESEND_EMAIL} />
         <br/>
-        <ForgetPwLink component="p" underline="always" />
+        <SignLink path={PATHS.FORGET_PASSWORD} />
       </Box>
 
     </SignLayout>

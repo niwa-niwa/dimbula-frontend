@@ -4,8 +4,8 @@ import {
   Box,
   Container,
 } from '@material-ui/core'
-import { signStyle } from './signStyle'
-import NAMES from '../../const/names'
+import { signStyle } from '../styles/signStyle'
+import NAMES from '../../../const/names'
 
 
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
