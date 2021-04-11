@@ -1,5 +1,4 @@
 import React,{ useState } from "react"
-import { Link } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -14,6 +13,8 @@ import { signStyle } from './userStyle'
 
 import firebase from "firebase/app"
 import "firebase/auth";
+
+import { ForgetPwLink, SignInLink, ResendMailLink } from '../layouts/link-texts/SignLinks'
 
 
 const SignUp = () => {
@@ -122,25 +123,11 @@ const SignUp = () => {
         </Box>
         
         <Box textAlign={"right"} mb={4}>
-          <p>
-            If you have an account?
-            <span>
-              <Link to="/signin/">  Sign In</Link>
-            </span>
-          </p>
+          <SignInLink component="p" underline="always" />
           <br/>
-          <p>
-            Forget your password?
-            <span>
-              <Link to="/forget-password">  Here</Link>
-            </span>
-          </p>
+          <ResendMailLink component="p" underline="always" />
           <br/>
-          <p>Re-send confirm email?
-            <span>
-              <Link to="/resend-email/">  Here</Link>
-            </span>
-          </p> 
+          <ForgetPwLink component="p" underline="always" />
         </Box>
 
       </Container>

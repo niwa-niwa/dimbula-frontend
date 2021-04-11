@@ -2,6 +2,7 @@ import React from "react"
 import { Router, Route, Switch } from 'react-router-dom'
 import history from '../history'
 
+import PATHS from "../const/paths"
 import Auth from "./layouts/Auth"
 import UnAuth from "./layouts/UnAuth"
 import Header from "./layouts/Header"
@@ -33,10 +34,10 @@ const App = () => {
       <Switch>
           <Route exact path="/" component={MainLayout} />
           <UnAuth>
-            <Route exact path="/signin/" component={SignIn} />
-            <Route exact path="/signup/" component={SignUp} />
-            <Route exact path="/resend-email/" component={ResendEmail} />
-            <Route exact path="/forget-password/" component={ForgetPw} />
+            <Route exact path={PATHS.SIGN_IN} component={SignIn} />
+            <Route exact path={PATHS.SIGN_UP} component={SignUp} />
+            <Route exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />
+            <Route exact path={PATHS.FORGET_PASSWORD} component={ForgetPw} />
           </UnAuth>
       </Switch>
     </Router>

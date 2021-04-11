@@ -14,6 +14,8 @@ import { signStyle } from './userStyle'
 import firebase from "firebase/app"
 import "firebase/auth";
 
+import { SignUpLink, SignInLink, ForgetPwLink } from '../layouts/link-texts/SignLinks'
+
 
 const SignIn = () => {
   const classes = useStyles()
@@ -34,21 +36,25 @@ const SignIn = () => {
     setInfo({...info, [event.target.name]:event.target.value})
   }
 
-  const submit = async () => {
+  const submit = () => {
     // Todo implement try/catch
-    const res = await firebase.auth().signInWithEmailAndPassword(
+    firebase.auth().signInWithEmailAndPassword(
       info.email,
       info.password
-    )
-    if(!res.user.emailVerified){
-      res.user.sendEmailVerification({
-        url: 'http://localhost:3000/',
-        handleCodeInApp: false,
-      })
-      //Todo display pop-up that notice confirm your email
-    }else{
-      history.push("/")
-    }
+    ).then( ({user}) => {
+      if(!user.emailVerified){
+        user.sendEmailVerification({
+          url: 'http://localhost:3000/',
+          handleCodeInApp: false,
+        })
+        //Todo display pop-up that notice confirm your email
+      }else{
+        history.push("/")
+      }
+    }).catch( e => {
+      console.log(e)
+      //Todo display pop-up that notice error message
+    })
   }
 
   return(
@@ -103,9 +109,11 @@ const SignIn = () => {
         </Box>
         
         <Box textAlign={"right"} mb={4}>
-          <p>Forget your password?</p>
+          <SignUpLink component="p" underline="always" />
           <br/>
-          <p>Don't have an account?<span>  Sign Up</span></p>
+          <SignInLink component="p" underline="always" />
+          <br/>
+          <ForgetPwLink component="p" underline="always" />
         </Box>
 
       </Container>

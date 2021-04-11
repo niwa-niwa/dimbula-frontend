@@ -1,5 +1,4 @@
 import React,{ useState } from "react"
-import { Link } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -14,6 +13,8 @@ import { signStyle } from './userStyle'
 import firebase from "firebase/app"
 import "firebase/auth";
 
+import { SignUpLink, SignInLink, ResendMailLink } from '../layouts/link-texts/SignLinks'
+
 
 const ForgetPw = () => {
   const classes = useStyles()
@@ -23,12 +24,16 @@ const ForgetPw = () => {
     setPw( event.target.value )
   }
 
-  const submit = async () => {
-    // Todo implement try/catch
-    // Todo display pop-up that say confirm email
-    await firebase.auth().sendPasswordResetEmail(pw)
+  const submit = () => {
+    firebase.auth().sendPasswordResetEmail(pw).then(response => {
+      console.log(response)
+      // Todo display pop-up that say confirm email
+      
+    }).catch(e => {
+      console.log(e)
+      // Todo display pop-up that say error
+    })
   }
-
 
   return(
     <React.Fragment>
@@ -70,15 +75,11 @@ const ForgetPw = () => {
         </Box>
         
         <Box textAlign={"right"} mb={4}>
-          <p><Link to="/signup/">Sign Up</Link></p>
+          <SignUpLink component="p" underline="always" />
           <br/>
-          <p><Link to="/signin/">Sign In</Link></p>
+          <SignInLink component="p" underline="always" />
           <br/>
-          <p>Re-send confirm email?
-            <span>
-              <Link to="/resend-email/">  Here</Link>
-            </span>
-          </p> 
+          <ResendMailLink component="p" underline="always" />
         </Box>
 
       </Container>
