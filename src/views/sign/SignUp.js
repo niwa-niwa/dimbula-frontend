@@ -3,13 +3,13 @@ import React,{ useState } from "react"
 import { makeStyles } from '@material-ui/core/styles'
 import { 
   Box,
-  Container,
   Button,
   Divider,
   TextField,
 } from '@material-ui/core'
 import google_img from '../../img/google-icon-mini.svg'
-import { signStyle } from './userStyle'
+import SignLayout from "./SignLayout"
+import { signStyle } from './signStyle'
 
 import firebase from "firebase/app"
 import "firebase/auth";
@@ -50,88 +50,81 @@ const SignUp = () => {
 
 
   return(
-    <React.Fragment>
-      <Box my={4}>
-        <h1 className={classes.title} >Dimbula</h1>
+    <SignLayout>
+      <Box my={3}>
+        <h2 className={classes.sub_title}>Sign Up</h2>
       </Box>
 
-      <Container className={classes.signin_container} maxWidth="sm" >
+      <Box mb={4}>
+        <Button 
+          fullWidth
+          variant="outlined"
+          onClick={()=>{signUpWithGoogle()}}
+          className={classes.google_button}
+          >
+          <img 
+            className={classes.google_logo}
+            src={google_img}
+            alt="Sign in with google"
+          />
+          Sign Up With Google
+        </Button>
+      </Box>
 
-        <Box my={3}>
-          <h2 className={classes.sub_title}>Sign Up</h2>
-        </Box>
+      <Box mb={4} display="flex" alignItems="center">
+        <div className={classes.border}></div>
+        <span>OR</span>
+        <div className={classes.border}></div>
+      </Box>
 
-        <Box mb={4}>
-          <Button 
+      <Box className={classes.signin_form} autoComplete="off">
+          <TextField
+            required
             fullWidth
+            name="email"
+            label="Mail Address"
             variant="outlined"
-            onClick={()=>{signUpWithGoogle()}}
-            className={classes.google_button}
-            >
-            <img 
-              className={classes.google_logo}
-              src={google_img}
-              alt="Sign in with google"
+            margin="none"
+            defaultValue={info.email}
+            onChange={handleInputChange}
             />
-            Sign Up With Google
-          </Button>
-        </Box>
-
-        <Box mb={4} display="flex" alignItems="center">
-          <div className={classes.border}></div>
-          <span>OR</span>
-          <div className={classes.border}></div>
-        </Box>
-
-        <Box className={classes.signin_form} autoComplete="off">
-            <TextField
-              required
+          <TextField
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            autoComplete="off"
+            variant="outlined"
+            margin="normal"
+            value={info.password}
+            onChange={handleInputChange}
+          />
+          <Box mt={2}>
+            <Button
               fullWidth
-              name="email"
-              label="Mail Address"
-              variant="outlined"
-              margin="none"
-              defaultValue={info.email}
-              onChange={handleInputChange}
-              />
-            <TextField
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              autoComplete="off"
-              variant="outlined"
-              margin="normal"
-              value={info.password}
-              onChange={handleInputChange}
-            />
-            <Box mt={2}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={submit}
-                >
-                Sign Up
-              </Button>
-            </Box>
-        </Box>
+              variant="contained"
+              color="primary"
+              onClick={submit}
+              >
+              Sign Up
+            </Button>
+          </Box>
+      </Box>
 
-        <Box my={3}>
-          <Divider variant="middle" />
-        </Box>
-        
-        <Box textAlign={"right"} mb={4}>
-          <SignInLink component="p" underline="always" />
-          <br/>
-          <ResendMailLink component="p" underline="always" />
-          <br/>
-          <ForgetPwLink component="p" underline="always" />
-        </Box>
+      <Box my={3}>
+        <Divider variant="middle" />
+      </Box>
+      
+      <Box textAlign={"right"} mb={4}>
+        <SignInLink component="p" underline="always" />
+        <br/>
+        <ResendMailLink component="p" underline="always" />
+        <br/>
+        <ForgetPwLink component="p" underline="always" />
+      </Box>
 
-      </Container>
-    </React.Fragment>
+    </SignLayout>
   )
 }
 export default SignUp
