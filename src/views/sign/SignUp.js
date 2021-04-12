@@ -1,4 +1,5 @@
-import React,{ useState } from "react"
+import React from "react"
+import { useForm, Controller } from 'react-hook-form'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -18,28 +19,24 @@ import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
 
+const useStyles = makeStyles((theme) => ({ ...signStyle }))
+// Example it could change style that is scope in this component.
+// put syntax google_logo:{...signStyle.google_logo, width:"32px"} in argument
+
 const SignUp = () => {
   const classes = useStyles()
-  const [info, setInfo] = useState(
-    {
-      email:"",
-      password:"",
-    }
-  )
+  const { handleSubmit, control, formState:{errors}} = useForm()
 
   const signUpWithGoogle = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
     firebase.auth().signInWithPopup(googleAuthProvider)
   }
-
-  const handleInputChange = (event) => {
-    setInfo({...info, [event.target.name]:event.target.value})
-  }
-
-  const submit = async () => {
-    await firebase.auth().createUserWithEmailAndPassword(
-      info.email,
-      info.password
+  
+  const onSubmit = data => {
+    console.log(data)
+    firebase.auth().createUserWithEmailAndPassword(
+      data.email,
+      data.password
     ).then(({user})=>{
       user.sendEmailVerification()
       // Todo : display pop-up that notice confirm email
@@ -48,7 +45,6 @@ const SignUp = () => {
       // Todo : display pop-up that notice error
     })
   }
-
 
   return(
     <SignLayout>
@@ -78,18 +74,38 @@ const SignUp = () => {
         <div className={classes.border}></div>
       </Box>
 
-      <Box className={classes.signin_form} autoComplete="off">
-          <TextField
-            required
-            fullWidth
-            name="email"
-            label="Mail Address"
-            variant="outlined"
-            margin="none"
-            defaultValue={info.email}
-            onChange={handleInputChange}
-            />
-          <TextField
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} className={classes.signin_form} autoComplete="off">
+        <Controller
+          name="email"
+          control={control}
+          defaultValue=""
+          render={
+            ({field})=><TextField
+              {...field}
+              required
+              fullWidth
+              name="email"
+              label="Email Address"
+              variant="outlined"
+              margin="none"
+              error={Boolean(errors.email)}
+              helperText={errors.email && errors.email.message
+            }/>
+          }
+          rules={{
+            required: true,
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+              message: 'invalid email address'
+            }
+          }}
+        />
+        <Controller
+          name="password"
+          control={control}
+          defaultValue=""
+          render={({field}) => <TextField
+            {...field}
             required
             fullWidth
             name="password"
@@ -98,19 +114,32 @@ const SignUp = () => {
             autoComplete="off"
             variant="outlined"
             margin="normal"
-            value={info.password}
-            onChange={handleInputChange}
-          />
-          <Box mt={2}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={submit}
-              >
-              Sign Up
-            </Button>
-          </Box>
+            error={Boolean(errors.password)}
+            helperText={errors.password && errors.password.message
+            }/>
+          }
+          rules={{
+            required:true,
+            minLength:{
+              value:8,
+              message:'min length is 8 and max is 32'
+            },
+            maxLength:{
+              value:32,
+              message:'min length is 8 and max is 32'
+            }
+          }}
+        />
+        <Box mt={2}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="submit"
+            >
+            Sign Up
+          </Button>
+        </Box>
       </Box>
 
       <Box my={3}>
@@ -129,8 +158,3 @@ const SignUp = () => {
   )
 }
 export default SignUp
-
-
-const useStyles = makeStyles((theme) => ({ ...signStyle }))
-// Example it could change style that is scope in this component.
-// put syntax google_logo:{...signStyle.google_logo, width:"32px"} in argument
