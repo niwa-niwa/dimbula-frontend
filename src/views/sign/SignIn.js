@@ -9,7 +9,6 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-  Snackbar,
 } from '@material-ui/core'
 import { signStyle } from './styles/signStyle'
 import SignLayout from "./layouts/SignLayout"
@@ -25,17 +24,16 @@ import PATHS from '../../const/paths'
 
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
 
+
 const SignIn = () => {
   const classes = useStyles()
   const [save, setSave] = useState(false)
   const { handleSubmit, control, formState: {errors} } = useForm();
 
-
   const signInWithGoogle = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
     firebase.auth().signInWithPopup(googleAuthProvider)
   }
-
 
   const onSubmit = data => {
     console.log("onSubmit",data)
@@ -52,7 +50,6 @@ const SignIn = () => {
 
   return(
     <SignLayout>
-
       <Box my={3}>
         <h2 className={classes.sub_title}>Sign In</h2>
       </Box>
@@ -96,8 +93,8 @@ const SignIn = () => {
               variant="outlined"
               margin="none"
               error={Boolean(errors.email)}
-              helperText={errors.email && errors.email.message}
-              />
+              helperText={errors.email && errors.email.message
+            }/>
           }
           rules={{
             required: true,
