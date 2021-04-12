@@ -120,21 +120,8 @@ const SignIn = () => {
               autoComplete="off"
               variant="outlined"
               margin="normal"
-              error={Boolean(errors.password)}
-              helperText={errors.password && errors.password.message}
             />
           }
-          rules={{
-            required: true,
-            minLength: {
-              value: 8,
-              message: 'min length is 8 and max is 32'
-            },
-            maxLength: {
-              value: 32,
-              message: 'min length is 8 and max is 32'
-            }
-          }}
         />
 
         <Box mt={2}>
