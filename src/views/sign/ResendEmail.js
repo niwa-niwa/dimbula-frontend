@@ -1,4 +1,5 @@
-import React,{ useState } from "react"
+import React from "react"
+import { useForm, Controller } from 'react-hook-form'
 import { useHistory } from "react-router-dom"
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -18,29 +19,18 @@ import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
 
-const SignIn = () => {
+const useStyles = makeStyles((theme) => ({ ...signStyle }))
+
+const ResendEmail = () => {
   const classes = useStyles()
+  const { handleSubmit, control, formState:{errors}} = useForm()
   const history = useHistory()
-  const [info, setInfo] = useState(
-    {
-      "email":"",
-      "password":"",
-      "save":false,
-    }
-  )
 
-  const handleInputChange = ( event ) => {
-    if("save" === event.target.name){
-      setInfo({...info, [event.target.name]:!info.save})
-      return
-    }
-    setInfo({...info, [event.target.name]:event.target.value})
-  }
-
-  const submit = () => {
+  const onSubmit = data => {
+    console.log(data)
     firebase.auth().signInWithEmailAndPassword(
-      info.email,
-      info.password
+      data.email,
+      data.password
     ).then( ({user}) => {
       if(!user.emailVerified){
         user.sendEmailVerification({
@@ -63,18 +53,45 @@ const SignIn = () => {
         <h2 className={classes.sub_title}>Re-Send Email</h2>
       </Box>
 
-      <Box className={classes.signin_form} autoComplete="off">
-          <TextField
-            required
-            fullWidth
-            name="email"
-            label="Mail Address"
-            variant="outlined"
-            margin="none"
-            defaultValue={info.email}
-            onChange={handleInputChange}
-            />
-          <TextField
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        className={classes.signin_form}
+        autoComplete="off"
+        >
+        
+        <Controller
+          name="email"
+          control={control}
+          defaultValue=""
+          render={
+            ({field})=><TextField
+              {...field}
+              required
+              fullWidth
+              name="email"
+              label="Email Address"
+              variant="outlined"
+              margin="none"
+              error={Boolean(errors.email)}
+              helperText={errors.email && errors.email.message
+            }/>
+          }
+          rules={{
+            required: true,
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+              message: 'invalid email address'
+            }
+          }}
+        />
+
+        <Controller
+          name="password"
+          control={control}
+          defaultValue=""
+          render={({field}) => <TextField
+            {...field}
             required
             fullWidth
             name="password"
@@ -83,19 +100,19 @@ const SignIn = () => {
             autoComplete="off"
             variant="outlined"
             margin="normal"
-            value={info.password}
-            onChange={handleInputChange}
-          />
-          <Box mt={2}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={submit}
-              >
-              Re-send
-            </Button>
-          </Box>
+          />}
+        />
+
+        <Box mt={2}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="submit"
+            >
+            Re-send
+          </Button>
+        </Box>
       </Box>
 
       <Box my={3}>
@@ -114,7 +131,4 @@ const SignIn = () => {
   )
 
 }
-export default SignIn
-
-
-const useStyles = makeStyles((theme) => ({ ...signStyle }))
+export default ResendEmail
