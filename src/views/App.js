@@ -3,6 +3,7 @@ import { Router, Route, Switch } from 'react-router-dom'
 import history from '../history'
 
 import PATHS from "../const/paths"
+import SnackBar from './layouts/SnackBar'
 import Auth from "./layouts/Auth"
 import UnAuth from "./layouts/UnAuth"
 import Header from "./layouts/Header"
@@ -13,6 +14,7 @@ import ResendEmail from "./sign/ResendEmail"
 import ForgetPw from "./sign/ForgetPw"
 
 import Task from "./task/Index"
+
 
 const App = () => {
 
@@ -40,7 +42,9 @@ const App = () => {
             <Route exact path={PATHS.FORGET_PASSWORD} component={ForgetPw} />
           </UnAuth>
       </Switch>
+      <SnackBar />
     </Router>
   )
+
 }
 export default App
