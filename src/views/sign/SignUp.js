@@ -2,6 +2,7 @@ import React from "react"
 import { useDispatch } from "react-redux"
 import { useForm, Controller } from 'react-hook-form'
 import { setMessage } from "../../slices/snackBarSlice"
+import { showDialog } from "../../slices/alertDialogSlice"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({ ...signStyle }))
 const SignUp = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { handleSubmit, control, formState:{errors}} = useForm()
+  const { handleSubmit, control, reset, formState:{errors}} = useForm()
 
   const signUpWithGoogle = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
@@ -42,9 +43,17 @@ const SignUp = () => {
       data.password
     ).then(({user})=>{
       user.sendEmailVerification()
-      // Todo : display pop-up that notice confirm email
+      dispatch(showDialog(
+        {
+          isOpen:true,
+          title:"Confirm Your Email Box",
+          message:"Please check your email box to continue to create an account.",
+          isChosen:false
+        }
+      ))
+      reset()
+
     }).catch(e=>{
-      console.warn(e)
       dispatch(setMessage(
         {
           severity:"error",

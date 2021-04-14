@@ -1,12 +1,9 @@
 Todos:
   - Global
-    [] create Snackbar with Redux
 
-  - Todo by this Sunday
+  - Todo 
     [] reject the user who does not confirm email
     [-] make Sign modules
-    [-] implement try/catch
-    [] implement validations
 
   - SignUp.js
     [] redirect Email-Confirm.js page after submit email and pw

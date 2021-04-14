@@ -30,7 +30,7 @@ const SignIn = () => {
   const dispatch = useDispatch()
   const classes = useStyles()
   const [save, setSave] = useState(false)
-  const { handleSubmit, control, formState: {errors} } = useForm();
+  const { handleSubmit, control, reset, formState: {errors} } = useForm();
 
   const signInWithGoogle = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
@@ -43,7 +43,6 @@ const SignIn = () => {
       data.password
       // Todo : save login info
     ).catch(e=>{
-      console.warn(e)
       dispatch(setMessage(
         {
           isOpen:true,
@@ -51,6 +50,8 @@ const SignIn = () => {
           message:e.message,
         }
       ))
+    }).finally(()=>{
+      reset()
     })
   }
 

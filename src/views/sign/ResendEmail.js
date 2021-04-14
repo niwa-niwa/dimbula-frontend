@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
 import { useHistory } from "react-router-dom"
 import { setMessage } from "../../slices/snackBarSlice"
+import { showDialog } from '../../slices/alertDialogSlice'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({ ...signStyle }))
 const ResendEmail = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { handleSubmit, control, formState:{errors}} = useForm()
+  const { handleSubmit, control, reset, formState:{errors}} = useForm()
   const history = useHistory()
 
   const onSubmit = data => {
@@ -45,18 +46,26 @@ const ResendEmail = () => {
           url: 'http://localhost:3000/',
           handleCodeInApp: false,
         })
-        //Todo display pop-up that notice confirm your email
+        dispatch(showDialog(
+          {
+            isOpen:true,
+            title:"Confirm Your Email Box",
+            message:"Please check your email box to continue to create an account.",
+            isChosen:false
+          }
+        ))
       }else{
         history.push("/")
       }
     }).catch( e => {
-      console.warn(e)
       dispatch(setMessage(
         {
           severity:"error",
           message:e.message,
         }
       ))
+    }).finally(()=>{
+      reset()
     })
   }
 

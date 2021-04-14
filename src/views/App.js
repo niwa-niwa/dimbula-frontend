@@ -4,6 +4,8 @@ import history from '../history'
 
 import PATHS from "../const/paths"
 import SnackBar from './layouts/SnackBar'
+import AlertDialog from "./layouts/AlertDialog"
+
 import Auth from "./layouts/Auth"
 import UnAuth from "./layouts/UnAuth"
 import Header from "./layouts/Header"
@@ -43,6 +45,7 @@ const App = () => {
           </UnAuth>
       </Switch>
       <SnackBar />
+      <AlertDialog />
     </Router>
   )
 

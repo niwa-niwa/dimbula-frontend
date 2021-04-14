@@ -19,6 +19,8 @@ import "firebase/auth";
 import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
+import { showDialog } from '../../slices/alertDialogSlice'
+
 /**
  * Style Object
  */
@@ -31,17 +33,23 @@ const useStyles = makeStyles((theme) => ({ ...signStyle }))
 const ForgetPw = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { handleSubmit, control, formState:{errors}} = useForm()
+  const { handleSubmit, control, reset, formState:{errors}} = useForm()
 
   const onSubmit = (data) => {
     firebase.auth().sendPasswordResetEmail(
       data.email
-      ).then(response => {
-        console.log(response)
-        // Todo display pop-up that say confirm email
+      ).then(() => {
+        dispatch(showDialog(
+          {
+            isOpen:true,
+            title:"Confirm Your Email Box",
+            message:"We sent a email to reset your password. Please Check your mail box.",
+            isChosen:false
+          }
+        ))
+        reset()
       
     }).catch(e => {
-      console.warn(e)
       dispatch(setMessage(
         {
           severity:"error",
