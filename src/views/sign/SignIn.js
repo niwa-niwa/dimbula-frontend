@@ -1,4 +1,5 @@
 import React,{ useState } from "react"
+import { useDispatch } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -21,11 +22,12 @@ import "firebase/auth";
 import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
+import { setMessage } from "../../slices/snackBarSlice"
 
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
 
-
 const SignIn = () => {
+  const dispatch = useDispatch()
   const classes = useStyles()
   const [save, setSave] = useState(false)
   const { handleSubmit, control, formState: {errors} } = useForm();
@@ -36,15 +38,19 @@ const SignIn = () => {
   }
 
   const onSubmit = data => {
-    console.log("onSubmit",data)
-    console.log("save is ", save)
     firebase.auth().signInWithEmailAndPassword(
       data.email,
       data.password
       // Todo : save login info
     ).catch(e=>{
       console.warn(e)
-      // Todo : display pop-up that notice error
+      dispatch(setMessage(
+        {
+          isOpen:true,
+          severity:"error",
+          message:e.message,
+        }
+      ))
     })
   }
 

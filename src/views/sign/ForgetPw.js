@@ -1,4 +1,6 @@
 import React from "react"
+import { useDispatch } from 'react-redux'
+import { setMessage } from '../../slices/snackBarSlice'
 import { useForm, Controller } from 'react-hook-form'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -17,11 +19,18 @@ import "firebase/auth";
 import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
-
+/**
+ * Style Object
+ */
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
 
+/**
+ * Main Component
+ * @returns JSX
+ */
 const ForgetPw = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const { handleSubmit, control, formState:{errors}} = useForm()
 
   const onSubmit = (data) => {
@@ -32,8 +41,13 @@ const ForgetPw = () => {
         // Todo display pop-up that say confirm email
       
     }).catch(e => {
-      console.log(e)
-      // Todo display pop-up that say error
+      console.warn(e)
+      dispatch(setMessage(
+        {
+          severity:"error",
+          message:e.message,
+        }
+      ))
     })
   }
 
