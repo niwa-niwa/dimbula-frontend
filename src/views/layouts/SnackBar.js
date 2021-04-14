@@ -6,9 +6,8 @@ import Alert from '@material-ui/lab/Alert'
 
 import { deleteMessage } from "../../slices/snackBarSlice"
 
-
 export default function SnackBar(){
-  const {isOpen, severity, message, props} = useSelector((state) => state.snackBar)
+  const { isOpen, severity, message } = useSelector((state) => state.snackBar)
   const dispatch = useDispatch()
 
   const handleClose = (event, reason) => {
@@ -18,11 +17,10 @@ export default function SnackBar(){
     dispatch(deleteMessage())
   }
 
-  // Todo : confirm working ...props of argument
   return(
     <div>
-      <Snackbar open={isOpen} autoHideDuration={5000} onClose={handleClose}>
-        <Alert elevation={6} variant="filled" onClose={handleClose} severity={severity} {...props}>
+      <Snackbar open={isOpen} autoHideDuration={6000} onClose={handleClose}>
+        <Alert elevation={6} variant="filled" onClose={handleClose} severity={severity} >
           {message}
         </Alert>
       </Snackbar>

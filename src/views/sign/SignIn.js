@@ -24,9 +24,7 @@ import PATHS from '../../const/paths'
 
 import { setMessage } from "../../slices/snackBarSlice"
 
-
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
-
 
 const SignIn = () => {
   const dispatch = useDispatch()
@@ -34,15 +32,12 @@ const SignIn = () => {
   const [save, setSave] = useState(false)
   const { handleSubmit, control, formState: {errors} } = useForm();
 
-
   const signInWithGoogle = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
     firebase.auth().signInWithPopup(googleAuthProvider)
   }
 
   const onSubmit = data => {
-    console.log("onSubmit",data)
-    console.log("save is ", save)
     firebase.auth().signInWithEmailAndPassword(
       data.email,
       data.password
@@ -54,7 +49,6 @@ const SignIn = () => {
           isOpen:true,
           severity:"error",
           message:e.message,
-          props:{}
         }
       ))
     })

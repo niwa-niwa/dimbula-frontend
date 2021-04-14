@@ -1,6 +1,8 @@
 import React from "react"
+import { useDispatch } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
 import { useHistory } from "react-router-dom"
+import { setMessage } from "../../slices/snackBarSlice"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -18,16 +20,22 @@ import "firebase/auth";
 import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
-
+/**
+ * style object
+ */
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
 
+/**
+ * Main component
+ * @returns JSX
+ */
 const ResendEmail = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const { handleSubmit, control, formState:{errors}} = useForm()
   const history = useHistory()
 
   const onSubmit = data => {
-    console.log(data)
     firebase.auth().signInWithEmailAndPassword(
       data.email,
       data.password
@@ -42,8 +50,13 @@ const ResendEmail = () => {
         history.push("/")
       }
     }).catch( e => {
-      console.log(e)
-      //Todo display pop-up that notice error message
+      console.warn(e)
+      dispatch(setMessage(
+        {
+          severity:"error",
+          message:e.message,
+        }
+      ))
     })
   }
 

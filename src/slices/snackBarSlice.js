@@ -4,22 +4,19 @@ const snackBarSlice = createSlice({
   name:'snackBar',
   initialState:{
     isOpen:false,
-    severity:"",
+    severity:"", // expected values are error, info, success, warning
     message:"",
-    props:{},
   },
   reducers: {
     setMessage(state, action){
-      state.isOpen = action.payload.isOpen
-      state.severity = action.payload.severity
+      state.isOpen = action.payload.isOpen || true
+      state.severity = action.payload.severity || "info"
       state.message = action.payload.message
-      state.props = {...action.payload.props}
     },
     deleteMessage(state){
       state.isOpen = false
       state.severity = ""
       state.message = ''
-      state.props = {}
     }
   }
 })

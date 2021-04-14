@@ -1,5 +1,7 @@
 import React from "react"
+import { useDispatch } from "react-redux"
 import { useForm, Controller } from 'react-hook-form'
+import { setMessage } from "../../slices/snackBarSlice"
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -18,13 +20,15 @@ import "firebase/auth";
 import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
-
+// style object
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
 // Example it could change style that is scope in this component.
 // put syntax google_logo:{...signStyle.google_logo, width:"32px"} in argument
 
+// main component
 const SignUp = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const { handleSubmit, control, formState:{errors}} = useForm()
 
   const signUpWithGoogle = () => {
@@ -33,7 +37,6 @@ const SignUp = () => {
   }
   
   const onSubmit = data => {
-    console.log(data)
     firebase.auth().createUserWithEmailAndPassword(
       data.email,
       data.password
@@ -42,7 +45,12 @@ const SignUp = () => {
       // Todo : display pop-up that notice confirm email
     }).catch(e=>{
       console.warn(e)
-      // Todo : display pop-up that notice error
+      dispatch(setMessage(
+        {
+          severity:"error",
+          message:e.message,
+        }
+      ))
     })
   }
 
