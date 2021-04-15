@@ -1,5 +1,8 @@
 Todos:
   - Global
+    [] implement loading-bar
+    [] collaborate backend auth
+    [] token authentication 
 
   - Todo 
     [] reject the user who does not confirm email
