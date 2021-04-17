@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux"
 import { useForm, Controller } from 'react-hook-form'
 import { setMessage } from "../../slices/snackBarSlice"
 import { showDialog } from "../../slices/alertDialogSlice"
-import { setIsOpen_progressCircle, setIsClose_progressCircle } from "../../slices/progressCircleSlice";
+import { openProgressCircle, closeProgressCircle } from "../../slices/progressCircleSlice";
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -39,13 +39,13 @@ const SignUp = () => {
   }
   
   const onSubmit = data => {
-    dispatch(setIsOpen_progressCircle());
+    dispatch(openProgressCircle());
     firebase.auth().createUserWithEmailAndPassword(
       data.email,
       data.password
     ).then(({user})=>{
       user.sendEmailVerification()
-      dispatch(setIsClose_progressCircle());
+      dispatch(closeProgressCircle());
       dispatch(showDialog(
         {
           isOpen:true,
@@ -63,7 +63,7 @@ const SignUp = () => {
         }
       ))
     }).finally(()=>{
-      dispatch(setIsClose_progressCircle());
+      dispatch(closeProgressCircle());
       reset({
         email:data.email,
         password:"",

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { Redirect } from 'react-router-dom'
 import firebase from '../../api/firebase'
 import { signIn, signOut } from '../../slices/authSlice'
-import { setIsOpen_progressCircle, setIsClose_progressCircle } from "../../slices/progressCircleSlice";
+import { openProgressCircle, closeProgressCircle } from "../../slices/progressCircleSlice";
 
 const UnAuth = ({ children }) => {
   const dispatch = useDispatch()
@@ -11,7 +11,7 @@ const UnAuth = ({ children }) => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn)
 
   useEffect(() => {
-    dispatch(setIsOpen_progressCircle());
+    dispatch(openProgressCircle());
     // the flag is prevented to leak memory
     let isMounted = true
     const getStatus =  () => {
@@ -22,7 +22,7 @@ const UnAuth = ({ children }) => {
           dispatch(signOut())
         }
         if(isMounted){
-          dispatch(setIsClose_progressCircle());
+          dispatch(closeProgressCircle());
           setIsChecking(false)
         }
       })

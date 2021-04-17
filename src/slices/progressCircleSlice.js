@@ -7,14 +7,14 @@ const progressCircleSlice = createSlice({
     isOpen_progressCircle: false,
   },
   reducers: {
-    setIsOpen_progressCircle(state) {
+    openProgressCircle(state) {
       state.isOpen_progressCircle = true
     },
-    setIsClose_progressCircle(state){
+    closeProgressCircle(state){
       state.isOpen_progressCircle = false
     }
   },
 })
 
-export const {setIsOpen_progressCircle, setIsClose_progressCircle} = progressCircleSlice.actions
+export const {openProgressCircle, closeProgressCircle} = progressCircleSlice.actions
 export default progressCircleSlice.reducer
