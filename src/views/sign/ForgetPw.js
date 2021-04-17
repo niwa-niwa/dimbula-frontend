@@ -20,6 +20,8 @@ import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
 import { showDialog } from '../../slices/alertDialogSlice'
+import { setIsOpen_progressCircle, setIsClose_progressCircle } from "../../slices/progressCircleSlice";
+
 
 /**
  * Style Object
@@ -36,9 +38,11 @@ const ForgetPw = () => {
   const { handleSubmit, control, reset, formState:{errors}} = useForm()
 
   const onSubmit = (data) => {
+    dispatch(setIsOpen_progressCircle());
     firebase.auth().sendPasswordResetEmail(
       data.email
       ).then(() => {
+    dispatch(setIsClose_progressCircle());
         dispatch(showDialog(
           {
             isOpen:true,
@@ -47,7 +51,7 @@ const ForgetPw = () => {
             isChosen:false
           }
         ))
-        reset()
+        reset({email:""})
       
     }).catch(e => {
       dispatch(setMessage(
@@ -56,6 +60,9 @@ const ForgetPw = () => {
           message:e.message,
         }
       ))
+    }).finally(()=>{
+      dispatch(setIsClose_progressCircle());
+      reset({email:""})
     })
   }
 

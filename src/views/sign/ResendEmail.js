@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useHistory } from "react-router-dom"
 import { setMessage } from "../../slices/snackBarSlice"
 import { showDialog } from '../../slices/alertDialogSlice'
+import { setIsOpen_progressCircle, setIsClose_progressCircle } from "../../slices/progressCircleSlice";
 
 import { makeStyles } from '@material-ui/core/styles'
 import { 
@@ -37,6 +38,7 @@ const ResendEmail = () => {
   const history = useHistory()
 
   const onSubmit = data => {
+    dispatch(setIsOpen_progressCircle());
     firebase.auth().signInWithEmailAndPassword(
       data.email,
       data.password
@@ -46,6 +48,7 @@ const ResendEmail = () => {
           url: 'http://localhost:3000/',
           handleCodeInApp: false,
         })
+        dispatch(setIsClose_progressCircle());
         dispatch(showDialog(
           {
             isOpen:true,
@@ -65,7 +68,8 @@ const ResendEmail = () => {
         }
       ))
     }).finally(()=>{
-      reset()
+      dispatch(setIsClose_progressCircle());
+      reset({email:"", password:""})
     })
   }
 

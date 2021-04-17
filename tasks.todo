@@ -1,6 +1,6 @@
 Todos:
   - Global
-    [] implement loading-bar
+    [-] implement loading-bar
     [] collaborate backend auth
     [] token authentication 
 
