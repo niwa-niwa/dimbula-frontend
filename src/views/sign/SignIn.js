@@ -23,6 +23,8 @@ import SignLink from './parts/SignLinks'
 import PATHS from '../../const/paths'
 
 import { setMessage } from "../../slices/snackBarSlice"
+import { setIsOpen, setIsClose } from "../../slices/progressCircleSlice";
+
 
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
 
@@ -38,6 +40,7 @@ const SignIn = () => {
   }
 
   const onSubmit = data => {
+    dispatch(setIsOpen());
     firebase.auth().signInWithEmailAndPassword(
       data.email,
       data.password
@@ -51,7 +54,9 @@ const SignIn = () => {
         }
       ))
     }).finally(()=>{
-      reset()
+      reset();
+      dispatch(setIsClose());
+
     })
   }
 
