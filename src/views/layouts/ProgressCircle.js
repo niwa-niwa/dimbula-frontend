@@ -38,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ProgressCircle() {
   const classes = useStyles();
-  const isOpen = useSelector((state)=>(state.progressCircle.isOpen));
+  const isOpen_progressCircle = useSelector((state)=>(state.progressCircle.isOpen_progressCircle));
 
 
   const render = ()=>{
-    if(isOpen){
+    if(isOpen_progressCircle){
       return(
         <div className={classes.root}>
           <div className={classes.circleInBox}>
@@ -52,7 +52,7 @@ export default function ProgressCircle() {
         </div>
       )
     }
-    return isOpen
+    return isOpen_progressCircle
   };
 
   return (
