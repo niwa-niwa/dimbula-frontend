@@ -18,7 +18,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications"
 import MoreIcon from "@material-ui/icons/MoreVert"
 
 import { openDrawer } from "../../slices/drawerSlice"
-import { signOut } from "../../slices/authSlice"
+import { signOut } from "../../slices/userSlice"
 
 
 const useStyles = makeStyles((theme) => ({

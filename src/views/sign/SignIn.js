@@ -20,7 +20,7 @@ import "firebase/auth";
 
 import SignLink from "./parts/SignLinks";
 import PATHS from "../../const/paths";
-import STORAGE from "../../const/storage";
+import NAMES from "../../const/names";
 
 import { setMessage } from "../../slices/snackBarSlice";
 import {
@@ -62,7 +62,11 @@ const SignIn = () => {
       })
       .finally(() => {
         if(save){
-          localStorage.setItem(STORAGE.PASSWORD, data.password);
+          localStorage.setItem(NAMES.STORAGE_PASSWORD, data.password);
+          localStorage.setItem(NAMES.STORAGE_EMAIL, data.email);
+        }else{
+          localStorage.removeItem(NAMES.STORAGE_PASSWORD);
+          localStorage.removeItem(NAMES.STORAGE_EMAIL, data.email);
         }
         reset({
           email: data.email,
@@ -111,7 +115,7 @@ const SignIn = () => {
         <Controller
           name="email"
           control={control}
-          defaultValue=""
+          defaultValue={localStorage.getItem(NAMES.STORAGE_EMAIL) || ""}
           render={({ field }) => (
             <TextField
               {...field}
@@ -138,7 +142,7 @@ const SignIn = () => {
         <Controller
           name="password"
           control={control}
-          defaultValue=""
+          defaultValue={localStorage.getItem(NAMES.STORAGE_PASSWORD) || ""}
           render={({ field }) => (
             <TextField
               {...field}

@@ -3,5 +3,5 @@ const PATHS = {
   SIGN_IN:"/signin/",
   RESEND_EMAIL:"/resend-email/",
   FORGET_PASSWORD:"/forget-password/",
-}
-export default Object.freeze(PATHS)
+};
+export default Object.freeze(PATHS);
