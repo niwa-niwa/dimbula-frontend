@@ -1,32 +1,34 @@
-import React,{ useState } from "react"
-import { useDispatch } from 'react-redux'
-import { useForm, Controller } from 'react-hook-form'
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useForm, Controller } from "react-hook-form";
 
-import { makeStyles } from '@material-ui/core/styles'
-import { 
+import { makeStyles } from "@material-ui/core/styles";
+import {
   Box,
   Button,
   Divider,
   TextField,
   Checkbox,
   FormControlLabel,
-} from '@material-ui/core'
-import { signStyle } from './styles/signStyle'
-import SignLayout from "./layouts/SignLayout"
+} from "@material-ui/core";
+import { signStyle } from "./styles/signStyle";
+import SignLayout from "./layouts/SignLayout";
+import google_img from "../../img/google-icon-mini.svg";
 
-import google_img from '../../img/google-icon-mini.svg'
-
-import firebase from "firebase/app"
+import firebase from "firebase/app";
 import "firebase/auth";
 
-import SignLink from './parts/SignLinks'
-import PATHS from '../../const/paths'
+import SignLink from "./parts/SignLinks";
+import PATHS from "../../const/paths";
+import STORAGE from "../../const/storage";
 
-import { setMessage } from "../../slices/snackBarSlice"
-import { openProgressCircle, closeProgressCircle } from "../../slices/progressCircleSlice";
+import { setMessage } from "../../slices/snackBarSlice";
+import {
+  openProgressCircle,
+  closeProgressCircle,
+} from "../../slices/progressCircleSlice";
 
-
-const useStyles = makeStyles((theme) => ({ ...signStyle }))
+const useStyles = makeStyles((theme) => ({ ...signStyle }));
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -44,44 +46,48 @@ const SignIn = () => {
     firebase.auth().signInWithPopup(googleAuthProvider);
   };
 
-  const onSubmit = data => {
+  const onSubmit = (data) => {
     dispatch(openProgressCircle());
-    firebase.auth().signInWithEmailAndPassword(
-      data.email,
-      data.password
-      // Todo : save login info
-    ).catch(e=>{
-      dispatch(setMessage(
-        {
-          isOpen:true,
-          severity:"error",
-          message:e.message,
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(data.email, data.password)
+      .catch((e) => {
+        dispatch(
+          setMessage({
+            isOpen: true,
+            severity: "error",
+            message: e.message,
+          })
+        );
+      })
+      .finally(() => {
+        if(save){
+          localStorage.setItem(STORAGE.PASSWORD, data.password);
         }
-      ))
-    }).finally(()=>{
-      reset({
-        email:data.email,
-        password:"",
+        reset({
+          email: data.email,
+          password: "",
+        });
+        dispatch(closeProgressCircle());
       });
-      dispatch(closeProgressCircle());
+  };
 
-    })
-  }
-
-  return(
+  return (
     <SignLayout>
       <Box my={3}>
         <h2 className={classes.sub_title}>Sign In</h2>
       </Box>
 
       <Box mb={4}>
-        <Button 
+        <Button
           fullWidth
           variant="outlined"
-          onClick={()=>{signInWithGoogle()}}
+          onClick={() => {
+            signInWithGoogle();
+          }}
           className={classes.google_button}
-          >
-          <img 
+        >
+          <img
             className={classes.google_logo}
             src={google_img}
             alt="Sign in with google"
@@ -96,14 +102,18 @@ const SignIn = () => {
         <div className={classes.border}></div>
       </Box>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} className={classes.signin_form} autoComplete="off">
-        
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        className={classes.signin_form}
+        autoComplete="off"
+      >
         <Controller
           name="email"
           control={control}
           defaultValue=""
-          render={ 
-            ({field}) => <TextField
+          render={({ field }) => (
+            <TextField
               {...field}
               name="email"
               required
@@ -113,15 +123,15 @@ const SignIn = () => {
               variant="outlined"
               margin="none"
               error={Boolean(errors.email)}
-              helperText={errors.email && errors.email.message
-            }/>
-          }
+              helperText={errors.email && errors.email.message}
+            />
+          )}
           rules={{
             required: true,
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: 'invalid email address'
-            }
+              message: "invalid email address",
+            },
           }}
         />
 
@@ -129,8 +139,8 @@ const SignIn = () => {
           name="password"
           control={control}
           defaultValue=""
-          render={
-            ({field}) => <TextField
+          render={({ field }) => (
+            <TextField
               {...field}
               required
               fullWidth
@@ -141,31 +151,27 @@ const SignIn = () => {
               variant="outlined"
               margin="normal"
             />
-          }
+          )}
         />
 
         <Box mt={2}>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            type="submit"
-            >
+          <Button fullWidth variant="contained" color="primary" type="submit">
             Sign In
           </Button>
         </Box>
-          
       </Box>
 
       <Box>
         <FormControlLabel
-          control={<Checkbox
-                    color="primary"
-                    name="save" 
-                    onChange={()=>setSave(!save)}
-                    checked={save}
-                  />}
-          label="Save login information"            
+          control={
+            <Checkbox
+              color="primary"
+              name="save"
+              onChange={() => setSave(!save)}
+              checked={save}
+            />
+          }
+          label="Save login information"
         />
       </Box>
 
@@ -175,14 +181,12 @@ const SignIn = () => {
 
       <Box textAlign={"right"} mb={4}>
         <SignLink path={PATHS.SIGN_UP} />
-        <br/>
+        <br />
         <SignLink path={PATHS.RESEND_EMAIL} />
-        <br/>
+        <br />
         <SignLink path={PATHS.FORGET_PASSWORD} />
       </Box>
-
     </SignLayout>
-  )
-
-}
-export default SignIn
+  );
+};
+export default SignIn;

@@ -14,6 +14,8 @@ import {
 } from "../../slices/progressCircleSlice";
 import axios from "../../apis/backend";
 import { showDialog } from "../../slices/alertDialogSlice";
+import STORAGE from "../../const/storage";
+
 
 const Auth = ({ children }) => {
   const dispatch = useDispatch();
@@ -27,26 +29,15 @@ const Auth = ({ children }) => {
     const getStatus = () => {
       firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
-          if (!user.emailVerified) {
-            dispatch(signOut());
-            dispatch(
-              showDialog({
-                isOpen: true,
-                title: "Confirm Your Email Box",
-                message:
-                  "Please check your email box to continue to create an account.",
-                isChosen: false,
-              })
-            );
-          } else {
+          if (user.emailVerified) {
             // Confirm the account is valid with dimbula backend
             const token = await firebase.auth().currentUser.getIdToken(true);
+            localStorage.setItem(STORAGE.TOKEN,token)
             axios("/api/v1/persons/", {
               headers: { Authorization: `Bearer ${token}` },
             })
               .then((response) => {
-                // TODO store user data in cookie
-                dispatch(signIn());
+                dispatch(signIn())
               })
               .catch((e) => {
                 dispatch(signOut());
@@ -60,6 +51,17 @@ const Auth = ({ children }) => {
                   })
                 );
               });
+          } else {
+            dispatch(signOut());
+            dispatch(
+              showDialog({
+                isOpen: true,
+                title: "Confirm Your Email Box",
+                message:
+                  "Please check your email box to continue to create an account.",
+                isChosen: false,
+              })
+            );
           }
         } else {
           dispatch(signOut());

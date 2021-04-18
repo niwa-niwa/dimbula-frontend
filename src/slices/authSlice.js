@@ -12,6 +12,7 @@ const authSlice = createSlice({
     },
     signOut(state) {
       firebase.auth().signOut();
+      localStorage.clear();
       state.isSignedIn = false;
     },
   },
