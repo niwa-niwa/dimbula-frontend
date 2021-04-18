@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import firebase from '../api/firebase'
+import firebase from '../apis/firebase'
 
 // Todo reject user if user confirm email to signup 
 const authSlice = createSlice({
@@ -9,8 +9,10 @@ const authSlice = createSlice({
   },
   reducers:{
     signIn(state){
-      state.isSignedIn = true
+      // Todo confirm email-confirmed
       // Todo Backend login process
+      
+      state.isSignedIn = true
     },
     signOut(state){
       firebase.auth().signOut()

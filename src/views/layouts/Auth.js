@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
 import { Redirect } from 'react-router-dom'
-import firebase from '../../api/firebase'
+import firebase from '../../apis/firebase'
 import { signIn, signOut } from '../../slices/authSlice'
 import { openProgressCircle, closeProgressCircle } from "../../slices/progressCircleSlice";
 
