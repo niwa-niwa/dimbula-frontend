@@ -29,15 +29,20 @@ import { openProgressCircle, closeProgressCircle } from "../../slices/progressCi
 const useStyles = makeStyles((theme) => ({ ...signStyle }))
 
 const SignIn = () => {
-  const dispatch = useDispatch()
-  const classes = useStyles()
-  const [save, setSave] = useState(false)
-  const { handleSubmit, control, reset, formState: {errors} } = useForm();
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const [save, setSave] = useState(false);
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const signInWithGoogle = () => {
-    const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithPopup(googleAuthProvider)
-  }
+    const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(googleAuthProvider);
+  };
 
   const onSubmit = data => {
     dispatch(openProgressCircle());
