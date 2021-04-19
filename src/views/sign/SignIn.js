@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
+import { Redirect } from "react-router-dom";
+
+import firebase from "firebase/app";
+import "firebase/auth";
 
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -15,18 +19,15 @@ import { signStyle } from "./styles/signStyle";
 import SignLayout from "./layouts/SignLayout";
 import google_img from "../../img/google-icon-mini.svg";
 
-import firebase from "firebase/app";
-import "firebase/auth";
-
-import SignLink from "./parts/SignLinks";
-import PATHS from "../../const/paths";
-import NAMES from "../../const/names";
-
 import { setMessage } from "../../slices/snackBarSlice";
 import {
   openProgressCircle,
   closeProgressCircle,
 } from "../../slices/progressCircleSlice";
+
+import SignLink from "./parts/SignLinks";
+import PATHS from "../../const/paths";
+import NAMES from "../../const/names";
 
 const useStyles = makeStyles((theme) => ({ ...signStyle }));
 
@@ -41,9 +42,34 @@ const SignIn = () => {
     formState: { errors },
   } = useForm();
 
+  function success(path=PATHS.HOME){
+    <Redirect to={localStorage.getItem(NAMES.STORAGE_REDIRECT || PATHS.HOME)} />;
+    localStorage.removeItem(NAMES.STORAGE_REDIRECT);
+  }
+
+  function fail(error){
+    dispatch(
+      setMessage({
+        isOpen: true,
+        severity: "error",
+        message: error.message,
+      })
+    );
+    dispatch(closeProgressCircle());
+  }
+
   const signInWithGoogle = () => {
+    dispatch(openProgressCircle());
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(googleAuthProvider);
+    firebase
+      .auth()
+      .signInWithPopup(googleAuthProvider)
+      .then(() => {
+        success();
+      })
+      .catch((e) => {
+        fail(e);
+      });
   };
 
   const onSubmit = (data) => {
@@ -51,14 +77,11 @@ const SignIn = () => {
     firebase
       .auth()
       .signInWithEmailAndPassword(data.email, data.password)
+      .then( () => {
+        success();
+      })
       .catch((e) => {
-        dispatch(
-          setMessage({
-            isOpen: true,
-            severity: "error",
-            message: e.message,
-          })
-        );
+        fail(e);
       })
       .finally(() => {
         if(save){
@@ -72,7 +95,6 @@ const SignIn = () => {
           email: data.email,
           password: "",
         });
-        dispatch(closeProgressCircle());
       });
   };
 

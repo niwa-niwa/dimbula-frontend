@@ -1,5 +1,6 @@
 Todos:
   - Global
+    [] in App.js, search how to async function in useEffect
     [-] implement loading-bar
     [-] collaborate backend auth
     [-] token authentication 
