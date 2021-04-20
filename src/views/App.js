@@ -35,13 +35,11 @@ const App = () => {
 
   useEffect(() => {
     dispatch(openProgressCircle());
-    // the flag is prevented to leak memory
-    let isMounted = true;
+    let isMounted = true;   // the flag is prevented to leak memory
     const getStatus = async () => {
       firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
-          if (user.emailVerified) {
-            // Confirm the account is valid with dimbula backend
+          if (user.emailVerified) {   // Confirm the account is valid with dimbula backend
             const token = await firebase.auth().currentUser.getIdToken(true);
             localStorage.setItem(NAMES.STORAGE_TOKEN, token);
             await axios("/api/v1/persons/", {
@@ -84,7 +82,7 @@ const App = () => {
       <Header />
       <LeftDrawer>
         <Switch>
-          <Route exact path="/" component={Task} />
+          <Route exact path={PATHS.HOME} component={Task} />
         </Switch>
       </LeftDrawer>
     </React.Fragment>
