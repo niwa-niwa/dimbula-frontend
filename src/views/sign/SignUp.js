@@ -9,7 +9,7 @@ import { Box, Button, Divider, TextField } from "@material-ui/core";
 import firebase from "firebase/app";
 import "firebase/auth";
 
-import { setMessage } from "../../slices/snackBarSlice";
+import { setSnackBar } from "../../slices/snackBarSlice";
 import { showDialog } from "../../slices/alertDialogSlice";
 import {
   openProgressCircle,
@@ -50,7 +50,7 @@ const SignUp = () => {
       })
       .catch((e) => {
         dispatch(
-          setMessage({
+          setSnackBar({
             isOpen: true,
             severity: "error",
             message: e.message,
@@ -79,7 +79,7 @@ const SignUp = () => {
       })
       .catch((e) => {
         dispatch(
-          setMessage({
+          setSnackBar({
             severity: "error",
             message: e.message,
           })

@@ -8,7 +8,7 @@ import "firebase/auth";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Button, Divider, TextField } from "@material-ui/core";
 
-import { setMessage } from "../../slices/snackBarSlice";
+import { setSnackBar } from "../../slices/snackBarSlice";
 import { showDialog } from "../../slices/alertDialogSlice";
 import {
   openProgressCircle,
@@ -68,7 +68,7 @@ const ResendEmail = () => {
       .catch((e) => {
         dispatch(closeProgressCircle());
         dispatch(
-          setMessage({
+          setSnackBar({
             severity: "error",
             message: e.message,
           })

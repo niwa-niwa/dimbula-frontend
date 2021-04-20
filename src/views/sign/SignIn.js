@@ -19,7 +19,7 @@ import { signStyle } from "./styles/signStyle";
 import SignLayout from "./layouts/SignLayout";
 import google_img from "../../img/google-icon-mini.svg";
 
-import { setMessage } from "../../slices/snackBarSlice";
+import { setSnackBar } from "../../slices/snackBarSlice";
 import {
   openProgressCircle,
   closeProgressCircle,
@@ -49,7 +49,7 @@ const SignIn = () => {
 
   function fail(error){
     dispatch(
-      setMessage({
+      setSnackBar({
         isOpen: true,
         severity: "error",
         message: error.message,

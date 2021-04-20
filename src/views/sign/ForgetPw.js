@@ -13,7 +13,7 @@ import SignLayout from "./layouts/SignLayout";
 import SignLink from "./parts/SignLinks";
 import PATHS from "../../const/paths";
 
-import { setMessage } from "../../slices/snackBarSlice";
+import { setSnackBar } from "../../slices/snackBarSlice";
 import { showDialog } from "../../slices/alertDialogSlice";
 import {
   openProgressCircle,
@@ -59,7 +59,7 @@ const ForgetPw = () => {
       })
       .catch((e) => {
         dispatch(
-          setMessage({
+          setSnackBar({
             severity: "error",
             message: e.message,
           })

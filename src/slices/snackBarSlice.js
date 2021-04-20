@@ -8,12 +8,12 @@ const snackBarSlice = createSlice({
     message:"",
   },
   reducers: {
-    setMessage(state, action){
+    setSnackBar(state, action){
       state.isOpen = action.payload.isOpen || true
       state.severity = action.payload.severity || "info"
       state.message = action.payload.message
     },
-    deleteMessage(state){
+    deleteSnackBar(state){
       state.isOpen = false
       state.severity = "info"
       state.message = ''
@@ -21,4 +21,4 @@ const snackBarSlice = createSlice({
   }
 })
 export default snackBarSlice.reducer
-export const { setMessage, deleteMessage} = snackBarSlice.actions
+export const { setSnackBar, deleteSnackBar} = snackBarSlice.actions
