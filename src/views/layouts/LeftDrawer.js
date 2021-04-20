@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function PersistentDrawer({children}) {
-  const isOpen = useSelector((state) => state.drawer.isOpen)
+  const isOpen_drawer = useSelector((state) => state.drawer.isOpen_drawer)
   const classes = useStyles()
 
   return (
@@ -60,7 +60,7 @@ export default function PersistentDrawer({children}) {
         className={classes.drawer}
         variant="persistent"
         anchor="left"
-        open={isOpen}
+        open={isOpen_drawer}
         classes={{
           paper: classes.drawerPaper,
         }}
@@ -86,7 +86,7 @@ export default function PersistentDrawer({children}) {
         </div>
       </Drawer>
 
-      <main className={clsx(classes.content, {[classes.contentShift]:isOpen})}>
+      <main className={clsx(classes.content, {[classes.contentShift]:isOpen_drawer})}>
         <Toolbar />
         {children}
       </main>

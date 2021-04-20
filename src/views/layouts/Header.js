@@ -17,8 +17,8 @@ import MailIcon from "@material-ui/icons/Mail"
 import NotificationsIcon from "@material-ui/icons/Notifications"
 import MoreIcon from "@material-ui/icons/MoreVert"
 
-import { setIsOpen } from "../../slices/drawerSlice"
-import { signOut } from "../../slices/authSlice"
+import { openDrawer } from "../../slices/drawerSlice"
+import { signOut } from "../../slices/userSlice"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -99,7 +99,7 @@ export default function PrimarySearchAppBar() {
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
-  const isOpen = useSelector((state) => state.drawer.isOpen)
+  const isOpen_drawer = useSelector((state) => state.drawer.isOpen_drawer)
 
 
   const handleProfileMenuOpen = (event) => {
@@ -187,7 +187,7 @@ export default function PrimarySearchAppBar() {
             color="inherit"
             aria-label="open drawer"
             onClick={() => {
-              dispatch(setIsOpen(!isOpen))
+              dispatch(openDrawer(!isOpen_drawer))
             }}
           >
             <MenuIcon />

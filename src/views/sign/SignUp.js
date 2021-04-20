@@ -1,90 +1,115 @@
-import React from "react"
-import { useDispatch } from "react-redux"
-import { useForm, Controller } from 'react-hook-form'
-import { setMessage } from "../../slices/snackBarSlice"
-import { showDialog } from "../../slices/alertDialogSlice"
-import { setIsOpen_progressCircle, setIsClose_progressCircle } from "../../slices/progressCircleSlice";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { useForm, Controller } from "react-hook-form";
+import { Redirect } from "react-router-dom";
 
-import { makeStyles } from '@material-ui/core/styles'
-import { 
-  Box,
-  Button,
-  Divider,
-  TextField,
-} from '@material-ui/core'
-import google_img from '../../img/google-icon-mini.svg'
-import SignLayout from "./layouts/SignLayout"
-import { signStyle } from './styles/signStyle'
+import { makeStyles } from "@material-ui/core/styles";
+import { Box, Button, Divider, TextField } from "@material-ui/core";
 
-import firebase from "firebase/app"
+import firebase from "firebase/app";
 import "firebase/auth";
 
-import SignLink from './parts/SignLinks'
-import PATHS from '../../const/paths'
+import { setSnackBar } from "../../slices/snackBarSlice";
+import { showDialog } from "../../slices/alertDialogSlice";
+import {
+  openProgressCircle,
+  closeProgressCircle,
+} from "../../slices/progressCircleSlice";
+
+import google_img from "../../img/google-icon-mini.svg";
+import SignLayout from "./layouts/SignLayout";
+import { signStyle } from "./styles/signStyle";
+
+import SignLink from "./parts/SignLinks";
+import PATHS from "../../const/paths";
 
 // style object
-const useStyles = makeStyles((theme) => ({ ...signStyle }))
+const useStyles = makeStyles((theme) => ({ ...signStyle }));
 // Example it could change style that is scope in this component.
 // put syntax google_logo:{...signStyle.google_logo, width:"32px"} in argument
 
 // main component
 const SignUp = () => {
-  const classes = useStyles()
-  const dispatch = useDispatch()
-  const { handleSubmit, control, reset, formState:{errors}} = useForm()
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const signUpWithGoogle = () => {
-    const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithPopup(googleAuthProvider)
-  }
-  
-  const onSubmit = data => {
-    dispatch(setIsOpen_progressCircle());
-    firebase.auth().createUserWithEmailAndPassword(
-      data.email,
-      data.password
-    ).then(({user})=>{
-      user.sendEmailVerification()
-      dispatch(setIsClose_progressCircle());
-      dispatch(showDialog(
-        {
-          isOpen:true,
-          title:"Confirm Your Email Box",
-          message:"Please check your email box to continue to create an account.",
-          isChosen:false
-        }
-      ))
-
-    }).catch(e=>{
-      dispatch(setMessage(
-        {
-          severity:"error",
-          message:e.message,
-        }
-      ))
-    }).finally(()=>{
-      dispatch(setIsClose_progressCircle());
-      reset({
-        email:data.email,
-        password:"",
+    dispatch(openProgressCircle());
+    const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+    firebase
+      .auth()
+      .signInWithPopup(googleAuthProvider)
+      .then(() => {
+        <Redirect to={PATHS.HOME} />;
       })
-    })
-  }
+      .catch((e) => {
+        dispatch(
+          setSnackBar({
+            isOpen: true,
+            severity: "error",
+            message: e.message,
+          })
+        );
+        dispatch(closeProgressCircle());
+      });
+  };
 
-  return(
+  const onSubmit = (data) => {
+    dispatch(openProgressCircle());
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(data.email, data.password)
+      .then(({ user }) => {
+        user.sendEmailVerification();
+        dispatch(
+          showDialog({
+            isOpen: true,
+            title: "Confirm Your Email Box",
+            message:
+              "Please check your email box to continue to create an account.",
+            isChosen: false,
+          })
+        );
+      })
+      .catch((e) => {
+        dispatch(
+          setSnackBar({
+            severity: "error",
+            message: e.message,
+          })
+        );
+      })
+      .finally(() => {
+        dispatch(closeProgressCircle());
+        reset({
+          email: data.email,
+          password: "",
+        });
+      });
+  };
+
+  return (
     <SignLayout>
       <Box my={3}>
         <h2 className={classes.sub_title}>Sign Up</h2>
       </Box>
 
       <Box mb={4}>
-        <Button 
+        <Button
           fullWidth
           variant="outlined"
-          onClick={()=>{signUpWithGoogle()}}
+          onClick={() => {
+            signUpWithGoogle();
+          }}
           className={classes.google_button}
-          >
-          <img 
+        >
+          <img
             className={classes.google_logo}
             src={google_img}
             alt="Sign in with google"
@@ -99,13 +124,18 @@ const SignUp = () => {
         <div className={classes.border}></div>
       </Box>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} className={classes.signin_form} autoComplete="off">
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        className={classes.signin_form}
+        autoComplete="off"
+      >
         <Controller
           name="email"
           control={control}
           defaultValue=""
-          render={
-            ({field})=><TextField
+          render={({ field }) => (
+            <TextField
               {...field}
               required
               fullWidth
@@ -114,54 +144,50 @@ const SignUp = () => {
               variant="outlined"
               margin="none"
               error={Boolean(errors.email)}
-              helperText={errors.email && errors.email.message
-            }/>
-          }
+              helperText={errors.email && errors.email.message}
+            />
+          )}
           rules={{
             required: true,
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: 'invalid email address'
-            }
+              message: "invalid email address",
+            },
           }}
         />
         <Controller
           name="password"
           control={control}
           defaultValue=""
-          render={({field}) => <TextField
-            {...field}
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            autoComplete="off"
-            variant="outlined"
-            margin="normal"
-            error={Boolean(errors.password)}
-            helperText={errors.password && errors.password.message
-            }/>
-          }
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              autoComplete="off"
+              variant="outlined"
+              margin="normal"
+              error={Boolean(errors.password)}
+              helperText={errors.password && errors.password.message}
+            />
+          )}
           rules={{
-            required:true,
-            minLength:{
-              value:8,
-              message:'min length is 8 and max is 32'
+            required: true,
+            minLength: {
+              value: 8,
+              message: "min length is 8 and max is 32",
             },
-            maxLength:{
-              value:32,
-              message:'min length is 8 and max is 32'
-            }
+            maxLength: {
+              value: 32,
+              message: "min length is 8 and max is 32",
+            },
           }}
         />
         <Box mt={2}>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            type="submit"
-            >
+          <Button fullWidth variant="contained" color="primary" type="submit">
             Sign Up
           </Button>
         </Box>
@@ -170,16 +196,15 @@ const SignUp = () => {
       <Box my={3}>
         <Divider variant="middle" />
       </Box>
-      
+
       <Box textAlign={"right"} mb={4}>
         <SignLink path={PATHS.SIGN_IN} />
-        <br/>
+        <br />
         <SignLink path={PATHS.RESEND_EMAIL} />
-        <br/>
+        <br />
         <SignLink path={PATHS.FORGET_PASSWORD} />
       </Box>
-
     </SignLayout>
-  )
-}
-export default SignUp
+  );
+};
+export default SignUp;

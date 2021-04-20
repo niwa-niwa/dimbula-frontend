@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Snackbar } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
 
-import { deleteMessage } from "../../slices/snackBarSlice"
+import { deleteSnackBar } from "../../slices/snackBarSlice"
 
 export default function SnackBar(){
   const { isOpen, severity, message } = useSelector((state) => state.snackBar)
@@ -14,7 +14,7 @@ export default function SnackBar(){
     if(reason === 'clickaway'){
       return
     }
-    dispatch(deleteMessage())
+    dispatch(deleteSnackBar())
   }
 
   return(

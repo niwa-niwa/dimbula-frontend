@@ -1,6 +1,6 @@
-import React from "react"
-import firebase from "firebase/app"
-import firebase_config from "../../api/firebase"
+import React from "react";
+import firebase from "firebase/app";
+import firebase_config from "../../apis/firebase";
 import "firebase/auth";
 import {
   FirebaseAuthProvider,
@@ -11,6 +11,7 @@ import {
 
 
 const Index = () => {
+
   return (
     <React.Fragment>
       <h1>Task Index</h1>
@@ -124,6 +125,6 @@ const Index = () => {
       </FirebaseAuthProvider>
 
     </React.Fragment>
-  )
+  );
 }
-export default Index
+export default Index;
