@@ -150,6 +150,7 @@ const SignIn = () => {
               margin="none"
               error={Boolean(errors.email)}
               helperText={errors.email && errors.email.message}
+              data-testid="email"
             />
           )}
           rules={{
@@ -176,6 +177,7 @@ const SignIn = () => {
               autoComplete="off"
               variant="outlined"
               margin="normal"
+              data-testid="password"
             />
           )}
         />
@@ -195,6 +197,7 @@ const SignIn = () => {
               name="save"
               onChange={() => setSave(!save)}
               checked={save}
+              data-testid="submit"
             />
           }
           label="Save login information"
