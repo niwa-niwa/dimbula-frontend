@@ -28,7 +28,6 @@ describe("Sign page Login test", () => {
     expect(getByTestId("email")).toBeInTheDocument()
     expect(getByTestId("password")).toBeInTheDocument()
     expect(getByTestId("submit")).toBeInTheDocument()
-
   });
 
 });
