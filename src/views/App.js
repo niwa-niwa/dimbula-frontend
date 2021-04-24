@@ -17,7 +17,7 @@ import SignIn from "./sign/SignIn";
 import SignUp from "./sign/SignUp";
 import ResendEmail from "./sign/ResendEmail";
 import ForgetPw from "./sign/ForgetPw";
-import Task from "./task/Index";
+import Task from "./task/Task";
 
 import PATHS from "../const/paths";
 import NAMES from "../const/names";

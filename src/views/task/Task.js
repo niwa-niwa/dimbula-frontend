@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch, useSelector } from 'react-redux';
+
 import firebase from "firebase/app";
 import firebase_config from "../../apis/firebase";
 import "firebase/auth";
@@ -6,11 +8,24 @@ import {
   FirebaseAuthProvider,
   FirebaseAuthConsumer,
   IfFirebaseAuthed,
-  IfFirebaseAuthedAnd
+  IfFirebaseAuthedAnd,
 } from "@react-firebase/auth";
 
+import { asyncGetTaskFolders, selectTaskFolders, } from "../../slices/taskSlice";
 
-const Index = () => {
+
+const Task = () => {
+  const dispatch = useDispatch();
+  const task_folders = useSelector(selectTaskFolders);
+
+
+  React.useEffect(() => {
+    const effect = async () => {
+      await dispatch(asyncGetTaskFolders());
+    }
+    effect();
+  }, [dispatch]);
+
 
   return (
     <React.Fragment>
@@ -127,4 +142,4 @@ const Index = () => {
     </React.Fragment>
   );
 }
-export default Index;
+export default Task;

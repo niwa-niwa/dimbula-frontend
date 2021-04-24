@@ -4,5 +4,6 @@ const NAMES = {
   STORAGE_PASSWORD: "password",
   STORAGE_EMAIL: "email",
   STORAGE_REDIRECT: "redirect",
+  V1 : "api/v1/",
 };
 export default Object.freeze(NAMES);
