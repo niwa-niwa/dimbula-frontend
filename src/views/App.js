@@ -3,7 +3,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import history from "../history";
 import firebase from "../apis/firebase";
-import axios from "../apis/backend";
+import backend from "../apis/backend";
 
 import GuestRoute from "./layouts/GuestRoute";
 import AuthRoute from "./layouts/AuthRoute";
@@ -42,7 +42,7 @@ const App = () => {
           if (user.emailVerified) {   // Confirm the account is valid with dimbula backend
             const token = await firebase.auth().currentUser.getIdToken(true);
             localStorage.setItem(NAMES.STORAGE_TOKEN, token);
-            await axios("/api/v1/persons/", {
+            await backend(NAMES.V1 + "persons/", {
               headers: { Authorization: `Bearer ${token}` },
             })
               .then(({ data }) => {
