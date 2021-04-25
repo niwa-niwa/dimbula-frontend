@@ -11,20 +11,35 @@ import {
   IfFirebaseAuthedAnd,
 } from "@react-firebase/auth";
 
-import { asyncGetTaskFolders, selectTaskFolders, } from "../../slices/taskSlice";
+import { selectUser } from '../../slices/userSlice';
+import {
+  asyncGetTaskFolders,
+  asyncCreateTaskFolder,
+  // asyncEditTaskFolder,
+  asyncDeleteTaskFolder,
+  asyncEditTaskFolder,
+} from "../../slices/taskSlice";
 
 
 const Task = () => {
   const dispatch = useDispatch();
-  const task_folders = useSelector(selectTaskFolders);
+  const current_user = useSelector(selectUser);
 
 
   React.useEffect(() => {
     const effect = async () => {
       await dispatch(asyncGetTaskFolders());
+      // const res = await dispatch(asyncCreateTaskFolder({ person:current_user.id}));
+      // const res = await dispatch(asyncEditTaskFolder(
+      // {name:"ss_edited name", person:current_user.id, id:"c5dacfa0-80de-4080-9dc6-ad0ddaae63cb"}));
+      // const res = await dispatch(asyncDeleteTaskFolder(
+      //   "c5dacfa0-80de-4080-9dc6-ad0ddaae63cb"
+      // ))
+      // console.log(res)
+
     }
     effect();
-  }, [dispatch]);
+  }, [dispatch, current_user.id]);
 
 
   return (
