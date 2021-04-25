@@ -15,9 +15,23 @@ export const asyncGetTaskFolders = createAsyncThunk(
    *
    * @returns data taskFolders that the user have
    */
-  async () => {
-    const response = await backend.get(NAMES.V1 + "task-folders/", { headers });
-    return response.data;
+  async (name=null, { rejectWithValue }) => {
+    try {
+      const response = await backend.get(NAMES.V1 + "task-folders/", {
+        headers,
+      });
+      return response.data;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncCreateTaskFolder unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
   }
 );
 
@@ -29,20 +43,23 @@ export const asyncCreateTaskFolder = createAsyncThunk(
    * @returns object
    */
   async (payload, { rejectWithValue }) => {
-    try{
+    try {
       const response = await backend.post(
         NAMES.V1 + "task-folders/create/",
         payload,
         { headers }
       );
       return response.data;
-    }catch(e){
+    } catch (e) {
       if (!e.response) {
-        console.error("asyncCreateTaskFolder unexpected error", e)
-        throw new Error(e)
+        console.error("asyncCreateTaskFolder unexpected error", e);
+        throw new Error(e);
       }
-      const data = {message:e.response.request.response, status:e.response.status}
-      return rejectWithValue(data)
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
     }
   }
 );
@@ -54,13 +71,25 @@ export const asyncEditTaskFolder = createAsyncThunk(
    * @param {person:current_user.id, id:taskFolder.id, any:any} payload
    * @returns object
    */
-  async (payload) => {
-    const response = await backend.patch(
-      NAMES.V1 + `task-folders/edit/${payload.id}/`,
-      payload,
-      { headers }
-    );
-    return response.data;
+  async (payload, {rejectWithValue}) => {
+    try {
+      const response = await backend.patch(
+        NAMES.V1 + `task-folders/edit/${payload.id}/`,
+        payload,
+        { headers }
+      );
+      return response.data;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncCreateTaskFolder unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
   }
 );
 
@@ -71,9 +100,23 @@ export const asyncDeleteTaskFolder = createAsyncThunk(
    * @param {taskFolder.id} id
    * @returns object
    */
-  async (id) => {
-    await backend.delete(NAMES.V1 + `task-folders/delete/${id}/`, { headers });
-    return id;
+  async (id, {rejectWithValue}) => {
+    try {
+      await backend.delete(NAMES.V1 + `task-folders/delete/${id}/`, {
+        headers,
+      });
+      return id;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncCreateTaskFolder unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
   }
 );
 
@@ -130,12 +173,23 @@ export const taskSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+// ======== START asyncGetTaskFolders ===========  
     builder.addCase(asyncGetTaskFolders.fulfilled, (state, action) => {
       return {
         ...state,
         taskFolders: action.payload,
       };
     });
+    builder.addCase(asyncGetTaskFolders.rejected, (state, action) => {
+      if (action.payload) {
+        state.error = {...action.payload}
+      } else {
+        console.error("Unexpected error from asyncGetTaskFolders", action.error.message)
+      };
+    });
+// ======== END asyncGetTaskFolders ===========  
+
+// ======== START asyncCreateTaskFolder ===========  
     builder.addCase(asyncCreateTaskFolder.fulfilled, (state, action) => {
       return {
         ...state,
@@ -147,8 +201,11 @@ export const taskSlice = createSlice({
         state.error = {...action.payload}
       } else {
         console.error("Unexpected error from asyncCreateTaskFolder", action.error.message)
-      }
-    })
+      };
+    });
+// ======== END asyncCreateTaskFolder ===========  
+
+// ======== START asyncEditTaskFolder ===========  
     builder.addCase(asyncEditTaskFolder.fulfilled, (state, action) => {
       return {
         ...state,
@@ -157,6 +214,16 @@ export const taskSlice = createSlice({
         ),
       };
     });
+    builder.addCase(asyncEditTaskFolder.rejected, (state, action) => {
+      if (action.payload) {
+        state.error = {...action.payload}
+      } else {
+        console.error("Unexpected error from asyncEditTaskFolderです", action.error.message)
+      };
+    });
+// ======== END asyncEditTaskFolder ===========  
+
+// ======== START asyncDeleteTaskFolder ===========  
     builder.addCase(asyncDeleteTaskFolder.fulfilled, (state, action) => {
       return {
         ...state,
@@ -165,6 +232,14 @@ export const taskSlice = createSlice({
         ),
       };
     });
+    builder.addCase(asyncDeleteTaskFolder.rejected, (state, action) => {
+      if (action.payload) {
+        state.error = {...action.payload}
+      } else {
+        console.error("Unexpected error from asyncDeleteTaskFolder", action.error.message)
+      };
+    });
+// ======== END asyncDeleteTaskFolder ===========  
   },
 });
 

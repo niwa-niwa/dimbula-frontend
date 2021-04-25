@@ -14,10 +14,10 @@ import {
 import { selectUser } from '../../slices/userSlice';
 import {
   asyncGetTaskFolders,
-  asyncCreateTaskFolder,
+  // asyncCreateTaskFolder,
   // asyncEditTaskFolder,
-  asyncDeleteTaskFolder,
-  asyncEditTaskFolder,
+  // asyncDeleteTaskFolder,
+  // asyncEditTaskFolder,
 } from "../../slices/taskSlice";
 
 
@@ -25,25 +25,10 @@ const Task = () => {
   const dispatch = useDispatch();
   const current_user = useSelector(selectUser);
 
-
   React.useEffect(() => {
     const effect = async () => {
       await dispatch(asyncGetTaskFolders());
-
-      const res = await dispatch(
-        asyncCreateTaskFolder({ person:current_user.id}));
-      if(res.type === "taskFolders/create/rejected"){
-        console.error(res.payload)
-        // TODO display the error with snackbar
-      }
-
-
-      // const res = await dispatch(asyncEditTaskFolder(
-      // {name:"ss_edited name", person:current_user.id, id:"c5dacfa0-80de-4080-9dc6-ad0ddaae63cb"}));
-      // const res = await dispatch(asyncDeleteTaskFolder(
-      //   "c5dacfa0-80de-4080-9dc6-ad0ddaae63cb"
-      // ))
-      // console.log(res)
+      
 
     }
     effect();
