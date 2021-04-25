@@ -28,13 +28,22 @@ export const asyncCreateTaskFolder = createAsyncThunk(
    * @param {name:any, person:current_user} payload
    * @returns object
    */
-  async (payload) => {
-    const response = await backend.post(
-      NAMES.V1 + "task-folders/create/",
-      payload,
-      { headers }
-    );
-    return response.data;
+  async (payload, { rejectWithValue }) => {
+    try{
+      const response = await backend.post(
+        NAMES.V1 + "task-folders/create/",
+        payload,
+        { headers }
+      );
+      return response.data;
+    }catch(e){
+      if (!e.response) {
+        console.error("asyncCreateTaskFolder unexpected error", e)
+        throw new Error(e)
+      }
+      const data = {message:e.response.request.response, status:e.response.status}
+      return rejectWithValue(data)
+    }
   }
 );
 
@@ -108,6 +117,12 @@ const initialState = {
       person: "",
     },
   ],
+  error: [
+    {
+      message:"",
+      status:"",
+    }
+  ]
 };
 
 export const taskSlice = createSlice({
@@ -127,6 +142,13 @@ export const taskSlice = createSlice({
         taskFolders: [...state.taskFolders, action.payload],
       };
     });
+    builder.addCase(asyncCreateTaskFolder.rejected, (state, action) => {
+      if (action.payload) {
+        state.error = {...action.payload}
+      } else {
+        console.error("Unexpected error from asyncCreateTaskFolder", action.error.message)
+      }
+    })
     builder.addCase(asyncEditTaskFolder.fulfilled, (state, action) => {
       return {
         ...state,
@@ -152,3 +174,4 @@ export const selectTaskFolders = (state) => state.task.taskFolders;
 export const selectTaskSections = (state) => state.task.taskSections;
 export const selectTasks = (state) => state.task.tasks;
 export const selectSubTasks = (state) => state.task.subTasks;
+export const selectError = (state) => state.task.error;
