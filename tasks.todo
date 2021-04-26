@@ -1,14 +1,3 @@
 Todos:
-  - Global
-    [] in App.js, search how to async function in useEffect
-    [-] implement loading-bar
-    [-] collaborate backend auth
-    [-] token authentication 
-
-  - Todo 
-    [-] reject the user who does not confirm email
-    [-] make Sign modules
-
-  - SignUp.js
-    [] redirect Email-Confirm.js page after submit email and pw
-
+  - add function that made a new task folder with the plus button in leftDrawer.js
+  - display tasks after pressing button that "all" in leftdrawer.
