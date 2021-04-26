@@ -18,6 +18,8 @@ import SignUp from "./sign/SignUp";
 import ResendEmail from "./sign/ResendEmail";
 import ForgetPw from "./sign/ForgetPw";
 import Task from "./task/Task";
+import Settings from "./settings/Settings";
+import SettingsHeader from "./settings/layouts/Header";
 
 import PATHS from "../const/paths";
 import NAMES from "../const/names";
@@ -88,13 +90,23 @@ const App = () => {
     </React.Fragment>
   );
 
+  const SettingsLayout = () => (
+    <React.Fragment>
+      <SettingsHeader />
+      <Switch>
+        <Route exact path={PATHS.SETTINGS} component={Settings} />
+      </Switch>
+    </React.Fragment>
+  )
+
   const render = () => {
     if (isChecking) {
       return false;
     }
     return (
       <Switch>
-        <AuthRoute exact path="/" component={MainLayout} />
+        <AuthRoute exact path={PATHS.HOME} component={MainLayout} />
+        <AuthRoute exact path={PATHS.SETTINGS} component={SettingsLayout} />
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
         <GuestRoute exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />

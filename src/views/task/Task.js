@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch, useSelector } from 'react-redux';
 
 import firebase from "firebase/app";
 import firebase_config from "../../apis/firebase";
@@ -11,29 +10,7 @@ import {
   IfFirebaseAuthedAnd,
 } from "@react-firebase/auth";
 
-import { selectUser } from '../../slices/userSlice';
-import {
-  asyncGetTaskFolders,
-  // asyncCreateTaskFolder,
-  // asyncEditTaskFolder,
-  // asyncDeleteTaskFolder,
-  // asyncEditTaskFolder,
-} from "../../slices/taskSlice";
-
-
 const Task = () => {
-  const dispatch = useDispatch();
-  const current_user = useSelector(selectUser);
-
-  React.useEffect(() => {
-    const effect = async () => {
-      await dispatch(asyncGetTaskFolders());
-      
-
-    }
-    effect();
-  }, [dispatch, current_user.id]);
-
 
   return (
     <React.Fragment>
@@ -41,59 +18,6 @@ const Task = () => {
 
       <FirebaseAuthProvider {...firebase_config} firebase={firebase}>
         <div>
-
-          {/* Google Sign in */}
-          <button
-            onClick={() => {
-              const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
-              firebase.auth().signInWithPopup(googleAuthProvider)
-            }}
-          >
-            Sign In with Google
-          </button>
-
-          {/* anonymously */}
-          <button
-            data-testid="signin-anon"
-            onClick={() => {
-              firebase.auth().signInAnonymously()
-            }}
-          >
-            Sign In Anonymously
-          </button>
-
-          <br />
-          <br />
-
-          {/* E-Mail Sign up */}
-          <button
-            onClick={async () =>  {
-              const res = await firebase.auth().createUserWithEmailAndPassword(process.env.REACT_APP_LOGIN_EMAIL, process.env.REACT_APP_LOGIN_PASSWORD)
-              res.user.sendEmailVerification()
-              console.log(res)
-            }}
-          >
-            Sign Up with Mail
-          </button>
-
-          {/* E-Mail Sign in */}
-          <button
-            onClick={() => {firebase.auth().signInWithEmailAndPassword(process.env.REACT_APP_LOGIN_EMAIL, process.env.REACT_APP_LOGIN_PASSWORD)}}
-            >
-            Log In with Mail
-          </button>
-
-          <br />
-          <br />
-
-          {/* Sign out */}
-          <button
-            onClick={() => {
-              firebase.auth().signOut()
-            }}
-          >
-            Sign Out
-          </button>
 
           <FirebaseAuthConsumer>
             {({ isSignedIn, user, providerId }) => {

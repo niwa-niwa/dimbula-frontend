@@ -1,25 +1,29 @@
-import React from "react"
-import { useSelector, useDispatch } from "react-redux"
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
-import { fade, makeStyles } from "@material-ui/core/styles"
-import AppBar from "@material-ui/core/AppBar"
-import Toolbar from "@material-ui/core/Toolbar"
-import IconButton from "@material-ui/core/IconButton"
-import Typography from "@material-ui/core/Typography"
-import InputBase from "@material-ui/core/InputBase"
-import Badge from "@material-ui/core/Badge"
-import MenuItem from "@material-ui/core/MenuItem"
-import Menu from "@material-ui/core/Menu"
-import MenuIcon from "@material-ui/icons/Menu"
-import SearchIcon from "@material-ui/icons/Search"
-import AccountCircle from "@material-ui/icons/AccountCircle"
-import MailIcon from "@material-ui/icons/Mail"
-import NotificationsIcon from "@material-ui/icons/Notifications"
-import MoreIcon from "@material-ui/icons/MoreVert"
+import { fade, makeStyles } from "@material-ui/core/styles";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  InputBase,
+  Badge,
+  MenuItem,
+  Menu, 
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import MailIcon from "@material-ui/icons/Mail";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import MoreIcon from "@material-ui/icons/MoreVert";
 
-import { openDrawer } from "../../slices/drawerSlice"
-import { signOut } from "../../slices/userSlice"
+import { openDrawer } from "../../slices/drawerSlice";
+import { signOut } from "../../slices/userSlice";
 
+import PATHS from "../../const/paths";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -86,40 +90,38 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
-}))
-
+}));
 
 export default function PrimarySearchAppBar() {
-  const classes = useStyles()
-  const dispatch = useDispatch()
-  
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const isMenuOpen = Boolean(anchorEl)
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
-  const isOpen_drawer = useSelector((state) => state.drawer.isOpen_drawer)
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  const isOpen_drawer = useSelector((state) => state.drawer.isOpen_drawer);
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null)
-  }
+    setMobileMoreAnchorEl(null);
+  };
 
   const handleMenuClose = () => {
-    setAnchorEl(null)
-    handleMobileMenuClose()
-  }
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
 
   const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget)
-  }
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
 
-  const menuId = "primary-search-account-menu"
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -130,13 +132,21 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Link to={PATHS.SETTINGS}>Settings</Link>
+      </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={() =>{dispatch(signOut())}}>Sign Out</MenuItem>
+      <MenuItem
+        onClick={() => {
+          dispatch(signOut());
+        }}
+      >
+        Sign Out
+      </MenuItem>
     </Menu>
-  )
+  );
 
-  const mobileMenuId = "primary-search-account-menu-mobile"
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -175,7 +185,7 @@ export default function PrimarySearchAppBar() {
         <p>Profile</p>
       </MenuItem>
     </Menu>
-  )
+  );
 
   return (
     <div className={classes.grow + " " + classes.appBar}>
@@ -187,7 +197,7 @@ export default function PrimarySearchAppBar() {
             color="inherit"
             aria-label="open drawer"
             onClick={() => {
-              dispatch(openDrawer(!isOpen_drawer))
+              dispatch(openDrawer(!isOpen_drawer));
             }}
           >
             <MenuIcon />
@@ -247,5 +257,5 @@ export default function PrimarySearchAppBar() {
       {renderMobileMenu}
       {renderMenu}
     </div>
-  )
+  );
 }
