@@ -3,7 +3,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import history from "../history";
 import firebase from "../apis/firebase";
-import backend from "../apis/backend";
+import { backend } from "../apis/backend";
 
 import GuestRoute from "./layouts/GuestRoute";
 import AuthRoute from "./layouts/AuthRoute";
@@ -15,6 +15,7 @@ import Header from "./layouts/Header";
 import LeftDrawer from "./layouts/LeftDrawer";
 import SignIn from "./sign/SignIn";
 import SignUp from "./sign/SignUp";
+import SignOut from "./sign/SignOut";
 import ResendEmail from "./sign/ResendEmail";
 import ForgetPw from "./sign/ForgetPw";
 import Task from "./task/Task";
@@ -44,6 +45,7 @@ const App = () => {
           if (user.emailVerified) {   // Confirm the account is valid with dimbula backend
             const token = await firebase.auth().currentUser.getIdToken(true);
             localStorage.setItem(NAMES.STORAGE_TOKEN, token);
+            localStorage.setItem(NAMES.STORAGE_REFRESH_TOKEN, user.refreshToken);
             await backend(NAMES.V1 + "persons/", {
               headers: { Authorization: `Bearer ${token}` },
             })
@@ -107,6 +109,7 @@ const App = () => {
       <Switch>
         <AuthRoute exact path={PATHS.HOME} component={MainLayout} />
         <AuthRoute exact path={PATHS.SETTINGS} component={SettingsLayout} />
+        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} />
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
         <GuestRoute exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />

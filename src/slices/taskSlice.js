@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import backend from "../apis/backend";
+import { backend } from "../apis/backend";
 
 import NAMES from "../const/names";
 

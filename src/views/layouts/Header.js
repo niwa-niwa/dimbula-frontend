@@ -138,6 +138,7 @@ export default function PrimarySearchAppBar() {
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem
         onClick={() => {
+          // TODO implemented Redirect SignOut.js
           dispatch(signOut());
         }}
       >
