@@ -3,7 +3,6 @@ import { Router, Route, Switch } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import history from "../history";
 import firebase from "../apis/firebase";
-import { backend } from "../apis/backend";
 
 import GuestRoute from "./layouts/GuestRoute";
 import AuthRoute from "./layouts/AuthRoute";
@@ -26,7 +25,8 @@ import SettingsHeader from "./settings/layouts/Header";
 import PATHS from "../const/paths";
 import NAMES from "../const/names";
 
-import { signIn, signOut } from "../slices/userSlice";
+import { setSnackBar } from "../slices/snackBarSlice"
+import { signOut, asyncSignIn } from "../slices/userSlice";
 import {
   openProgressCircle,
   closeProgressCircle,
@@ -38,41 +38,54 @@ const App = () => {
 
   useEffect(() => {
     dispatch(openProgressCircle());
+
     let isMounted = true;   // the flag is prevented to leak memory
-    const getStatus = async () => {
+
+    const effect = async () => {
       firebase.auth().onAuthStateChanged(async (user) => {
+
         if (user) {
-          if (user.emailVerified) {   // Confirm the account is valid with dimbula backend
-            const token = await firebase.auth().currentUser.getIdToken(true);
-            localStorage.setItem(NAMES.STORAGE_TOKEN, token);
-            localStorage.setItem(NAMES.STORAGE_REFRESH_TOKEN, user.refreshToken);
-            await backend(NAMES.V1 + "persons/")
-              .then(({ data }) => {
-                dispatch(signIn(
-                  {
-                    id:data.id,
-                    name:data.name,
-                    email:data.email,
-                    photo:data.photo,
-                  }
-                ));
-              })
-              .catch(() => {
-                dispatch(signOut());
-              });
-          } else {
+          if (!user.emailVerified) {
+            // Confirm the account is valid with dimbula backend
             dispatch(signOut());
+            dispatch(
+              setSnackBar({
+                severity: "error",
+                message: "You have to confirm our Email.",
+              })
+            );
+            return;
+          }
+
+          let token = localStorage.getItem(NAMES.STORAGE_TOKEN);
+          if (!token) {
+            token = await firebase.auth().currentUser.getIdToken(true);
+          }
+
+          const response = await dispatch(
+            asyncSignIn({ token, refreshToken: user.refreshToken })
+          );
+
+          if (response.type === "user/signin/rejected") {
+            dispatch(signOut());
+            dispatch(
+              setSnackBar({
+                severity: "error",
+                message: "Something is wrong.",
+              })
+            );
           }
         } else {
           dispatch(signOut());
         }
+        
         if (isMounted) {
           dispatch(closeProgressCircle());
           setIsChecking(false);
         }
       });
     };
-    getStatus();
+    effect();
 
     return () => {
       isMounted = false;
