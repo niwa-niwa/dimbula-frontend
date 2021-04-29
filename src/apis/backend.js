@@ -4,6 +4,11 @@ import PATHS from "../const/paths";
 
 let instance = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL,
+  headers: {
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+    Authorization: `Bearer ${localStorage.getItem(NAMES.STORAGE_TOKEN)}`,
+  },
 });
 
 let is_retry = true; // the flag that prevent infinite loop

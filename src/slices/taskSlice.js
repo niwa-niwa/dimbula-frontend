@@ -3,12 +3,6 @@ import { backend } from "../apis/backend";
 
 import NAMES from "../const/names";
 
-const headers = {
-  "Content-Type": "application/json",
-  "X-Requested-With": "XMLHttpRequest",
-  Authorization: `Bearer ${localStorage.getItem(NAMES.STORAGE_TOKEN)}`,
-};
-
 export const asyncGetTaskFolders = createAsyncThunk(
   "taskFolders/get",
   /**
@@ -17,9 +11,7 @@ export const asyncGetTaskFolders = createAsyncThunk(
    */
   async (name=null, { rejectWithValue }) => {
     try {
-      const response = await backend.get(NAMES.V1 + "task-folders/", {
-        headers,
-      });
+      const response = await backend.get(NAMES.V1 + "task-folders/");
       return response.data;
     } catch (e) {
       if (!e.response) {
@@ -47,7 +39,6 @@ export const asyncCreateTaskFolder = createAsyncThunk(
       const response = await backend.post(
         NAMES.V1 + "task-folders/create/",
         payload,
-        { headers }
       );
       return response.data;
     } catch (e) {
@@ -76,7 +67,6 @@ export const asyncEditTaskFolder = createAsyncThunk(
       const response = await backend.patch(
         NAMES.V1 + `task-folders/edit/${payload.id}/`,
         payload,
-        { headers }
       );
       return response.data;
     } catch (e) {
@@ -102,9 +92,7 @@ export const asyncDeleteTaskFolder = createAsyncThunk(
    */
   async (id, {rejectWithValue}) => {
     try {
-      await backend.delete(NAMES.V1 + `task-folders/delete/${id}/`, {
-        headers,
-      });
+      await backend.delete(NAMES.V1 + `task-folders/delete/${id}/`);
       return id;
     } catch (e) {
       if (!e.response) {

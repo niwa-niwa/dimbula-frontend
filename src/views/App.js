@@ -46,9 +46,7 @@ const App = () => {
             const token = await firebase.auth().currentUser.getIdToken(true);
             localStorage.setItem(NAMES.STORAGE_TOKEN, token);
             localStorage.setItem(NAMES.STORAGE_REFRESH_TOKEN, user.refreshToken);
-            await backend(NAMES.V1 + "persons/", {
-              headers: { Authorization: `Bearer ${token}` },
-            })
+            await backend(NAMES.V1 + "persons/")
               .then(({ data }) => {
                 dispatch(signIn(
                   {
