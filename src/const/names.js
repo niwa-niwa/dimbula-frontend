@@ -1,5 +1,6 @@
 const NAMES = {
   TITLE: "Dimbula",
+  STORAGE_UID: "uid",
   STORAGE_TOKEN: "token",
   STORAGE_REFRESH_TOKEN: "refresh_token",
   STORAGE_PASSWORD: "password",

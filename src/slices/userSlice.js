@@ -14,6 +14,7 @@ const userSlice = createSlice({
   },
   reducers: {
     signIn(state, action) {
+      localStorage.setItem(NAMES.STORAGE_UID, action.payload.id);
       state.isSignedIn = true;
       state.id = action.payload.id;
       state.name = action.payload.name;
@@ -23,6 +24,8 @@ const userSlice = createSlice({
     signOut(state) {
       localStorage.removeItem(NAMES.STORAGE_TOKEN);
       localStorage.removeItem(NAMES.STORAGE_REFRESH_TOKEN);
+      localStorage.removeItem(NAMES.STORAGE_UID);
+
       state.isSignedIn = false;
       state.id = "";
       state.name = "";

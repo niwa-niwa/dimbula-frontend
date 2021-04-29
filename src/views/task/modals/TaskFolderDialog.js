@@ -16,11 +16,11 @@ import {
   closeTaskFolderDialog,
 } from "../../../slices/taskFolderDialogSlice";
 import { asyncCreateTaskFolder } from "../../../slices/taskSlice";
-import { selectUser } from "../../../slices/userSlice";
+import { setSnackBar } from "../../../slices/snackBarSlice";
+import NAMES from "../../../const/names";
 
 export default function FormDialog() {
   const dispatch = useDispatch();
-  const { id } = useSelector(selectUser);
   const isOpen_taskFolderDialog = useSelector(select_isOpen_taskFolderDialog);
   const {
     handleSubmit,
@@ -34,11 +34,27 @@ export default function FormDialog() {
     reset({ name: "" });
   };
 
-  const onSubmit = (data) => {
-    // TODO display success message
-    // TODO handling error
-    dispatch(asyncCreateTaskFolder({...data, person:id }));
+  const onSubmit = async (data) => {
+    const response = await dispatch(
+      asyncCreateTaskFolder({
+        ...data,
+        person: localStorage.getItem(NAMES.STORAGE_UID),
+      })
+    );
     handleClose();
+
+    if (response.type === "taskFolders/create/rejected") {
+      // Handling error message
+      dispatch(
+        setSnackBar({
+          severity: "error",
+          message: response.payload.message,
+        })
+      );
+      return;
+    }
+
+    dispatch(setSnackBar({ message: `Created "${data.name}".` }));
   };
 
   return (
@@ -79,6 +95,7 @@ export default function FormDialog() {
               }}
             />
           </DialogContent>
+
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancel
@@ -87,6 +104,7 @@ export default function FormDialog() {
               Register
             </Button>
           </DialogActions>
+          
         </form>
       </Dialog>
     </div>
