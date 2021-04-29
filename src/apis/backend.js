@@ -6,19 +6,22 @@ let instance = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL,
 });
 
+let is_retry = true; // the flag that prevent infinite loop
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 403) {
+    if (error.response.status === 403 && is_retry ) {
+      is_retry = false;
       console.log(error.response.data.detail);
       if (error.response.data.detail.match(/Token expired/)) {
+        console.log("Retry request");
         const params = new URLSearchParams();
         params.append("grant_type", "refresh_token");
         params.append(
           "refresh_token",
           localStorage.getItem(NAMES.STORAGE_REFRESH_TOKEN)
         );
-        axios
+        return axios
           .post(
             process.env.REACT_APP_REFRESH_TOKEN_URL +
               process.env.REACT_APP_API_KEY,
