@@ -10,6 +10,7 @@ import AuthRoute from "./layouts/AuthRoute";
 import SnackBar from "./layouts/SnackBar";
 import AlertDialog from "./layouts/AlertDialog";
 import ProgressCircle from "./layouts/ProgressCircle";
+import TaskFolderDialog from "./task/modals/TaskFolderDialog";
 
 import Header from "./layouts/Header";
 import LeftDrawer from "./layouts/LeftDrawer";
@@ -86,6 +87,7 @@ const App = () => {
           <Route exact path={PATHS.HOME} component={Task} />
         </Switch>
       </LeftDrawer>
+      <TaskFolderDialog />
     </React.Fragment>
   );
 

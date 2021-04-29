@@ -6,6 +6,7 @@ import snackBarReducer from "./slices/snackBarSlice";
 import alertDialogReducer from "./slices/alertDialogSlice";
 import progressCircleReducer from "./slices/progressCircleSlice";
 import taskReducer from "./slices/taskSlice";
+import taskFolderDialogReducer from "./slices/taskFolderDialogSlice";
 
 export default configureStore({
   reducer: {
@@ -15,5 +16,6 @@ export default configureStore({
     snackBar: snackBarReducer,
     alertDialog: alertDialogReducer,
     task: taskReducer,
+    taskFolderDialog: taskFolderDialogReducer,
   },
 });
