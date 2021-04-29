@@ -181,7 +181,7 @@ export const taskSlice = createSlice({
     builder.addCase(asyncCreateTaskFolder.fulfilled, (state, action) => {
       return {
         ...state,
-        taskFolders: [...state.taskFolders, action.payload],
+        taskFolders: [action.payload, ...state.taskFolders],
       };
     });
     builder.addCase(asyncCreateTaskFolder.rejected, (state, action) => {
