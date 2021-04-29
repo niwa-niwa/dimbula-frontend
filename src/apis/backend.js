@@ -7,9 +7,16 @@ let instance = axios.create({
   headers: {
     "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest",
-    Authorization: `Bearer ${localStorage.getItem(NAMES.STORAGE_TOKEN)}`,
   },
 });
+
+instance.interceptors.request.use(
+  (config) => {
+    config.headers.Authorization = `Bearer ${localStorage.getItem(NAMES.STORAGE_TOKEN)}`;
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
 let is_retry = true; // the flag that prevent infinite loop
 instance.interceptors.response.use(
@@ -19,7 +26,6 @@ instance.interceptors.response.use(
       is_retry = false;
       console.log(error.response.data.detail);
       if (error.response.data.detail.match(/Token expired/)) {
-        console.log("Retry request");
         const params = new URLSearchParams();
         params.append("grant_type", "refresh_token");
         params.append(
@@ -59,5 +65,4 @@ instance.interceptors.response.use(
     }
   }
 );
-
 export const backend = instance;

@@ -21,7 +21,6 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 
 import { openDrawer } from "../../slices/drawerSlice";
-import { signOut } from "../../slices/userSlice";
 
 import PATHS from "../../const/paths";
 
@@ -136,13 +135,10 @@ export default function PrimarySearchAppBar() {
         <Link to={PATHS.SETTINGS}>Settings</Link>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem
-        onClick={() => {
-          // TODO implemented Redirect SignOut.js
-          dispatch(signOut());
-        }}
-      >
-        Sign Out
+      <MenuItem>
+        <Link to={PATHS.SIGN_OUT}>
+          Sign Out
+        </Link>
       </MenuItem>
     </Menu>
   );

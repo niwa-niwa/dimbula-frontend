@@ -31,7 +31,6 @@ import {
   closeProgressCircle,
 } from "../slices/progressCircleSlice";
 
-
 const App = () => {
   const dispatch = useDispatch();
   const [isChecking, setIsChecking] = useState(true);
