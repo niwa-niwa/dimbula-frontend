@@ -34,37 +34,43 @@ import {
 
 const App = () => {
   const dispatch = useDispatch();
-  const [isChecking, setIsChecking] = useState(true);
+  const [isChecking, setIsChecking] = useState(true); // the flag is loading user state
 
   useEffect(() => {
+    let isMounted = true; // the flag is prevented to leak memory
     dispatch(openProgressCircle());
-
-    let isMounted = true;   // the flag is prevented to leak memory
 
     const effect = async () => {
       firebase.auth().onAuthStateChanged(async (user) => {
+        if (!user) {
+          dispatch(signOut());
+        }
 
-        if (user) {
-          if (!user.emailVerified) {
-            // Confirm the account is valid with dimbula backend
-            dispatch(signOut());
-            dispatch(
-              setSnackBar({
-                severity: "error",
-                message: "You have to confirm our Email.",
-              })
-            );
-            return;
-          }
+        if (user && !user.emailVerified) {
+          // Confirm the account is valid with dimbula backend
+          dispatch(signOut());
+          dispatch(
+            setSnackBar({
+              severity: "error",
+              message: "You have to confirm our Email.",
+            })
+          );
+        }
 
+        if (user && user.emailVerified) {
           let token = localStorage.getItem(NAMES.STORAGE_TOKEN);
           if (!token) {
             token = await firebase.auth().currentUser.getIdToken(true);
           }
-
-          const response = await dispatch(
-            asyncSignIn({ token, refreshToken: user.refreshToken })
-          );
+          const signIn = () =>
+            new Promise((resolve) => {
+              resolve(
+                dispatch(
+                  asyncSignIn({ token, refreshToken: user.refreshToken })
+                )
+              );
+            });
+          const response = await signIn();
 
           if (response.type === "user/signin/rejected") {
             dispatch(signOut());
@@ -75,10 +81,8 @@ const App = () => {
               })
             );
           }
-        } else {
-          dispatch(signOut());
         }
-        
+
         if (isMounted) {
           dispatch(closeProgressCircle());
           setIsChecking(false);
@@ -86,7 +90,7 @@ const App = () => {
       });
     };
     effect();
-
+  
     return () => {
       isMounted = false;
     };

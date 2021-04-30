@@ -66,7 +66,7 @@ const userSlice = createSlice({
         state.error = { ...action.payload };
       } else {
         console.error(
-          "Unexpected error from asyncSignIn",
+          "Unexpected error from asyncSignIn = ",
           action.error.message
         );
       }
