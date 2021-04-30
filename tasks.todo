@@ -1,14 +1,1 @@
 Todos:
-  - Global
-    [] in App.js, search how to async function in useEffect
-    [-] implement loading-bar
-    [-] collaborate backend auth
-    [-] token authentication 
-
-  - Todo 
-    [-] reject the user who does not confirm email
-    [-] make Sign modules
-
-  - SignUp.js
-    [] redirect Email-Confirm.js page after submit email and pw
-

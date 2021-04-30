@@ -43,7 +43,8 @@ const SignIn = () => {
   } = useForm();
 
   function success(path=PATHS.HOME){
-    <Redirect to={localStorage.getItem(NAMES.STORAGE_REDIRECT || PATHS.HOME)} />;
+    <Redirect to={PATHS.HOME} />;
+    // <Redirect to={localStorage.getItem(NAMES.STORAGE_REDIRECT || PATHS.HOME)} />;
     localStorage.removeItem(NAMES.STORAGE_REDIRECT);
   }
 
