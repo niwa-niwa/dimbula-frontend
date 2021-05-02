@@ -1,5 +1,6 @@
 import React,{ useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,6 +24,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 import { selectTaskFolders, asyncGetTaskFolders } from "../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../slices/taskFolderDialogSlice";
+
+import PATHS from "../../const/paths"
 
 const drawerWidth = 240;
 
@@ -78,11 +81,27 @@ export default function PersistentDrawer({ children }) {
   const task_folders = useSelector(selectTaskFolders);
 
   useEffect(() => {
-    const effect = async () => {
-      dispatch(asyncGetTaskFolders());
-    }
-    effect();
+    dispatch(asyncGetTaskFolders());
   }, [dispatch]);
+
+  const renderTaskFolders = () => {
+    if (!task_folders) {
+      return false;
+    }
+    return task_folders.map((folder) => (
+      <Link to={PATHS.TASK_FOLDERS + folder.id + "/"}>
+        <ListItem button key={folder.id} dense>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary={folder.name}
+            secondary={`Tasks ${folder.task_count}`}
+          />
+        </ListItem>
+      </Link>
+    ));
+  };
 
   return (
     <div className={classes.root}>
@@ -125,14 +144,7 @@ export default function PersistentDrawer({ children }) {
               </ListSubheader>
             }
           >
-            {task_folders.map((folder) => (
-              <ListItem button key={folder.id}>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary={folder.name} />
-              </ListItem>
-            ))}
+            {renderTaskFolders()}
           </List>
         </div>
       </Drawer>

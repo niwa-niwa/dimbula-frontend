@@ -109,45 +109,10 @@ export const asyncDeleteTaskFolder = createAsyncThunk(
 );
 
 const initialState = {
-  taskFolders: [
-    {
-      id: "",
-      name: "",
-      person: "",
-    },
-  ],
-  taskSections: [
-    {
-      id: "",
-      name: "",
-      default: false,
-      taskFolders: "",
-      person: "",
-    },
-  ],
-  tasks: [
-    {
-      id: "",
-      name: "",
-      memo: "",
-      is_star: false,
-      is_done: false,
-      taskSection: "",
-      taskFolder: "",
-      person: "",
-      start_date: "",
-      due_date: "",
-    },
-  ],
-  subTasks: [
-    {
-      id: "",
-      name: "",
-      is_done: false,
-      task: "",
-      person: "",
-    },
-  ],
+  taskFolders: [],
+  taskSections: [],
+  tasks: [],
+  subTasks: [],
   error: [
     {
       message:"",
