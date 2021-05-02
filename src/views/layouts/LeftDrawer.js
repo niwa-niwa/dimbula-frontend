@@ -89,7 +89,7 @@ export default function PersistentDrawer({ children }) {
       return false;
     }
     return task_folders.map((folder) => (
-      <Link to={PATHS.TASK_FOLDERS + folder.id + "/"}>
+      <Link key={folder.id} to={PATHS.TASK_FOLDERS + folder.id + "/"}>
         <ListItem button key={folder.id} dense>
           <ListItemIcon>
             <AssignmentIcon />
