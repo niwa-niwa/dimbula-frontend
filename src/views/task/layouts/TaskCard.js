@@ -7,7 +7,7 @@ import {
   Checkbox,
   IconButton,
 } from '@material-ui/core';
-// import StarIcon from '@material-ui/icons/Star';
+import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 const useStyles = makeStyles((theme) => ({
