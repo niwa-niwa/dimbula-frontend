@@ -200,7 +200,9 @@ export default function PrimarySearchAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            Dimbula
+            <Link to={PATHS.HOME}>
+              Dimbula
+            </Link>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>

@@ -79,7 +79,7 @@ export default function PersistentDrawer({ children }) {
 
   useEffect(() => {
     const effect = async () => {
-      await dispatch(asyncGetTaskFolders());
+      dispatch(asyncGetTaskFolders());
     }
     effect();
   }, [dispatch]);
