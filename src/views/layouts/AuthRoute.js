@@ -4,9 +4,21 @@ import { useSelector } from "react-redux";
 
 import PATHS from "../../const/paths";
 
-const AuthRoute = (props) => {
+const AuthRoute = ({ component: Component, layout: Layout, ...props }) => {
   const isSignedIn = useSelector((state) => state.user.isSignedIn);
 
-  return isSignedIn ? <Route {...props} /> : <Redirect to={PATHS.SIGN_IN} />;
+  const render = () => {
+    if (!isSignedIn) {
+      return <Redirect to={PATHS.SIGN_IN} />;
+    }
+    return (
+      <Route {...props}>
+        <Layout>
+          <Component />
+        </Layout>
+      </Route>
+    );
+  };
+  return render();
 };
 export default AuthRoute;
