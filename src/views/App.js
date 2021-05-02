@@ -121,6 +121,7 @@ const App = () => {
       <Switch>
 
         <AuthRoute exact path={PATHS.HOME} component={Tasks} layout={MainLayout}/>
+        <AuthRoute exact path={`${PATHS.HOME}:id`} component={Tasks} layout={MainLayout}/>
         <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Tasks} layout={MainLayout}/>
 
         <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
