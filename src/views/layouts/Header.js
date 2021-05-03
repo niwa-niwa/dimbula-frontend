@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
@@ -19,8 +18,6 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
-
-import { openDrawer } from "../../slices/drawerSlice";
 
 import PATHS from "../../const/paths";
 
@@ -91,17 +88,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
   const classes = useStyles();
-  const dispatch = useDispatch();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const isOpen_drawer = useSelector((state) => state.drawer.isOpen_drawer);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -194,7 +188,7 @@ export default function PrimarySearchAppBar() {
             color="inherit"
             aria-label="open drawer"
             onClick={() => {
-              dispatch(openDrawer(!isOpen_drawer));
+              onDrawer(!isDrawer);
             }}
           >
             <MenuIcon />
