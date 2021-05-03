@@ -2,9 +2,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { backend } from "../apis/backend";
 
 import NAMES from "../const/names";
+import ACTIONS from "../const/actions";
+
 
 export const asyncGetTaskFolders = createAsyncThunk(
-  "taskFolders/get",
+  ACTIONS.TASK_FOLDERS_GET,
   /**
    *
    * @returns data taskFolders that the user have
@@ -15,7 +17,7 @@ export const asyncGetTaskFolders = createAsyncThunk(
       return response.data;
     } catch (e) {
       if (!e.response) {
-        console.error("asyncCreateTaskFolder unexpected error", e);
+        console.error("asyncGetTaskFolder unexpected error", e);
         throw new Error(e);
       }
       const data = {
@@ -28,7 +30,7 @@ export const asyncGetTaskFolders = createAsyncThunk(
 );
 
 export const asyncCreateTaskFolder = createAsyncThunk(
-  "taskFolders/create",
+  ACTIONS.TASK_FOLDERS_CREATE,
   /**
    *
    * @param {name:any, person:current_user} payload
@@ -56,7 +58,7 @@ export const asyncCreateTaskFolder = createAsyncThunk(
 );
 
 export const asyncEditTaskFolder = createAsyncThunk(
-  "taskFolders/edit",
+  ACTIONS.TASK_FOLDERS_EDIT,
   /**
    *
    * @param {person:current_user.id, id:taskFolder.id, any:any} payload
@@ -71,7 +73,7 @@ export const asyncEditTaskFolder = createAsyncThunk(
       return response.data;
     } catch (e) {
       if (!e.response) {
-        console.error("asyncCreateTaskFolder unexpected error", e);
+        console.error("asyncEditTaskFolder unexpected error", e);
         throw new Error(e);
       }
       const data = {
@@ -96,7 +98,7 @@ export const asyncDeleteTaskFolder = createAsyncThunk(
       return id;
     } catch (e) {
       if (!e.response) {
-        console.error("asyncCreateTaskFolder unexpected error", e);
+        console.error("asyncDeleteTaskFolder unexpected error", e);
         throw new Error(e);
       }
       const data = {
@@ -130,7 +132,7 @@ export const taskSlice = createSlice({
     builder.addCase(asyncGetTaskFolders.fulfilled, (state, action) => {
       return {
         ...state,
-        taskFolders: action.payload,
+        taskFolders: [...action.payload],
       };
     });
     builder.addCase(asyncGetTaskFolders.rejected, (state, action) => {
@@ -171,7 +173,7 @@ export const taskSlice = createSlice({
       if (action.payload) {
         state.error = {...action.payload}
       } else {
-        console.error("Unexpected error from asyncEditTaskFolderです", action.error.message)
+        console.error("Unexpected error from asyncEditTaskFolder", action.error.message)
       };
     });
 // ======== END asyncEditTaskFolder ===========  

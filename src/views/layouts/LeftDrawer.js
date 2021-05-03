@@ -25,7 +25,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { selectTaskFolders, asyncGetTaskFolders } from "../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../slices/taskFolderDialogSlice";
 
-import PATHS from "../../const/paths"
+import PATHS from "../../const/paths";
+import ACTIONS from "../../const/actions";
 
 const drawerWidth = 240;
 
@@ -136,7 +137,13 @@ export default function PersistentDrawer({ children, isDrawer}) {
                 <IconButton
                   aria-label="delete"
                   size="small"
-                  onClick={() => dispatch(openTaskFolderDialog())}
+                  onClick={() =>
+                    dispatch(
+                      openTaskFolderDialog({
+                        action_type: ACTIONS.TASK_FOLDERS_CREATE,
+                      })
+                    )
+                  }
                 >
                   <AddCircleOutlineIcon />
                 </IconButton>

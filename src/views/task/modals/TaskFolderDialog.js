@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -12,57 +12,54 @@ import {
 } from "@material-ui/core";
 
 import {
-  select_isOpen_taskFolderDialog,
+  selectTaskFolderDialog,
   closeTaskFolderDialog,
 } from "../../../slices/taskFolderDialogSlice";
-import { asyncCreateTaskFolder } from "../../../slices/taskSlice";
+import {
+  asyncCreateTaskFolder,
+  asyncEditTaskFolder,
+} from "../../../slices/taskSlice";
 import { setSnackBar } from "../../../slices/snackBarSlice";
-import NAMES from "../../../const/names";
 
-// TODO : fix [DOM] Found 2 elements with non-unique id #name: (More info: https://goo.gl/9p2vKq) 
-export default function FormDialog({
-  is_edit = false,
-  taskFolder = {name:"", id:""},
-  onClose = null,
-}) {
+import NAMES from "../../../const/names";
+import ACTIONS from "../../../const/actions";
+
+
+export default function FormDialog() {
   const dispatch = useDispatch();
-  const isOpen_taskFolderDialog = useSelector(select_isOpen_taskFolderDialog);
+  const {
+    isOpen_taskFolderDialog,
+    action_type,
+    taskFolder_id,
+    taskFolder_name,
+  } = useSelector(selectTaskFolderDialog);
   const {
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    setValue("name", taskFolder_name);
+  }, [setValue, taskFolder_name]);
+
   const handleClose = () => {
-    if (is_edit) {
-      onClose();
-      reset({ name: taskFolder.name });
-      return;
-    }
     dispatch(closeTaskFolderDialog());
-    reset({ name: "" });
+    reset({name:""});
   };
 
   const onSubmit = async (data) => {
-    if (is_edit) {
-      console.log(data);
-      // TODO : Implement asyncEditTaskFolder
-      // TODO : Implement handling error
-      onClose(data.name);
-      dispatch(setSnackBar({ message: `Edited "${data.name}".` }));
-      return;
-    }
-
-    if (!is_edit) {
+    if (action_type === ACTIONS.TASK_FOLDERS_EDIT) {
       const response = await dispatch(
-        asyncCreateTaskFolder({
+        asyncEditTaskFolder({
           ...data,
+          id: taskFolder_id,
           person: localStorage.getItem(NAMES.STORAGE_UID),
         })
       );
-      if (response.type === "taskFolders/create/rejected") {
-        // Handling error message
+      if (response.type === ACTIONS.TASK_FOLDERS_EDIT + "/rejected") {
         dispatch(
           setSnackBar({
             severity: "error",
@@ -71,20 +68,48 @@ export default function FormDialog({
         );
         return;
       }
-      dispatch(setSnackBar({ message: `Created "${data.name}".` }));
-      handleClose(data);
+      if (response.type === ACTIONS.TASK_FOLDERS_EDIT + "/fulfilled") {
+        dispatch(setSnackBar({ message: `Edited "${data.name}".` }));
+        dispatch(closeTaskFolderDialog());
+        return;
+      }
+    }
+
+    if (action_type === ACTIONS.TASK_FOLDERS_CREATE) {
+      const response = await dispatch(
+        asyncCreateTaskFolder({
+          ...data,
+          person: localStorage.getItem(NAMES.STORAGE_UID),
+        })
+      );
+      if (response.type === ACTIONS.TASK_FOLDERS_CREATE + "/rejected") {
+        dispatch(
+          setSnackBar({
+            severity: "error",
+            message: response.payload.message,
+          })
+        );
+        return;
+      }
+      if (response.type === ACTIONS.TASK_FOLDERS_CREATE + "/fulfilled") {
+        dispatch(setSnackBar({ message: `Created "${data.name}".` }));
+        handleClose(data);
+        return;
+      }
     }
   };
 
   return (
     <div>
       <Dialog
-        open={is_edit || isOpen_taskFolderDialog}
+        open={isOpen_taskFolderDialog}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          {is_edit ? "Edit Task Folder Name" : "New Task Folder"}
+          {action_type === ACTIONS.TASK_FOLDERS_EDIT
+            ? "Edit Task Folder Name"
+            : "New Task Folder"}
         </DialogTitle>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -93,7 +118,7 @@ export default function FormDialog({
             <Controller
               name="name"
               control={control}
-              defaultValue={taskFolder.name}
+              defaultValue={taskFolder_name}
               render={({ field }) => (
                 <TextField
                   {...field}

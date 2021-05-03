@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
 
+import { selectTaskFolders } from "../../../slices/taskSlice";
+
 import TaskCard from "./TaskCard";
-import TaskFolderDialog from "../modals/TaskFolderDialog";
+import ACTIONS from "../../../const/actions";
+import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -12,24 +16,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TaskList = ({ taskFolder }) => {
+  const dispatch = useDispatch();
   const classes = useStyles();
-  const [taskFolderName, setTaskFolderName] = useState();
-  const [modalOpen, setModalOpen] = useState(false);
+  const task_folders = useSelector(selectTaskFolders);
+  const [currentFolder, setCurrentFolder] = useState({});
 
   useEffect(() => {
-    setTaskFolderName(taskFolder.name);
-  }, [taskFolderName, taskFolder]);
+    if (task_folders.length > 0) {
+      const folder = task_folders.filter((folder) => {
+        return folder.id === taskFolder.id;
+      })["0"];
 
-  const closeModal = (value) => {
-    setModalOpen(false);
-    if (value) {
-      setTaskFolderName(value);
+      if (folder) {
+        setCurrentFolder({ ...folder });
+      }
+      if (!folder) {
+        // TODO Handling Error
+      }
     }
-  };
+  }, [task_folders, taskFolder]);
 
   const openModal = () => {
-    setModalOpen(true);
+    dispatch(
+      openTaskFolderDialog({
+        action_type: ACTIONS.TASK_FOLDERS_EDIT,
+        taskFolder_id: currentFolder.id,
+        taskFolder_name: currentFolder.name,
+      })
+    );
   };
+
+  // TODO : Implement Delete function
 
   const renderTaskCard = () => {
     return taskFolder.tasks.map((task) => {
@@ -41,7 +58,7 @@ const TaskList = ({ taskFolder }) => {
     <Container maxWidth="md">
       <Box display="flex" alignItems="center">
         <Typography variant="h6" className={classes.title}>
-          {taskFolderName}
+          {currentFolder.name}
         </Typography>
         <Button
           variant="outlined"
@@ -58,11 +75,6 @@ const TaskList = ({ taskFolder }) => {
       <Box>
         <List>{renderTaskCard()}</List>
       </Box>
-      <TaskFolderDialog
-        is_edit={modalOpen}
-        taskFolder={{ name: taskFolderName, id: taskFolder.id }}
-        onClose={closeModal}
-      />
     </Container>
   );
 };
