@@ -108,17 +108,16 @@ const App = () => {
     return (
       <Switch>
 
-        <AuthRoute exact path={PATHS.HOME} component={Tasks} layout={MainLayout}/>
-        <AuthRoute exact path={`${PATHS.HOME}:id`} component={Tasks} layout={MainLayout}/>
-        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Tasks} layout={MainLayout}/>
-
-        <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
-        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
-
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
         <GuestRoute exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />
         <GuestRoute exact path={PATHS.FORGET_PASSWORD} component={ForgetPw} />
+
+        <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
+        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
+
+        <AuthRoute exact path={PATHS.HOME} component={Tasks} layout={MainLayout}/>
+        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Tasks} layout={MainLayout}/>
 
       </Switch>
     );
