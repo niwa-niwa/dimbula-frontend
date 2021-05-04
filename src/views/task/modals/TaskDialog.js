@@ -1,18 +1,21 @@
-import React,{ useState } from 'react';
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import moment from "moment";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+  KeyboardTimePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import {
   Button,
   TextField,
   Dialog,
   DialogContent,
   DialogTitle,
+  Box,
 } from "@material-ui/core";
-import {
-  KeyboardDatePicker
-} from "@material-ui/pickers";
-
+import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 
 const TaskDialog = () => {
   const {
@@ -22,22 +25,24 @@ const TaskDialog = () => {
     setValue,
     formState: { errors },
   } = useForm();
-  const [due, setDue] = useState(null);
+  const [selectedDue, setSelectedDue] = useState({ date: null, time: null });
 
   const handleClose = () => {
-    console.log("close")
-  }
+    console.log("close");
+  };
 
   const onSubmit = (data) => {
-    console.log("onsubmit",data,due)
-  }
+    console.log("onsubmit", data, selectedDue);
+    console.log("moment=", moment(selectedDue.date).format("YYYY-MM-DD"));
+    console.log("moment time", moment(selectedDue.time).format("HH:mm"));
+  };
 
   return (
     <React.Fragment>
       <Dialog
         open={true}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
+        aria-labelledby="task-form-dialog"
       >
         <DialogTitle>
           {" Create a new task."}
@@ -49,7 +54,6 @@ const TaskDialog = () => {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent>
-
               <Controller
                 name="name"
                 control={control}
@@ -75,21 +79,48 @@ const TaskDialog = () => {
                 }}
               />
 
-              <KeyboardDatePicker
-                disableToolbar
-                autoOk
-                variant="inline"
-                format="yyyy/MM/dd"
-                margin="normal"
-                label="Due"
-                value={due}
-                onChange={(date) => {
-                  setDue(date)
-                }}
-                KeyboardButtonProps={{
-                  'aria-label': 'change due',
-                }}
-              />
+              <Box>
+                <KeyboardDatePicker
+                  disableToolbar
+                  autoOk
+                  clearable
+                  format="yyyy/MM/dd"
+                  margin="normal"
+                  label="Due"
+                  name="due_date"
+                  value={selectedDue.date || null}
+                  onChange={(date) => {
+                    setSelectedDue({ ...selectedDue, date: date });
+                  }}
+                  KeyboardButtonProps={{
+                    "aria-label": "change due",
+                  }}
+                />
+                <KeyboardTimePicker
+                  disableToolbar
+                  autoOk
+                  clearable
+                  ampm={false}
+                  margin="normal"
+                  label="Due Time"
+                  value={selectedDue.time}
+                  onChange={(date) => {
+                    if (!selectedDue.date) {
+                      setSelectedDue({
+                        ...selectedDue,
+                        date: date,
+                        time: date,
+                      });
+                      return;
+                    }
+                    setSelectedDue({ ...selectedDue, time: date });
+                  }}
+                  KeyboardButtonProps={{
+                    "aria-label": "change time",
+                  }}
+                  keyboardIcon={<QueryBuilderIcon />}
+                />
+              </Box>
 
               <Controller
                 name="memo"
@@ -113,11 +144,10 @@ const TaskDialog = () => {
                 Register
               </Button>
             </DialogContent>
-
           </form>
-          </MuiPickersUtilsProvider>
+        </MuiPickersUtilsProvider>
       </Dialog>
     </React.Fragment>
   );
-}
+};
 export default TaskDialog;
