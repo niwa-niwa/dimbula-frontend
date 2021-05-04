@@ -3,10 +3,12 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
+import AddIcon from '@material-ui/icons/Add';
 
 import history from "../../../history";
 import TaskCard from "./TaskCard";
 import DeleteDialog from "../modals/DeleteDialog";
+import TaskDialog from "../modals/TaskDialog";
 import { selectTaskFolders, asyncDeleteTaskFolder } from "../../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
 import { setSnackBar } from "../../../slices/snackBarSlice";
@@ -54,6 +56,10 @@ const TaskList = ({ taskFolder }) => {
 
   const onDelete = () => {
     setIsDeleting(true);
+  }
+
+  const onCreateTask = () => {
+
   }
 
   const dispatchDelete = async () => {
@@ -104,16 +110,36 @@ const TaskList = ({ taskFolder }) => {
           Delete
         </Button>
       </Box>
+
+      <Box>
+        <Button
+          onClick={() => {
+            onCreateTask();
+          }}
+          color="primary"
+          startIcon={<AddIcon />}
+        >
+          Create A Task
+        </Button>
+      </Box>
+
       <Box>
         <List>{renderTaskCard()}</List>
       </Box>
 
       <DeleteDialog
         isOpen={isDeleting}
-        onClose={()=>{setIsDeleting(false)}}
-        onDelete={()=>{dispatchDelete()}}
+        onClose={() => {
+          setIsDeleting(false);
+        }}
+        onDelete={() => {
+          dispatchDelete();
+        }}
         subtitle={`You are going to delete "${currentFolder.name}".`}
       />
+
+      <TaskDialog />
+
     </Container>
   );
 };
