@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
+
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
 
-import { selectTaskFolders } from "../../../slices/taskSlice";
-
+import history from "../../../history";
 import TaskCard from "./TaskCard";
-import ACTIONS from "../../../const/actions";
+import DeleteDialog from "../modals/DeleteDialog";
+import { selectTaskFolders, asyncDeleteTaskFolder } from "../../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
+import { setSnackBar } from "../../../slices/snackBarSlice";
+
+import PATHS from "../../../const/paths";
+import ACTIONS from "../../../const/actions";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -20,6 +25,7 @@ const TaskList = ({ taskFolder }) => {
   const classes = useStyles();
   const task_folders = useSelector(selectTaskFolders);
   const [currentFolder, setCurrentFolder] = useState({});
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (task_folders.length > 0) {
@@ -31,12 +37,12 @@ const TaskList = ({ taskFolder }) => {
         setCurrentFolder({ ...folder });
       }
       if (!folder) {
-        // TODO Handling Error
+        history.push(PATHS.HOME);
       }
     }
-  }, [task_folders, taskFolder]);
+  }, [task_folders, taskFolder, dispatch]);
 
-  const openModal = () => {
+  const onRename = () => {
     dispatch(
       openTaskFolderDialog({
         action_type: ACTIONS.TASK_FOLDERS_EDIT,
@@ -46,7 +52,27 @@ const TaskList = ({ taskFolder }) => {
     );
   };
 
-  // TODO : Implement Delete function
+  const onDelete = () => {
+    setIsDeleting(true);
+  }
+
+  const dispatchDelete = async () => {
+    const response = await dispatch(asyncDeleteTaskFolder(currentFolder.id));
+    if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/rejected") {
+      dispatch(
+        setSnackBar({
+          severity: "error",
+          message: response.payload.message,
+        })
+      );
+      return;
+    }
+    if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/fulfilled") {
+      dispatch(setSnackBar({ message: `Deleted "${currentFolder.name}".` }));
+      history.push(PATHS.HOME);
+      return;
+    }
+  };
 
   const renderTaskCard = () => {
     return taskFolder.tasks.map((task) => {
@@ -63,18 +89,31 @@ const TaskList = ({ taskFolder }) => {
         <Button
           variant="outlined"
           onClick={() => {
-            openModal();
+            onRename();
           }}
         >
           Rename
         </Button>
-        <Button variant="outlined" color="secondary">
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => {
+            onDelete();
+          }}
+        >
           Delete
         </Button>
       </Box>
       <Box>
         <List>{renderTaskCard()}</List>
       </Box>
+
+      <DeleteDialog
+        isOpen={isDeleting}
+        onClose={()=>{setIsDeleting(false)}}
+        onDelete={()=>{dispatchDelete()}}
+        subtitle={`You are going to delete "${currentFolder.name}".`}
+      />
     </Container>
   );
 };
