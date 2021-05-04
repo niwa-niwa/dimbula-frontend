@@ -110,6 +110,35 @@ export const asyncDeleteTaskFolder = createAsyncThunk(
   }
 );
 
+// This Function is not extraReducer
+export const asyncCreateTask = createAsyncThunk(
+  ACTIONS.TASKS_CREATE,
+  /**
+   *
+   * @param {name:any, person:current_user, taskFolder:ID} payload
+   * @returns object
+   */
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await backend.post(
+        NAMES.V1 + "tasks/create/",
+        payload,
+      );
+      return response.data;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncCreateTask unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
+  }
+);
+
 const initialState = {
   taskFolders: [],
   taskSections: [],

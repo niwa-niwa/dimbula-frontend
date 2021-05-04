@@ -3,17 +3,22 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from "@material-ui/icons/Add";
 
 import history from "../../../history";
 import TaskCard from "./TaskCard";
 import DeleteDialog from "../modals/DeleteDialog";
 import TaskDialog from "../modals/TaskDialog";
-import { selectTaskFolders, asyncDeleteTaskFolder } from "../../../slices/taskSlice";
+import {
+  selectTaskFolders,
+  asyncDeleteTaskFolder,
+  asyncCreateTask,
+} from "../../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
 import { setSnackBar } from "../../../slices/snackBarSlice";
 
 import PATHS from "../../../const/paths";
+import NAMES from "../../../const/names";
 import ACTIONS from "../../../const/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,8 +31,10 @@ const TaskList = ({ taskFolder }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const task_folders = useSelector(selectTaskFolders);
+  const [_tasks, set_Tasks] = useState([]);
   const [currentFolder, setCurrentFolder] = useState({});
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     if (task_folders.length > 0) {
@@ -37,6 +44,7 @@ const TaskList = ({ taskFolder }) => {
 
       if (folder) {
         setCurrentFolder({ ...folder });
+        set_Tasks([...taskFolder.tasks]);
       }
       if (!folder) {
         history.push(PATHS.HOME);
@@ -56,11 +64,37 @@ const TaskList = ({ taskFolder }) => {
 
   const onDelete = () => {
     setIsDeleting(true);
-  }
+  };
 
   const onCreateTask = () => {
+    setIsCreating(true);
+  };
 
-  }
+  /**
+   *
+   * @param {*name, memo, due_date, start_date, is_done, is_star, *person, *taskFolder} data
+   * @param {CallBack Function for reset values of form} reset
+   * @returns nothing
+   */
+  const dispatchCreate = async (data, reset) => {
+    const response = await dispatch(asyncCreateTask(data));
+    if (response.type === ACTIONS.TASKS_CREATE + "/rejected") {
+      dispatch(
+        setSnackBar({
+          severity: "error",
+          message: response.payload.message,
+        })
+      );
+      return;
+    }
+    if (response.type === ACTIONS.TASKS_CREATE + "/fulfilled") {
+      dispatch(setSnackBar({ message: `Created "${response.payload.name}".` }));
+      set_Tasks([{ ...response.payload }, ..._tasks]);
+      setIsCreating(false);
+      reset();
+      return;
+    }
+  };
 
   const dispatchDelete = async () => {
     const response = await dispatch(asyncDeleteTaskFolder(currentFolder.id));
@@ -81,7 +115,7 @@ const TaskList = ({ taskFolder }) => {
   };
 
   const renderTaskCard = () => {
-    return taskFolder.tasks.map((task) => {
+    return _tasks.map((task) => {
       return <TaskCard key={task.id} task={task} />;
     });
   };
@@ -138,8 +172,19 @@ const TaskList = ({ taskFolder }) => {
         subtitle={`You are going to delete "${currentFolder.name}".`}
       />
 
-      <TaskDialog />
-
+      <TaskDialog
+        isOpen={isCreating}
+        onClose={() => {
+          setIsCreating(false);
+        }}
+        onCallback={(data, reset) => {
+          dispatchCreate(data, reset);
+        }}
+        editTask={{
+          taskFolder: currentFolder.id,
+          person: localStorage.getItem(NAMES.STORAGE_UID),
+        }}
+      />
     </Container>
   );
 };

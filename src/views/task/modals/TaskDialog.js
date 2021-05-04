@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import moment from "moment";
 import {
@@ -12,12 +12,20 @@ import {
   TextField,
   Dialog,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Box,
 } from "@material-ui/core";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 
-const TaskDialog = () => {
+const TaskDialog = ({
+  isOpen = false,
+  onClose = null,
+  title = " Create a new task.",
+  subtitle = "",
+  onCallback = null,
+  editTask = {}
+}) => {
   const {
     handleSubmit,
     control,
@@ -27,29 +35,72 @@ const TaskDialog = () => {
   } = useForm();
   const [selectedDue, setSelectedDue] = useState({ date: null, time: null });
 
+  useEffect(() => {
+    if(editTask.name){
+      setValue("name", editTask.name)
+    }
+    if(editTask.memo){
+      setValue("memo", editTask.memo)
+    }
+    if(editTask.due_date){
+      // TODO setSelectedDue due
+    }
+    
+  }, [setValue, editTask])
+
   const handleClose = () => {
-    console.log("close");
+    onClose();
   };
 
+  function convertDate(stateDate){
+    const date = moment(stateDate.date).format("YYYY-MM-DD")
+    const time = moment(stateDate.time).format("HH:mm:ss")
+    
+    let due = null;
+    if(stateDate.data !== null && stateDate.time !== null){
+      due = date + "T" + time
+    }
+    if(!stateDate.date && stateDate.time){
+      due = moment(stateDate.time).format()
+    }
+    if(stateDate.date && !stateDate.time){
+      due = date + "T00:00:00"
+    }
+    return due;
+  }
+
+  function resetValue(){
+    reset({name:"", memo:"",})
+    setSelectedDue({ date: null, time: null })
+  }
+
   const onSubmit = (data) => {
-    console.log("onsubmit", data, selectedDue);
-    console.log("moment=", moment(selectedDue.date).format("YYYY-MM-DD"));
-    console.log("moment time", moment(selectedDue.time).format("HH:mm"));
+    const due_date = convertDate(selectedDue);
+    const task = {...editTask, ...data, due_date};
+    onCallback(task, ()=>{resetValue()});
+    /**
+     * second argument is callback function that reset form values 
+     * Caller should call the function.
+     */
   };
 
   return (
     <React.Fragment>
       <Dialog
-        open={true}
+        open={isOpen}
         onClose={handleClose}
         aria-labelledby="task-form-dialog"
       >
         <DialogTitle>
-          {" Create a new task."}
+          {title}
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
         </DialogTitle>
+
+        <DialogContentText>
+          {subtitle}
+        </DialogContentText>
 
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <form onSubmit={handleSubmit(onSubmit)}>
