@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Router, Route, Switch } from "react-router-dom";
+import { Router, Switch } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import history from "../history";
 import firebase from "../apis/firebase";
@@ -18,7 +18,7 @@ import SignUp from "./sign/SignUp";
 import SignOut from "./sign/SignOut";
 import ResendEmail from "./sign/ResendEmail";
 import ForgetPw from "./sign/ForgetPw";
-import Task from "./task/Task";
+import Tasks from "./task/Tasks";
 import Settings from "./settings/Settings";
 import SettingsHeader from "./settings/layouts/Header";
 
@@ -96,24 +96,20 @@ const App = () => {
     };
   }, [dispatch]);
 
-  const MainLayout = () => (
+  const MainLayout = ({children}) => (
     <React.Fragment>
       <Header />
       <LeftDrawer>
-        <Switch>
-          <Route exact path={PATHS.HOME} component={Task} />
-        </Switch>
+        {children}
       </LeftDrawer>
       <TaskFolderDialog />
     </React.Fragment>
   );
 
-  const SettingsLayout = () => (
+  const SettingsLayout = ({children}) => (
     <React.Fragment>
       <SettingsHeader />
-      <Switch>
-        <Route exact path={PATHS.SETTINGS} component={Settings} />
-      </Switch>
+      {children}
     </React.Fragment>
   )
 
@@ -123,13 +119,19 @@ const App = () => {
     }
     return (
       <Switch>
-        <AuthRoute exact path={PATHS.HOME} component={MainLayout} />
-        <AuthRoute exact path={PATHS.SETTINGS} component={SettingsLayout} />
-        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} />
+
+        <AuthRoute exact path={PATHS.HOME} component={Tasks} layout={MainLayout}/>
+        <AuthRoute exact path={`${PATHS.HOME}:id`} component={Tasks} layout={MainLayout}/>
+        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Tasks} layout={MainLayout}/>
+
+        <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
+        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
+
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
         <GuestRoute exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />
         <GuestRoute exact path={PATHS.FORGET_PASSWORD} component={ForgetPw} />
+
       </Switch>
     );
   };

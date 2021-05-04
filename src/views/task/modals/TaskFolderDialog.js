@@ -19,7 +19,12 @@ import { asyncCreateTaskFolder } from "../../../slices/taskSlice";
 import { setSnackBar } from "../../../slices/snackBarSlice";
 import NAMES from "../../../const/names";
 
-export default function FormDialog() {
+// TODO : fix [DOM] Found 2 elements with non-unique id #name: (More info: https://goo.gl/9p2vKq) 
+export default function FormDialog({
+  is_edit = false,
+  taskFolder = {name:"", id:""},
+  onClose = null,
+}) {
   const dispatch = useDispatch();
   const isOpen_taskFolderDialog = useSelector(select_isOpen_taskFolderDialog);
   const {
@@ -30,49 +35,65 @@ export default function FormDialog() {
   } = useForm();
 
   const handleClose = () => {
+    if (is_edit) {
+      onClose();
+      reset({ name: taskFolder.name });
+      return;
+    }
     dispatch(closeTaskFolderDialog());
     reset({ name: "" });
   };
 
   const onSubmit = async (data) => {
-    const response = await dispatch(
-      asyncCreateTaskFolder({
-        ...data,
-        person: localStorage.getItem(NAMES.STORAGE_UID),
-      })
-    );
-    handleClose();
-
-    if (response.type === "taskFolders/create/rejected") {
-      // Handling error message
-      dispatch(
-        setSnackBar({
-          severity: "error",
-          message: response.payload.message,
-        })
-      );
+    if (is_edit) {
+      console.log(data);
+      // TODO : Implement asyncEditTaskFolder
+      // TODO : Implement handling error
+      onClose(data.name);
+      dispatch(setSnackBar({ message: `Edited "${data.name}".` }));
       return;
     }
 
-    dispatch(setSnackBar({ message: `Created "${data.name}".` }));
+    if (!is_edit) {
+      const response = await dispatch(
+        asyncCreateTaskFolder({
+          ...data,
+          person: localStorage.getItem(NAMES.STORAGE_UID),
+        })
+      );
+      if (response.type === "taskFolders/create/rejected") {
+        // Handling error message
+        dispatch(
+          setSnackBar({
+            severity: "error",
+            message: response.payload.message,
+          })
+        );
+        return;
+      }
+      dispatch(setSnackBar({ message: `Created "${data.name}".` }));
+      handleClose(data);
+    }
   };
 
   return (
     <div>
       <Dialog
-        open={isOpen_taskFolderDialog}
+        open={is_edit || isOpen_taskFolderDialog}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">New Task Folder</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          {is_edit ? "Edit Task Folder Name" : "New Task Folder"}
+        </DialogTitle>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
-            <DialogContentText>Type name of new task folder.</DialogContentText>
+            <DialogContentText>Type name of the task folder.</DialogContentText>
             <Controller
               name="name"
               control={control}
-              defaultValue={""}
+              defaultValue={taskFolder.name}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -91,7 +112,7 @@ export default function FormDialog() {
                 pattern: {
                   value: /.*\S+.*/,
                   message: "You have to enter the characters",
-                }
+                },
               }}
             />
           </DialogContent>
@@ -104,7 +125,6 @@ export default function FormDialog() {
               Register
             </Button>
           </DialogActions>
-          
         </form>
       </Dialog>
     </div>
