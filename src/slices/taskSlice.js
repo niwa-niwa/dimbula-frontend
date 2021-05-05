@@ -168,18 +168,17 @@ export const asyncEditTask = createAsyncThunk(
   }
 );
 
-
 export const asyncDeleteTask = createAsyncThunk(
   ACTIONS.TASKS_DELETE,
   /**
    *
-   * @param {task.id} id
+   * @param {task} object
    * @returns object
    */
-  async (id, {rejectWithValue}) => {
+  async (task, {rejectWithValue}) => {
     try {
-      await backend.delete(NAMES.V1 + `tasks/delete/${id}/`);
-      return id;
+      await backend.delete(NAMES.V1 + `tasks/delete/${task.id}/`);
+      return task;
     } catch (e) {
       if (!e.response) {
         console.error("asyncDeleteTask unexpected error", e);
@@ -280,8 +279,21 @@ export const taskSlice = createSlice({
       };
     });
 // ======== END asyncDeleteTaskFolder ===========  
+    builder.addCase(asyncCreateTask.fulfilled, (state, action) => {
+      const task_folder = state.taskFolders.find(folder=>{
+        return action.payload.taskFolder === folder.id;
+      });
+      task_folder.task_count++;
+    })
+    builder.addCase(asyncDeleteTask.fulfilled, (state, action) => {
+      const task_folder = state.taskFolders.find(folder=>{
+        return action.payload.taskFolder === folder.id;
+      });
+      task_folder.task_count--;
+    })
   },
 });
+
 
 export default taskSlice.reducer;
 export const selectAll = (state) => state.task;

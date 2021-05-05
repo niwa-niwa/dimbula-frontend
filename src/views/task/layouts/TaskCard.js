@@ -53,7 +53,7 @@ const TaskCard = ({task, onEditTaskList}) => {
   }
 
   const dispatchDelete = async () => {
-    const response = await dispatch(asyncDeleteTask(_task.id));
+    const response = await dispatch(asyncDeleteTask(_task));
     if (response.type === ACTIONS.TASKS_DELETE + "/rejected") {
       dispatch(
         setSnackBar({
@@ -68,9 +68,9 @@ const TaskCard = ({task, onEditTaskList}) => {
       onEditTaskList(_task, ACTIONS.TASKS_DELETE)
       dispatch(setSnackBar({ message: `Deleted "${_task.name}".` }));
       setIsEditing(false);
+      setIsDeleting(false);
       return;
     }
-    setIsDeleting(false);
   }
 
   return (
