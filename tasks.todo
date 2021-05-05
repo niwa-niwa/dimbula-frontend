@@ -1,1 +1,6 @@
 Todos:
+  implement star status
+  implement done status
+
+FIXs;
+  dosen't work route after deleted a taskFolder 
