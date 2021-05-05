@@ -18,13 +18,17 @@ import {
 } from "@material-ui/core";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 
+import ACTIONS from "../../../const/actions";
+
+
 const TaskDialog = ({
   isOpen = false,
-  onClose = null,
-  title = " Create a new task.",
+  title = "",
   subtitle = "",
+  action_type = "",
+  editTask = {},
+  onClose = null,
   onCallback = null,
-  editTask = {}
 }) => {
   const {
     handleSubmit,
@@ -36,17 +40,16 @@ const TaskDialog = ({
   const [selectedDue, setSelectedDue] = useState({ date: null, time: null });
 
   useEffect(() => {
-    if(editTask.name){
-      setValue("name", editTask.name)
-    }
-    if(editTask.memo){
-      setValue("memo", editTask.memo)
-    }
-    if(editTask.due_date){
-      // TODO setSelectedDue due
+    if(action_type === ACTIONS.TASKS_EDIT){
+      setValue("name", editTask.name);
+      setValue("memo", editTask.memo);
+      setSelectedDue({
+        date: editTask.due_date,
+        time: editTask.due_date
+      });
     }
     
-  }, [setValue, editTask])
+  }, [setValue, editTask, action_type])
 
   const handleClose = () => {
     onClose();

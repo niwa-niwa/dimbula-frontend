@@ -139,6 +139,35 @@ export const asyncCreateTask = createAsyncThunk(
   }
 );
 
+// This Function is not extraReducer
+export const asyncEditTask = createAsyncThunk(
+  ACTIONS.TASKS_EDIT,
+  /**
+   *
+   * @param {name:any, person:current_user, taskFolder:ID} payload
+   * @returns object
+   */
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await backend.patch(
+        NAMES.V1 + `tasks/edit/${payload.id}/`,
+        payload,
+      );
+      return response.data;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncCreateEdit unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
+  }
+);
+
 const initialState = {
   taskFolders: [],
   taskSections: [],

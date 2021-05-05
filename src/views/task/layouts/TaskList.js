@@ -114,9 +114,27 @@ const TaskList = ({ taskFolder }) => {
     }
   };
 
+  const editTaskList = (edited_task) => {
+    const after_tasks = _tasks.filter((task) => {
+      if (task.id === edited_task.id) {
+        return edited_task;
+      }
+      return task;
+    });
+    set_Tasks([...after_tasks]);
+  };
+
   const renderTaskCard = () => {
     return _tasks.map((task) => {
-      return <TaskCard key={task.id} task={task} />;
+      return (
+        <TaskCard
+          key={task.id}
+          task={task}
+          onEditTaskList={(edited_data) => {
+            editTaskList(edited_data);
+          }}
+        />
+      );
     });
   };
 
@@ -174,6 +192,8 @@ const TaskList = ({ taskFolder }) => {
 
       <TaskDialog
         isOpen={isCreating}
+        title={"Create a new task."}
+        action_type={ACTIONS.TASKS_CREATE}
         onClose={() => {
           setIsCreating(false);
         }}
