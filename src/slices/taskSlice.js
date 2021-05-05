@@ -168,6 +168,33 @@ export const asyncEditTask = createAsyncThunk(
   }
 );
 
+
+export const asyncDeleteTask = createAsyncThunk(
+  ACTIONS.TASKS_DELETE,
+  /**
+   *
+   * @param {task.id} id
+   * @returns object
+   */
+  async (id, {rejectWithValue}) => {
+    try {
+      await backend.delete(NAMES.V1 + `tasks/delete/${id}/`);
+      return id;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncDeleteTask unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
+  }
+);
+
+
 const initialState = {
   taskFolders: [],
   taskSections: [],

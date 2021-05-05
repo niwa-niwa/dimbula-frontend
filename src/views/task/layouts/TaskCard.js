@@ -11,8 +11,9 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 // import StarIcon from '@material-ui/icons/Star';
 import { setSnackBar } from "../../../slices/snackBarSlice";
 import TaskDialog from "../modals/TaskDialog";
+import DeleteDialog from "../modals/DeleteDialog";
 
-import { asyncEditTask } from "../../../slices/taskSlice";
+import { asyncEditTask, asyncDeleteTask } from "../../../slices/taskSlice";
 import ACTIONS from "../../../const/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,8 +28,9 @@ const TaskCard = ({task, onEditTaskList}) => {
   const dispatch = useDispatch();
   const [_task, set_Task] = useState({...task});
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const onEdit = async (edited_task) => {
+  const dispatchEdit = async (edited_task) => {
     console.log(edited_task);
     const response = await dispatch(asyncEditTask(edited_task));
 
@@ -48,6 +50,27 @@ const TaskCard = ({task, onEditTaskList}) => {
       return;
     }
 
+  }
+
+  const dispatchDelete = async () => {
+    const response = await dispatch(asyncDeleteTask(_task.id));
+    if (response.type === ACTIONS.TASKS_DELETE + "/rejected") {
+      dispatch(
+        setSnackBar({
+          severity: "error",
+          message: response.payload.message,
+        })
+      );
+      setIsDeleting(false);
+      return;
+    }
+    if (response.type === ACTIONS.TASKS_DELETE + "/fulfilled") {
+      onEditTaskList(_task, ACTIONS.TASKS_DELETE)
+      dispatch(setSnackBar({ message: `Deleted "${_task.name}".` }));
+      setIsEditing(false);
+      return;
+    }
+    setIsDeleting(false);
   }
 
   return (
@@ -75,9 +98,24 @@ const TaskCard = ({task, onEditTaskList}) => {
           setIsEditing(false);
         }}
         onCallback={(edited_task) => {
-          onEdit(edited_task);
+          dispatchEdit(edited_task);
+        }}
+        onDelete={()=>{
+          setIsDeleting(true);
         }}
       />
+
+      <DeleteDialog
+        isOpen={isDeleting}
+        onClose={() => {
+          setIsDeleting(false);
+        }}
+        onDelete={() => {
+          dispatchDelete();
+        }}
+        subtitle={`You are going to delete "${_task.name}".`}
+      />
+
     </React.Fragment>
   );
 }

@@ -29,6 +29,7 @@ const TaskDialog = ({
   editTask = {},
   onClose = null,
   onCallback = null,
+  onDelete = null,
 }) => {
   const {
     handleSubmit,
@@ -99,6 +100,16 @@ const TaskDialog = ({
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
+          { 
+            action_type === ACTIONS.TASKS_EDIT &&
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => {onDelete()}}
+              >
+              Delete
+            </Button>
+          }
         </DialogTitle>
 
         <DialogContentText>

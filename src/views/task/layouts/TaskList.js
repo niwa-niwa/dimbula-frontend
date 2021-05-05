@@ -52,7 +52,7 @@ const TaskList = ({ taskFolder }) => {
     }
   }, [task_folders, taskFolder, dispatch]);
 
-  const onRename = () => {
+  const dispatchEdit = () => {
     dispatch(
       openTaskFolderDialog({
         action_type: ACTIONS.TASK_FOLDERS_EDIT,
@@ -60,14 +60,6 @@ const TaskList = ({ taskFolder }) => {
         taskFolder_name: currentFolder.name,
       })
     );
-  };
-
-  const onDelete = () => {
-    setIsDeleting(true);
-  };
-
-  const onCreateTask = () => {
-    setIsCreating(true);
   };
 
   /**
@@ -114,13 +106,13 @@ const TaskList = ({ taskFolder }) => {
     }
   };
 
-  const editTaskList = (edited_task) => {
-    const after_tasks = _tasks.filter((task) => {
-      if (task.id === edited_task.id) {
-        return edited_task;
-      }
-      return task;
-    });
+  const editTaskList = (edited_task, action_type) => {
+    let after_tasks;
+    if(action_type === ACTIONS.TASKS_DELETE){
+      after_tasks = _tasks.filter((task) => {
+        return task.id !== edited_task.id;
+      });
+    };
     set_Tasks([...after_tasks]);
   };
 
@@ -130,8 +122,8 @@ const TaskList = ({ taskFolder }) => {
         <TaskCard
           key={task.id}
           task={task}
-          onEditTaskList={(edited_data) => {
-            editTaskList(edited_data);
+          onEditTaskList={(edited_data, action_type) => {
+            editTaskList(edited_data, action_type);
           }}
         />
       );
@@ -147,7 +139,7 @@ const TaskList = ({ taskFolder }) => {
         <Button
           variant="outlined"
           onClick={() => {
-            onRename();
+            dispatchEdit();
           }}
         >
           Rename
@@ -156,7 +148,7 @@ const TaskList = ({ taskFolder }) => {
           variant="outlined"
           color="secondary"
           onClick={() => {
-            onDelete();
+            setIsDeleting(true);
           }}
         >
           Delete
@@ -166,7 +158,7 @@ const TaskList = ({ taskFolder }) => {
       <Box>
         <Button
           onClick={() => {
-            onCreateTask();
+            setIsCreating(true);
           }}
           color="primary"
           startIcon={<AddIcon />}
