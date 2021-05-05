@@ -9,10 +9,8 @@ import AuthRoute from "./layouts/AuthRoute";
 import SnackBar from "./layouts/SnackBar";
 import AlertDialog from "./layouts/AlertDialog";
 import ProgressCircle from "./layouts/ProgressCircle";
-import TaskFolderDialog from "./task/modals/TaskFolderDialog";
 
-import Header from "./layouts/Header";
-import LeftDrawer from "./layouts/LeftDrawer";
+import MainLayout from "./layouts/MainLayout";
 import SignIn from "./sign/SignIn";
 import SignUp from "./sign/SignUp";
 import SignOut from "./sign/SignOut";
@@ -96,16 +94,6 @@ const App = () => {
     };
   }, [dispatch]);
 
-  const MainLayout = ({children}) => (
-    <React.Fragment>
-      <Header />
-      <LeftDrawer>
-        {children}
-      </LeftDrawer>
-      <TaskFolderDialog />
-    </React.Fragment>
-  );
-
   const SettingsLayout = ({children}) => (
     <React.Fragment>
       <SettingsHeader />
@@ -120,17 +108,16 @@ const App = () => {
     return (
       <Switch>
 
-        <AuthRoute exact path={PATHS.HOME} component={Tasks} layout={MainLayout}/>
-        <AuthRoute exact path={`${PATHS.HOME}:id`} component={Tasks} layout={MainLayout}/>
-        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Tasks} layout={MainLayout}/>
-
-        <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
-        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
-
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
         <GuestRoute exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />
         <GuestRoute exact path={PATHS.FORGET_PASSWORD} component={ForgetPw} />
+
+        <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
+        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
+
+        <AuthRoute exact path={PATHS.HOME} component={Tasks} layout={MainLayout}/>
+        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Tasks} layout={MainLayout}/>
 
       </Switch>
     );

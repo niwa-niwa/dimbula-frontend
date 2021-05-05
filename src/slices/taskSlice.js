@@ -2,9 +2,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { backend } from "../apis/backend";
 
 import NAMES from "../const/names";
+import ACTIONS from "../const/actions";
+
 
 export const asyncGetTaskFolders = createAsyncThunk(
-  "taskFolders/get",
+  ACTIONS.TASK_FOLDERS_GET,
   /**
    *
    * @returns data taskFolders that the user have
@@ -15,7 +17,7 @@ export const asyncGetTaskFolders = createAsyncThunk(
       return response.data;
     } catch (e) {
       if (!e.response) {
-        console.error("asyncCreateTaskFolder unexpected error", e);
+        console.error("asyncGetTaskFolder unexpected error", e);
         throw new Error(e);
       }
       const data = {
@@ -28,7 +30,7 @@ export const asyncGetTaskFolders = createAsyncThunk(
 );
 
 export const asyncCreateTaskFolder = createAsyncThunk(
-  "taskFolders/create",
+  ACTIONS.TASK_FOLDERS_CREATE,
   /**
    *
    * @param {name:any, person:current_user} payload
@@ -56,7 +58,7 @@ export const asyncCreateTaskFolder = createAsyncThunk(
 );
 
 export const asyncEditTaskFolder = createAsyncThunk(
-  "taskFolders/edit",
+  ACTIONS.TASK_FOLDERS_EDIT,
   /**
    *
    * @param {person:current_user.id, id:taskFolder.id, any:any} payload
@@ -71,7 +73,7 @@ export const asyncEditTaskFolder = createAsyncThunk(
       return response.data;
     } catch (e) {
       if (!e.response) {
-        console.error("asyncCreateTaskFolder unexpected error", e);
+        console.error("asyncEditTaskFolder unexpected error", e);
         throw new Error(e);
       }
       const data = {
@@ -96,7 +98,7 @@ export const asyncDeleteTaskFolder = createAsyncThunk(
       return id;
     } catch (e) {
       if (!e.response) {
-        console.error("asyncCreateTaskFolder unexpected error", e);
+        console.error("asyncDeleteTaskFolder unexpected error", e);
         throw new Error(e);
       }
       const data = {
@@ -107,6 +109,90 @@ export const asyncDeleteTaskFolder = createAsyncThunk(
     }
   }
 );
+
+// This Function is not extraReducer
+export const asyncCreateTask = createAsyncThunk(
+  ACTIONS.TASKS_CREATE,
+  /**
+   *
+   * @param {name:any, person:current_user, taskFolder:ID} payload
+   * @returns object
+   */
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await backend.post(
+        NAMES.V1 + "tasks/create/",
+        payload,
+      );
+      return response.data;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncCreateTask unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
+  }
+);
+
+// This Function is not extraReducer
+export const asyncEditTask = createAsyncThunk(
+  ACTIONS.TASKS_EDIT,
+  /**
+   *
+   * @param {name:any, person:current_user, taskFolder:ID} payload
+   * @returns object
+   */
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await backend.patch(
+        NAMES.V1 + `tasks/edit/${payload.id}/`,
+        payload,
+      );
+      return response.data;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncCreateEdit unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
+  }
+);
+
+export const asyncDeleteTask = createAsyncThunk(
+  ACTIONS.TASKS_DELETE,
+  /**
+   *
+   * @param {task} object
+   * @returns object
+   */
+  async (task, {rejectWithValue}) => {
+    try {
+      await backend.delete(NAMES.V1 + `tasks/delete/${task.id}/`);
+      return task;
+    } catch (e) {
+      if (!e.response) {
+        console.error("asyncDeleteTask unexpected error", e);
+        throw new Error(e);
+      }
+      const data = {
+        message: e.response.request.response,
+        status: e.response.status,
+      };
+      return rejectWithValue(data);
+    }
+  }
+);
+
 
 const initialState = {
   taskFolders: [],
@@ -130,7 +216,7 @@ export const taskSlice = createSlice({
     builder.addCase(asyncGetTaskFolders.fulfilled, (state, action) => {
       return {
         ...state,
-        taskFolders: action.payload,
+        taskFolders: [...action.payload],
       };
     });
     builder.addCase(asyncGetTaskFolders.rejected, (state, action) => {
@@ -171,7 +257,7 @@ export const taskSlice = createSlice({
       if (action.payload) {
         state.error = {...action.payload}
       } else {
-        console.error("Unexpected error from asyncEditTaskFolderです", action.error.message)
+        console.error("Unexpected error from asyncEditTaskFolder", action.error.message)
       };
     });
 // ======== END asyncEditTaskFolder ===========  
@@ -193,8 +279,21 @@ export const taskSlice = createSlice({
       };
     });
 // ======== END asyncDeleteTaskFolder ===========  
+    builder.addCase(asyncCreateTask.fulfilled, (state, action) => {
+      const task_folder = state.taskFolders.find(folder=>{
+        return action.payload.taskFolder === folder.id;
+      });
+      task_folder.task_count++;
+    })
+    builder.addCase(asyncDeleteTask.fulfilled, (state, action) => {
+      const task_folder = state.taskFolders.find(folder=>{
+        return action.payload.taskFolder === folder.id;
+      });
+      task_folder.task_count--;
+    })
   },
 });
+
 
 export default taskSlice.reducer;
 export const selectAll = (state) => state.task;

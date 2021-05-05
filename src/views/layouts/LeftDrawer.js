@@ -25,7 +25,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { selectTaskFolders, asyncGetTaskFolders } from "../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../slices/taskFolderDialogSlice";
 
-import PATHS from "../../const/paths"
+import PATHS from "../../const/paths";
+import ACTIONS from "../../const/actions";
 
 const drawerWidth = 240;
 
@@ -74,10 +75,9 @@ const default_menu = [
   { text: "All", icon: <AllInboxIcon /> },
 ];
 
-export default function PersistentDrawer({ children }) {
+export default function PersistentDrawer({ children, isDrawer}) {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const isOpen_drawer = useSelector((state) => state.drawer.isOpen_drawer);
   const task_folders = useSelector(selectTaskFolders);
 
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function PersistentDrawer({ children }) {
         className={classes.drawer}
         variant="persistent"
         anchor="left"
-        open={isOpen_drawer}
+        open={isDrawer}
         classes={{
           paper: classes.drawerPaper,
         }}
@@ -137,7 +137,13 @@ export default function PersistentDrawer({ children }) {
                 <IconButton
                   aria-label="delete"
                   size="small"
-                  onClick={() => dispatch(openTaskFolderDialog())}
+                  onClick={() =>
+                    dispatch(
+                      openTaskFolderDialog({
+                        action_type: ACTIONS.TASK_FOLDERS_CREATE,
+                      })
+                    )
+                  }
                 >
                   <AddCircleOutlineIcon />
                 </IconButton>
@@ -151,7 +157,7 @@ export default function PersistentDrawer({ children }) {
 
       <main
         className={clsx(classes.content, {
-          [classes.contentShift]: isOpen_drawer,
+          [classes.contentShift]: isDrawer,
         })}
       >
         <Toolbar />

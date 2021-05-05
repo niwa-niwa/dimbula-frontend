@@ -1,51 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import history from "../../history";
 import TaskList from "./layouts/TaskList";
 import { backend } from "../../apis/backend";
 import NAMES from "../../const/names";
-
+import PATHS from "../../const/paths";
+import { setSnackBar } from "../../slices/snackBarSlice";
 
 const Tasks = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const history = useHistory();
   const [taskFolder, setTaskFolder] = useState();
-  const [errorMessage, setErrorMessage] = useState();
 
   useEffect(() => {
-    console.log(id);
     if (!id) {
       return;
     }
 
     const effect = async () => {
-      console.log(history.location.pathname);
       try {
         const response = await backend.get(
           NAMES.V1 + history.location.pathname.slice(1)
         );
-        console.log("success= ", response.data);
         setTaskFolder({ ...response.data });
       } catch (e) {
         console.log(e.message);
-        setErrorMessage("Not found tasks that you find");
+        dispatch(
+          setSnackBar({
+            severity: "error",
+            message: "Not found tasks that you find",
+          })
+        );
+        history.push(PATHS.HOME);
       }
     };
     effect();
-  }, [id, history]);
+  }, [id, dispatch]);
 
   const render = () => {
     if (!id) {
       return <h1>Task Index</h1>;
     }
-    if(errorMessage){
-      return <p>{errorMessage}</p>
-    }
-    if(taskFolder){
-      return (
-        <TaskList taskFolder={taskFolder} />
-        
-      );
+    if (taskFolder) {
+      return <TaskList taskFolder={taskFolder} />;
     }
   };
 

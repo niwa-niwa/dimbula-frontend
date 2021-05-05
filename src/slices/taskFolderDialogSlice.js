@@ -1,21 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  isOpen_taskFolderDialog: false,
+  action_type: "",
+  taskFolder_id: "",
+  taskFolder_name: "",
+};
+
 const taskFolderDialogSlice = createSlice({
   name: "taskFolderDialog",
-  initialState: {
-    isOpen_taskFolderDialog: false,
-  },
+  initialState,
   reducers: {
-    openTaskFolderDialog(state) {
+    openTaskFolderDialog(state, action) {
       state.isOpen_taskFolderDialog = true;
+      state.action_type = action.payload.action_type;
+      state.taskFolder_id = action.payload.taskFolder_id || "";
+      state.taskFolder_name = action.payload.taskFolder_name || "";
     },
     closeTaskFolderDialog(state) {
-      state.isOpen_taskFolderDialog = false;
+      state.isOpen_taskFolderDialog = initialState.isOpen_taskFolderDialog;
+      state.action_type = initialState.action_type;
+      state.taskFolder = initialState.taskFolder;
+      state.taskFolder_id = initialState.taskFolder_id;
+      state.taskFolder_name = initialState.taskFolder_name;
     },
   },
 });
-export const select_isOpen_taskFolderDialog = (state) =>
-  state.taskFolderDialog.isOpen_taskFolderDialog;
+
+export const selectTaskFolderDialog = (state) => state.taskFolderDialog;
 export const {
   openTaskFolderDialog,
   closeTaskFolderDialog,
