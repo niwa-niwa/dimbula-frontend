@@ -38,11 +38,12 @@ const TaskList = ({ taskFolder }) => {
 
   useEffect(() => {
     if (task_folders.length > 0) {
-      const folder = task_folders.filter((folder) => {
+      const folder = task_folders.find((folder) => {
         return folder.id === taskFolder.id;
-      })["0"];
+      });
 
       if (folder) {
+        // the folder is stored in Redux. taskFolder should be depends on Redux taskFolder
         setCurrentFolder({ ...folder });
         set_Tasks([...taskFolder.tasks]);
       }
@@ -107,13 +108,14 @@ const TaskList = ({ taskFolder }) => {
   };
 
   const editTaskList = (edited_task, action_type) => {
-    let after_tasks;
-    if(action_type === ACTIONS.TASKS_DELETE){
-      after_tasks = _tasks.filter((task) => {
+    let edited_list;
+    if (action_type === ACTIONS.TASKS_DELETE) {
+      edited_list = taskFolder.tasks.filter((task) => {
         return task.id !== edited_task.id;
       });
-    };
-    set_Tasks([...after_tasks]);
+    }
+    // taskFolder have been watched by useEffect so updating after re-render the list
+    taskFolder.tasks = [...edited_list];
   };
 
   const renderTaskCard = () => {
