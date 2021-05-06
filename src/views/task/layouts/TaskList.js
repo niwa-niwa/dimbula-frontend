@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-
-import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
+import { backend } from "../../../apis/backend";
 import history from "../../../history";
 import TaskCard from "./TaskCard";
 import DeleteDialog from "../modals/DeleteDialog";
 import TaskDialog from "../modals/TaskDialog";
 import {
-  selectTaskFolders,
   asyncDeleteTaskFolder,
   asyncCreateTask,
 } from "../../../slices/taskSlice";
@@ -27,31 +27,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TaskList = ({ taskFolder }) => {
-  const dispatch = useDispatch();
+const TaskList = () => {
   const classes = useStyles();
-  const task_folders = useSelector(selectTaskFolders);
-  const [_tasks, set_Tasks] = useState([]);
+  const dispatch = useDispatch();
+  const { id } = useParams();
   const [currentFolder, setCurrentFolder] = useState({});
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (task_folders.length > 0) {
-      const folder = task_folders.find((folder) => {
-        return folder.id === taskFolder.id;
-      });
+    let isMounted = true;
 
-      if (folder) {
-        // the folder is stored in Redux. taskFolder should be depends on Redux taskFolder
-        setCurrentFolder({ ...folder });
-        set_Tasks([...taskFolder.tasks]);
-      }
-      if (!folder) {
+    const effect = async () => {
+      try {
+        const response = await backend.get(
+          NAMES.V1 + history.location.pathname.slice(1)
+        );
+        setCurrentFolder({ ...response.data });
+      } catch (e) {
+        dispatch(
+          setSnackBar({
+            severity: "error",
+            message: "Not found tasks that you find",
+          })
+        );
         history.push(PATHS.HOME);
       }
+      if (isMounted) {
+        setIsLoading(false);
+      }
+    };
+
+    if (id && isMounted) {
+      effect();
     }
-  }, [task_folders, taskFolder, dispatch]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, dispatch]);
 
   const dispatchEdit = () => {
     dispatch(
@@ -82,7 +97,10 @@ const TaskList = ({ taskFolder }) => {
     }
     if (response.type === ACTIONS.TASKS_CREATE + "/fulfilled") {
       dispatch(setSnackBar({ message: `Created "${response.payload.name}".` }));
-      set_Tasks([{ ...response.payload }, ..._tasks]);
+      setCurrentFolder({
+        ...currentFolder,
+        tasks: [{ ...response.payload }, ...currentFolder.tasks],
+      });
       setIsCreating(false);
       reset();
       return;
@@ -110,16 +128,17 @@ const TaskList = ({ taskFolder }) => {
   const editTaskList = (edited_task, action_type) => {
     let edited_list;
     if (action_type === ACTIONS.TASKS_DELETE) {
-      edited_list = taskFolder.tasks.filter((task) => {
+      edited_list = currentFolder.tasks.filter((task) => {
         return task.id !== edited_task.id;
       });
     }
-    // taskFolder have been watched by useEffect so updating after re-render the list
-    taskFolder.tasks = [...edited_list];
+    // prevent memory leak
+    history.push(history.location.pathname);
+    setCurrentFolder({ ...currentFolder, tasks: [...edited_list] });
   };
 
   const renderTaskCard = () => {
-    return _tasks.map((task) => {
+    return currentFolder.tasks.map((task) => {
       return (
         <TaskCard
           key={task.id}
@@ -132,8 +151,16 @@ const TaskList = ({ taskFolder }) => {
     });
   };
 
-  return (
-    <Container maxWidth="md">
+  const renderMissingList = () => (
+    <Box display="flex" alignItems="center">
+      <Typography variant="h6" className={classes.title}>
+        nothing tasks
+      </Typography>
+    </Box>
+  );
+
+  const renderTaskList = () => (
+    <React.Fragment>
       <Box display="flex" alignItems="center">
         <Typography variant="h6" className={classes.title}>
           {currentFolder.name}
@@ -199,7 +226,20 @@ const TaskList = ({ taskFolder }) => {
           person: localStorage.getItem(NAMES.STORAGE_UID),
         }}
       />
-    </Container>
+    </React.Fragment>
   );
+
+  const rendering = () => {
+    if (isLoading) {
+      // TODO centering Loading...
+      return <h1>Now Loading...</h1>;
+    }
+    if (!id) {
+      return renderMissingList();
+    }
+    return renderTaskList();
+  };
+
+  return <Container maxWidth="md">{rendering()}</Container>;
 };
 export default TaskList;

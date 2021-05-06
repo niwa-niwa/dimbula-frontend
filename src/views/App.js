@@ -16,7 +16,7 @@ import SignUp from "./sign/SignUp";
 import SignOut from "./sign/SignOut";
 import ResendEmail from "./sign/ResendEmail";
 import ForgetPw from "./sign/ForgetPw";
-import Tasks from "./task/Tasks";
+import TaskList from "./task/layouts/TaskList";
 import Settings from "./settings/Settings";
 import SettingsHeader from "./settings/layouts/Header";
 
@@ -116,8 +116,8 @@ const App = () => {
         <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
         <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
 
-        <AuthRoute exact path={PATHS.HOME} component={Tasks} layout={MainLayout}/>
-        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Tasks} layout={MainLayout}/>
+        <AuthRoute exact path={PATHS.HOME} component={TaskList} layout={MainLayout}/>
+        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={TaskList} layout={MainLayout}/>
 
       </Switch>
     );
