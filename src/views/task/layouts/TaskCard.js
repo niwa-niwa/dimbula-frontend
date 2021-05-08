@@ -1,104 +1,68 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   ListItem,
   ListItemText,
   Checkbox,
   IconButton,
-} from '@material-ui/core';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+} from "@material-ui/core";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
 // import StarIcon from '@material-ui/icons/Star';
 import history from "../../../history";
-import { setSnackBar } from "../../../slices/snackBarSlice";
 import TaskDialog from "../modals/TaskDialog";
 import DeleteDialog from "../modals/DeleteDialog";
 
-import { asyncGetCurrentTaskFolder, asyncEditTask, asyncDeleteTask } from "../../../slices/taskSlice";
+import {
+  asyncGetCurrentTaskFolder,
+  asyncEditTask,
+  asyncDeleteTask,
+} from "../../../slices/taskSlice";
 import ACTIONS from "../../../const/actions";
 
 const useStyles = makeStyles((theme) => ({
   item_style: {
-    borderBottom:"1px solid #f0f0f0"
-  }
-}))
+    borderBottom: "1px solid #f0f0f0",
+  },
+}));
 
-
-const TaskCard = ({task, onEditTaskList}) => {
+const TaskCard = ({ task }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [_task, set_Task] = useState({...task});
+  const [_task, set_Task] = useState({ ...task });
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const dispatchEdit = async (edited_task) => {
+  const dispatchEdit = (edited_task) => {
     dispatch(
-      asyncEditTask(
-        edited_task,
-        {
-          success:() => {
-            setIsEditing(false);
-            set_Task({_task, ...edited_task})
-            dispatch(
-              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
-            );
-          }
-        }
-      ));
+      asyncEditTask(edited_task, {
+        success: () => {
+          setIsEditing(false);
+          set_Task({ _task, ...edited_task });
+          dispatch(
+            asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+          );
+        },
+      })
+    );
+  };
 
-    // if (response.type === ACTIONS.TASKS_EDIT + "/fulfilled") {
-    //   dispatch(setSnackBar({ message: `Edited "${response.payload.name}".` }));
-    //   set_Task({ ...response.payload });
-    //   setIsEditing(false);
-    //   return;
-    // }
-    // if (response.type === ACTIONS.TASKS_EDIT + "/rejected") {
-    //   dispatch(
-    //     setSnackBar({
-    //       severity: "error",
-    //       message: response.payload.message,
-    //     })
-    //   );
-    //   return;
-    // }
-
-  }
-
-  const dispatchDelete = async () => {
-    const response = dispatch(
-      asyncDeleteTask(
-        _task,
-        {
-          success:()=>{
-            dispatch(
-              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
-            );
-            setIsEditing(false);
-            setIsDeleting(false);
-          },
-          failure:()=>{
-            setIsDeleting(false);
-          }
-        }
-      ));
-    // if (response.type === ACTIONS.TASKS_DELETE + "/rejected") {
-    //   dispatch(
-    //     setSnackBar({
-    //       severity: "error",
-    //       message: response.payload.message,
-    //     })
-    //   );
-    //   setIsDeleting(false);
-    //   return;
-    // }
-    // if (response.type === ACTIONS.TASKS_DELETE + "/fulfilled") {
-    //   onEditTaskList(_task, ACTIONS.TASKS_DELETE)
-    //   dispatch(setSnackBar({ message: `Deleted "${_task.name}".` }));
-    //   setIsEditing(false);
-    //   setIsDeleting(false);
-    //   return;
-    // }
-  }
+  const dispatchDelete = () => {
+    dispatch(
+      asyncDeleteTask(_task, {
+        success: () => {
+          dispatch(
+            asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+          );
+          setIsEditing(false);
+          setIsDeleting(false);
+        },
+        failure: () => {
+          setIsDeleting(false);
+        },
+      })
+    );
+  };
 
   return (
     <React.Fragment>
@@ -127,7 +91,7 @@ const TaskCard = ({task, onEditTaskList}) => {
         onCallback={(edited_task) => {
           dispatchEdit(edited_task);
         }}
-        onDelete={()=>{
+        onDelete={() => {
           setIsDeleting(true);
         }}
       />
@@ -142,8 +106,7 @@ const TaskCard = ({task, onEditTaskList}) => {
         }}
         subtitle={`You are going to delete "${_task.name}".`}
       />
-
     </React.Fragment>
   );
-}
+};
 export default TaskCard;
