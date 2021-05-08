@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -11,8 +11,10 @@ import TaskCard from "./TaskCard";
 import DeleteDialog from "../modals/DeleteDialog";
 import TaskDialog from "../modals/TaskDialog";
 import {
+  asyncGetCurrentTaskFolder,
   asyncDeleteTaskFolder,
   asyncCreateTask,
+  selectCurrentTaskFolder,
 } from "../../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
 import { setSnackBar } from "../../../slices/snackBarSlice";
@@ -32,6 +34,7 @@ const TaskList = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [currentFolder, setCurrentFolder] = useState({});
+  const currentTaskFolder = useSelector(selectCurrentTaskFolder);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,20 +43,23 @@ const TaskList = () => {
     let isMounted = true;
 
     const effect = async () => {
-      try {
-        const response = await backend.get(
-          NAMES.V1 + history.location.pathname.slice(1)
-        );
-        setCurrentFolder({ ...response.data });
-      } catch (e) {
-        dispatch(
-          setSnackBar({
-            severity: "error",
-            message: "Not found tasks that you find",
-          })
-        );
-        history.push(PATHS.HOME);
-      }
+      // try {
+      //   const response = await backend.get(
+      //     NAMES.V1 + history.location.pathname.slice(1)
+      //   );
+      //   setCurrentFolder({ ...response.data });
+      // } catch (e) {
+      //   dispatch(
+      //     setSnackBar({
+      //       severity: "error",
+      //       message: "Not found tasks that you find",
+      //     })
+      //   );
+      //   history.push(PATHS.HOME);
+      // }
+      dispatch(
+        asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+      );
       if (isMounted) {
         setIsLoading(false);
       }
@@ -68,12 +74,13 @@ const TaskList = () => {
     };
   }, [id, dispatch]);
 
+  // TODO : replace new name of task-folder after rename
   const dispatchEdit = () => {
     dispatch(
       openTaskFolderDialog({
         action_type: ACTIONS.TASK_FOLDERS_EDIT,
-        taskFolder_id: currentFolder.id,
-        taskFolder_name: currentFolder.name,
+        taskFolder_id: currentTaskFolder.id,
+        taskFolder_name: currentTaskFolder.name,
       })
     );
   };
@@ -85,60 +92,74 @@ const TaskList = () => {
    * @returns nothing
    */
   const dispatchCreate = async (data, reset) => {
-    const response = await dispatch(asyncCreateTask(data));
-    if (response.type === ACTIONS.TASKS_CREATE + "/rejected") {
-      dispatch(
-        setSnackBar({
-          severity: "error",
-          message: response.payload.message,
-        })
-      );
-      return;
-    }
-    if (response.type === ACTIONS.TASKS_CREATE + "/fulfilled") {
-      dispatch(setSnackBar({ message: `Created "${response.payload.name}".` }));
-      setCurrentFolder({
-        ...currentFolder,
-        tasks: [{ ...response.payload }, ...currentFolder.tasks],
-      });
-      setIsCreating(false);
-      reset();
-      return;
-    }
+    const response = dispatch(asyncCreateTask(
+      data,
+      {
+        success:()=>{
+          dispatch(
+            asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+          );
+          setIsCreating(false);
+          reset();
+        }
+      }
+      ));
+    // if (response.type === ACTIONS.TASKS_CREATE + "/rejected") {
+    //   dispatch(
+    //     setSnackBar({
+    //       severity: "error",
+    //       message: response.payload.message,
+    //     })
+    //   );
+    //   return;
+    // }
+    // if (response.type === ACTIONS.TASKS_CREATE + "/fulfilled") {
+    //   dispatch(setSnackBar({ message: `Created "${response.payload.name}".` }));
+    //   setCurrentFolder({
+    //     ...currentTaskFolder,
+    //     tasks: [{ ...response.payload }, ...currentTaskFolder.tasks],
+    //   });
+    //   setIsCreating(false);
+    //   reset();
+    //   return;
+    // }
   };
 
   const dispatchDelete = async () => {
-    const response = await dispatch(asyncDeleteTaskFolder(currentFolder.id));
-    if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/rejected") {
-      dispatch(
-        setSnackBar({
-          severity: "error",
-          message: response.payload.message,
-        })
-      );
-      return;
-    }
-    if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/fulfilled") {
-      dispatch(setSnackBar({ message: `Deleted "${currentFolder.name}".` }));
-      history.push(PATHS.HOME);
-      return;
-    }
+    const response = dispatch(asyncDeleteTaskFolder(currentTaskFolder, {success:history.push(PATHS.HOME)}));
+    // if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/rejected") {
+    //   dispatch(
+    //     setSnackBar({
+    //       severity: "error",
+    //       message: response.payload.message,
+    //     })
+    //   );
+    //   return;
+    // }
+    // if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/fulfilled") {
+    //   dispatch(setSnackBar({ message: `Deleted "${currentTaskFolder.name}".` }));
+    //   history.push(PATHS.HOME);
+    //   return;
+    // }
   };
 
   const editTaskList = (edited_task, action_type) => {
     let edited_list;
     if (action_type === ACTIONS.TASKS_DELETE) {
-      edited_list = currentFolder.tasks.filter((task) => {
+      edited_list = currentTaskFolder.tasks.filter((task) => {
         return task.id !== edited_task.id;
       });
     }
     // prevent memory leak
     history.push(history.location.pathname);
-    setCurrentFolder({ ...currentFolder, tasks: [...edited_list] });
+    setCurrentFolder({ ...currentTaskFolder, tasks: [...edited_list] });
   };
 
   const renderTaskCard = () => {
-    return currentFolder.tasks.map((task) => {
+    if(!currentTaskFolder.tasks){
+      return false
+    }
+    return currentTaskFolder.tasks.map((task) => {
       return (
         <TaskCard
           key={task.id}
@@ -163,7 +184,7 @@ const TaskList = () => {
     <React.Fragment>
       <Box display="flex" alignItems="center">
         <Typography variant="h6" className={classes.title}>
-          {currentFolder.name}
+          {currentTaskFolder.name}
         </Typography>
         <Button
           variant="outlined"
@@ -208,7 +229,7 @@ const TaskList = () => {
         onDelete={() => {
           dispatchDelete();
         }}
-        subtitle={`You are going to delete "${currentFolder.name}".`}
+        subtitle={`You are going to delete "${currentTaskFolder.name}".`}
       />
 
       <TaskDialog
@@ -222,7 +243,7 @@ const TaskList = () => {
           dispatchCreate(data, reset);
         }}
         editTask={{
-          taskFolder: currentFolder.id,
+          taskFolder: currentTaskFolder.id,
           person: localStorage.getItem(NAMES.STORAGE_UID),
         }}
       />

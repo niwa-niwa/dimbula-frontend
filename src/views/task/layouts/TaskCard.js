@@ -9,11 +9,12 @@ import {
 } from '@material-ui/core';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 // import StarIcon from '@material-ui/icons/Star';
+import history from "../../../history";
 import { setSnackBar } from "../../../slices/snackBarSlice";
 import TaskDialog from "../modals/TaskDialog";
 import DeleteDialog from "../modals/DeleteDialog";
 
-import { asyncEditTask, asyncDeleteTask } from "../../../slices/taskSlice";
+import { asyncGetCurrentTaskFolder, asyncEditTask, asyncDeleteTask } from "../../../slices/taskSlice";
 import ACTIONS from "../../../const/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,46 +32,72 @@ const TaskCard = ({task, onEditTaskList}) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const dispatchEdit = async (edited_task) => {
-    console.log(edited_task);
-    const response = await dispatch(asyncEditTask(edited_task));
+    dispatch(
+      asyncEditTask(
+        edited_task,
+        {
+          success:() => {
+            setIsEditing(false);
+            set_Task({_task, ...edited_task})
+            dispatch(
+              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+            );
+          }
+        }
+      ));
 
-    if (response.type === ACTIONS.TASKS_EDIT + "/fulfilled") {
-      dispatch(setSnackBar({ message: `Edited "${response.payload.name}".` }));
-      set_Task({ ...response.payload });
-      setIsEditing(false);
-      return;
-    }
-    if (response.type === ACTIONS.TASKS_EDIT + "/rejected") {
-      dispatch(
-        setSnackBar({
-          severity: "error",
-          message: response.payload.message,
-        })
-      );
-      return;
-    }
+    // if (response.type === ACTIONS.TASKS_EDIT + "/fulfilled") {
+    //   dispatch(setSnackBar({ message: `Edited "${response.payload.name}".` }));
+    //   set_Task({ ...response.payload });
+    //   setIsEditing(false);
+    //   return;
+    // }
+    // if (response.type === ACTIONS.TASKS_EDIT + "/rejected") {
+    //   dispatch(
+    //     setSnackBar({
+    //       severity: "error",
+    //       message: response.payload.message,
+    //     })
+    //   );
+    //   return;
+    // }
 
   }
 
   const dispatchDelete = async () => {
-    const response = await dispatch(asyncDeleteTask(_task));
-    if (response.type === ACTIONS.TASKS_DELETE + "/rejected") {
-      dispatch(
-        setSnackBar({
-          severity: "error",
-          message: response.payload.message,
-        })
-      );
-      setIsDeleting(false);
-      return;
-    }
-    if (response.type === ACTIONS.TASKS_DELETE + "/fulfilled") {
-      onEditTaskList(_task, ACTIONS.TASKS_DELETE)
-      dispatch(setSnackBar({ message: `Deleted "${_task.name}".` }));
-      setIsEditing(false);
-      setIsDeleting(false);
-      return;
-    }
+    const response = dispatch(
+      asyncDeleteTask(
+        _task,
+        {
+          success:()=>{
+            dispatch(
+              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+            );
+            setIsEditing(false);
+            setIsDeleting(false);
+          },
+          failure:()=>{
+            setIsDeleting(false);
+          }
+        }
+      ));
+    // if (response.type === ACTIONS.TASKS_DELETE + "/rejected") {
+    //   dispatch(
+    //     setSnackBar({
+    //       severity: "error",
+    //       message: response.payload.message,
+    //     })
+    //   );
+    //   setIsDeleting(false);
+    //   return;
+    // }
+    // if (response.type === ACTIONS.TASKS_DELETE + "/fulfilled") {
+    //   onEditTaskList(_task, ACTIONS.TASKS_DELETE)
+    //   dispatch(setSnackBar({ message: `Deleted "${_task.name}".` }));
+    //   setIsEditing(false);
+    //   setIsDeleting(false);
+    //   return;
+    // }
   }
 
   return (
