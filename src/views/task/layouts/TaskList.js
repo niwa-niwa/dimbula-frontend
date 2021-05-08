@@ -38,17 +38,23 @@ const TaskList = () => {
 
   useEffect(() => {
     let isMounted = true;
+    if (!id) {
+      history.push(PATHS.HOME);
+    }
 
     const effect = async () => {
-      dispatch(asyncGetCurrentTaskFolder(history.location.pathname.slice(1)));
+      await dispatch(
+        asyncGetCurrentTaskFolder(history.location.pathname.slice(1), {
+          failure: () => {
+            history.push(PATHS.HOME);
+          },
+        })
+      );
       if (isMounted) {
         setIsLoading(false);
       }
     };
-
-    if (id && isMounted) {
-      effect();
-    }
+    effect();
 
     return () => {
       isMounted = false;
@@ -94,21 +100,17 @@ const TaskList = () => {
   };
 
   const renderTaskCard = () => {
-    if (!currentTaskFolder.tasks) {
-      return false;
+    if (
+      !Object.keys(currentTaskFolder).length ||
+      !currentTaskFolder.tasks.length
+    ) {
+      return <h1>Nothing tasks for now.</h1>;
     }
+
     return currentTaskFolder.tasks.map((task) => {
       return <TaskCard key={task.id} task={task} />;
     });
   };
-
-  const renderMissingList = () => (
-    <Box display="flex" alignItems="center">
-      <Typography variant="h6" className={classes.title}>
-        nothing tasks
-      </Typography>
-    </Box>
-  );
 
   const renderTaskList = () => (
     <React.Fragment>
@@ -186,7 +188,14 @@ const TaskList = () => {
       return <h1>Now Loading...</h1>;
     }
     if (!id) {
-      return renderMissingList();
+      // This is temporary process until implemented inbox
+      return (
+        <Box display="flex" alignItems="center">
+          <Typography variant="h6" className={classes.title}>
+            nothing tasks
+          </Typography>
+        </Box>
+      );
     }
     return renderTaskList();
   };
