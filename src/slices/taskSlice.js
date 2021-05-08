@@ -219,6 +219,18 @@ export const taskSlice = createSlice({
     },
     setCurrentTaskFolder(state, action){
       state.currentTaskFolder = {...action.payload}
+    },
+    incrementTaskCount(state, action){
+      const task_folder = state.taskFolders.find(folder=>{
+        return action.payload.taskFolder === folder.id;
+      });
+      task_folder.task_count++;
+    },
+    decrementTaskCount(state, action){
+      const task_folder = state.taskFolders.find(folder=>{
+        return action.payload.taskFolder === folder.id;
+      });
+      task_folder.task_count--;
     }
   },
   extraReducers: (builder) => {
@@ -312,7 +324,7 @@ export const selectTaskSections = (state) => state.task.taskSections;
 export const selectTasks = (state) => state.task.tasks;
 export const selectSubTasks = (state) => state.task.subTasks;
 export const selectError = (state) => state.task.error;
-export const { setTaskFolders, setCurrentTaskFolder, } = taskSlice.actions;
+export const { setTaskFolders, setCurrentTaskFolder, incrementTaskCount, decrementTaskCount } = taskSlice.actions;
 
 
 export const asyncGetTaskFolders = () => async dispatch => {
@@ -427,10 +439,11 @@ export const asyncGetCurrentTaskFolder = (
 
 export const asyncCreateTask = (payload, {success=null, failure=null}={}) => async dispatch => {
     try {
-      await backend.post(
+      const {data} = await backend.post(
         NAMES.V1 + "tasks/create/",
         payload,
       );
+      dispatch(incrementTaskCount(data))
       dispatch(setSnackBar({ message: `Created "${payload.name}".` }));
       if (success) {
         success();
@@ -476,6 +489,7 @@ export const asyncEditTask = (payload, {success=null, failure=null}={}) => async
 export const asyncDeleteTask = (task, {success=null, failure=null}={}) => async dispatch => {
     try {
       await backend.delete(NAMES.V1 + `tasks/delete/${task.id}/`);
+      dispatch(decrementTaskCount(task))
       dispatch(setSnackBar({ message: `Deleted "${task.name}".` }));
       if (success) {
         success();
