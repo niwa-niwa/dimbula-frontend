@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-
-import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -10,12 +10,12 @@ import TaskCard from "./TaskCard";
 import DeleteDialog from "../modals/DeleteDialog";
 import TaskDialog from "../modals/TaskDialog";
 import {
-  selectTaskFolders,
+  asyncGetCurrentTaskFolder,
   asyncDeleteTaskFolder,
   asyncCreateTask,
+  selectCurrentTaskFolder,
 } from "../../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
-import { setSnackBar } from "../../../slices/snackBarSlice";
 
 import PATHS from "../../../const/paths";
 import NAMES from "../../../const/names";
@@ -27,38 +27,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TaskList = ({ taskFolder }) => {
-  const dispatch = useDispatch();
+const TaskList = () => {
   const classes = useStyles();
-  const task_folders = useSelector(selectTaskFolders);
-  const [_tasks, set_Tasks] = useState([]);
-  const [currentFolder, setCurrentFolder] = useState({});
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const currentTaskFolder = useSelector(selectCurrentTaskFolder);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (task_folders.length > 0) {
-      const folder = task_folders.find((folder) => {
-        return folder.id === taskFolder.id;
-      });
-
-      if (folder) {
-        // the folder is stored in Redux. taskFolder should be depends on Redux taskFolder
-        setCurrentFolder({ ...folder });
-        set_Tasks([...taskFolder.tasks]);
-      }
-      if (!folder) {
-        history.push(PATHS.HOME);
-      }
+    let isMounted = true;
+    if (!id) {
+      history.push(PATHS.HOME);
     }
-  }, [task_folders, taskFolder, dispatch]);
+
+    const effect = async () => {
+      await dispatch(
+        asyncGetCurrentTaskFolder(history.location.pathname.slice(1), {
+          failure: () => {
+            history.push(PATHS.HOME);
+          },
+        })
+      );
+      if (isMounted) {
+        setIsLoading(false);
+      }
+    };
+    effect();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, dispatch]);
 
   const dispatchEdit = () => {
     dispatch(
       openTaskFolderDialog({
         action_type: ACTIONS.TASK_FOLDERS_EDIT,
-        taskFolder_id: currentFolder.id,
-        taskFolder_name: currentFolder.name,
+        taskFolder_id: currentTaskFolder.id,
+        taskFolder_name: currentTaskFolder.name,
       })
     );
   };
@@ -69,74 +77,46 @@ const TaskList = ({ taskFolder }) => {
    * @param {CallBack Function for reset values of form} reset
    * @returns nothing
    */
-  const dispatchCreate = async (data, reset) => {
-    const response = await dispatch(asyncCreateTask(data));
-    if (response.type === ACTIONS.TASKS_CREATE + "/rejected") {
-      dispatch(
-        setSnackBar({
-          severity: "error",
-          message: response.payload.message,
-        })
-      );
-      return;
-    }
-    if (response.type === ACTIONS.TASKS_CREATE + "/fulfilled") {
-      dispatch(setSnackBar({ message: `Created "${response.payload.name}".` }));
-      set_Tasks([{ ...response.payload }, ..._tasks]);
-      setIsCreating(false);
-      reset();
-      return;
-    }
+  const dispatchCreate = (data, reset) => {
+    dispatch(
+      asyncCreateTask(data, {
+        success: () => {
+          dispatch(
+            asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+          );
+          setIsCreating(false);
+          reset();
+        },
+      })
+    );
   };
 
-  const dispatchDelete = async () => {
-    const response = await dispatch(asyncDeleteTaskFolder(currentFolder.id));
-    if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/rejected") {
-      dispatch(
-        setSnackBar({
-          severity: "error",
-          message: response.payload.message,
-        })
-      );
-      return;
-    }
-    if (response.type === ACTIONS.TASK_FOLDERS_DELETE + "/fulfilled") {
-      dispatch(setSnackBar({ message: `Deleted "${currentFolder.name}".` }));
-      history.push(PATHS.HOME);
-      return;
-    }
-  };
-
-  const editTaskList = (edited_task, action_type) => {
-    let edited_list;
-    if (action_type === ACTIONS.TASKS_DELETE) {
-      edited_list = taskFolder.tasks.filter((task) => {
-        return task.id !== edited_task.id;
-      });
-    }
-    // taskFolder have been watched by useEffect so updating after re-render the list
-    taskFolder.tasks = [...edited_list];
+  const dispatchDelete = () => {
+    dispatch(
+      asyncDeleteTaskFolder(currentTaskFolder, {
+        success: history.push(PATHS.HOME),
+      })
+    );
   };
 
   const renderTaskCard = () => {
-    return _tasks.map((task) => {
-      return (
-        <TaskCard
-          key={task.id}
-          task={task}
-          onEditTaskList={(edited_data, action_type) => {
-            editTaskList(edited_data, action_type);
-          }}
-        />
-      );
+    if (
+      !Object.keys(currentTaskFolder).length ||
+      !currentTaskFolder.tasks.length
+    ) {
+      return <h1>Nothing tasks for now.</h1>;
+    }
+
+    return currentTaskFolder.tasks.map((task) => {
+      return <TaskCard key={task.id} task={task} />;
     });
   };
 
-  return (
-    <Container maxWidth="md">
+  const renderTaskList = () => (
+    <React.Fragment>
       <Box display="flex" alignItems="center">
         <Typography variant="h6" className={classes.title}>
-          {currentFolder.name}
+          {currentTaskFolder.name}
         </Typography>
         <Button
           variant="outlined"
@@ -181,7 +161,7 @@ const TaskList = ({ taskFolder }) => {
         onDelete={() => {
           dispatchDelete();
         }}
-        subtitle={`You are going to delete "${currentFolder.name}".`}
+        subtitle={`You are going to delete "${currentTaskFolder.name}".`}
       />
 
       <TaskDialog
@@ -195,11 +175,31 @@ const TaskList = ({ taskFolder }) => {
           dispatchCreate(data, reset);
         }}
         editTask={{
-          taskFolder: currentFolder.id,
+          taskFolder: currentTaskFolder.id,
           person: localStorage.getItem(NAMES.STORAGE_UID),
         }}
       />
-    </Container>
+    </React.Fragment>
   );
+
+  const rendering = () => {
+    if (isLoading) {
+      // TODO: centering Loading...
+      return <h1>Now Loading...</h1>;
+    }
+    if (!id) {
+      // This is temporary process until implemented inbox
+      return (
+        <Box display="flex" alignItems="center">
+          <Typography variant="h6" className={classes.title}>
+            nothing tasks
+          </Typography>
+        </Box>
+      );
+    }
+    return renderTaskList();
+  };
+
+  return <Container maxWidth="md">{rendering()}</Container>;
 };
 export default TaskList;

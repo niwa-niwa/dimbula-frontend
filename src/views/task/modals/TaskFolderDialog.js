@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import history from "../../../history";
+
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
@@ -16,14 +18,13 @@ import {
   closeTaskFolderDialog,
 } from "../../../slices/taskFolderDialogSlice";
 import {
+  asyncGetCurrentTaskFolder,
   asyncCreateTaskFolder,
   asyncEditTaskFolder,
 } from "../../../slices/taskSlice";
-import { setSnackBar } from "../../../slices/snackBarSlice";
 
 import NAMES from "../../../const/names";
 import ACTIONS from "../../../const/actions";
-
 
 export default function FormDialog() {
   const dispatch = useDispatch();
@@ -47,55 +48,40 @@ export default function FormDialog() {
 
   const handleClose = () => {
     dispatch(closeTaskFolderDialog());
-    reset({name:""});
+    reset({ name: "" });
   };
 
   const onSubmit = async (data) => {
     if (action_type === ACTIONS.TASK_FOLDERS_EDIT) {
-      const response = await dispatch(
-        asyncEditTaskFolder({
-          ...data,
-          id: taskFolder_id,
-          person: localStorage.getItem(NAMES.STORAGE_UID),
-        })
+      dispatch(
+        asyncEditTaskFolder(
+          {
+            ...data,
+            id: taskFolder_id,
+            person: localStorage.getItem(NAMES.STORAGE_UID),
+          },
+          {
+            success: () => {
+              dispatch(
+                asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+              );
+              handleClose();
+            },
+          }
+        )
       );
-      if (response.type === ACTIONS.TASK_FOLDERS_EDIT + "/rejected") {
-        dispatch(
-          setSnackBar({
-            severity: "error",
-            message: response.payload.message,
-          })
-        );
-        return;
-      }
-      if (response.type === ACTIONS.TASK_FOLDERS_EDIT + "/fulfilled") {
-        dispatch(setSnackBar({ message: `Edited "${data.name}".` }));
-        dispatch(closeTaskFolderDialog());
-        return;
-      }
     }
 
     if (action_type === ACTIONS.TASK_FOLDERS_CREATE) {
-      const response = await dispatch(
-        asyncCreateTaskFolder({
-          ...data,
-          person: localStorage.getItem(NAMES.STORAGE_UID),
-        })
+      dispatch(
+        asyncCreateTaskFolder(
+          {
+            ...data,
+            person: localStorage.getItem(NAMES.STORAGE_UID),
+          },
+          { success: handleClose() }
+        )
       );
-      if (response.type === ACTIONS.TASK_FOLDERS_CREATE + "/rejected") {
-        dispatch(
-          setSnackBar({
-            severity: "error",
-            message: response.payload.message,
-          })
-        );
-        return;
-      }
-      if (response.type === ACTIONS.TASK_FOLDERS_CREATE + "/fulfilled") {
-        dispatch(setSnackBar({ message: `Created "${data.name}".` }));
-        handleClose(data);
-        return;
-      }
     }
   };
 
