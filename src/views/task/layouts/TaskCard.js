@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
-// import StarIcon from '@material-ui/icons/Star';
+import StarIcon from '@material-ui/icons/Star';
 import history from "../../../history";
 import TaskDialog from "../modals/TaskDialog";
 import DeleteDialog from "../modals/DeleteDialog";
@@ -64,19 +64,55 @@ const TaskCard = ({ task }) => {
     );
   };
 
+  function onStar(){
+    dispatch(
+      asyncEditTask(
+        {..._task,is_star:!_task.is_star},
+        {
+          success: () => {
+            set_Task({..._task,is_star:!_task.is_star});
+          },
+        },
+      )
+    );
+  }
+
+  function onDone(){
+    dispatch(
+      asyncEditTask(
+        {..._task,is_done:!_task.is_done},
+        {
+          success: () => {
+            set_Task({..._task,is_done:!_task.is_done});
+          },
+        },
+      )
+    );
+  }
+
   return (
     <React.Fragment>
-      <ListItem
-        button
-        className={classes.item_style}
-        onClick={() => {
-          setIsEditing(true);
-        }}
-      >
-        <Checkbox edge="start" />
-        <ListItemText primary={_task.name} />
-        <IconButton>
-          <StarBorderIcon />
+      <ListItem button className={classes.item_style}>
+        <Checkbox
+          edge="start"
+          color="default"
+          checked={_task.is_done}
+          onChange={()=>{onDone()}}
+        />
+        <ListItemText
+          button="true"
+          onClick={() => {
+            setIsEditing(true);
+          }}
+          primary={_task.name}
+        />
+        <IconButton
+          onClick={()=>{onStar()}}
+        >
+          { _task.is_star ?
+            <StarIcon /> :
+            <StarBorderIcon />
+          }
         </IconButton>
       </ListItem>
 

@@ -184,7 +184,7 @@ const TaskList = () => {
 
   const rendering = () => {
     if (isLoading) {
-      // TODO centering Loading...
+      // TODO: centering Loading...
       return <h1>Now Loading...</h1>;
     }
     if (!id) {
