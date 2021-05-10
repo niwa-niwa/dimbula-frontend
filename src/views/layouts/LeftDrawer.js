@@ -69,10 +69,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const special_folders = [
-  { text: "Inbox", icon: <InboxIcon />, link:'/inbox/', },
-  { text: "Today", icon: <TodayIcon />, link:'/today/', },
-  { text: "Stars", icon: <StarsIcon />, link:'/stars/', },
-  { text: "All Tasks", icon: <AllInboxIcon />, link:'/all-tasks/',},
+  { text: "Inbox", icon: <InboxIcon />, link: PATHS.APP_INBOX, },
+  { text: "Today", icon: <TodayIcon />, link: PATHS.APP_TODAY, },
+  { text: "Stars", icon: <StarsIcon />, link: PATHS.APP_STARS, },
+  { text: "All Tasks", icon: <AllInboxIcon />, link:PATHS.APP_ALL_TASKS,},
 ];
 
 export default function PersistentDrawer({ children, isDrawer}) {

@@ -46,7 +46,7 @@ const SignUp = () => {
       .auth()
       .signInWithPopup(googleAuthProvider)
       .then(() => {
-        <Redirect to={PATHS.HOME} />;
+        <Redirect to={PATHS.APP_INBOX} />;
       })
       .catch((e) => {
         dispatch(

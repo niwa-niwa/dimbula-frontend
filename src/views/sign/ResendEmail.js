@@ -62,7 +62,7 @@ const ResendEmail = () => {
             })
           );
         } else {
-          <Redirect to={PATHS.HOME} />;
+          <Redirect to={PATHS.APP_INBOX} />;
         }
       })
       .catch((e) => {

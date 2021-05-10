@@ -42,14 +42,14 @@ const TaskList = () => {
   useEffect(() => {
     let isMounted = true;
     if (!id) {
-      history.push(PATHS.HOME);
+      history.push(PATHS.APP_INBOX);
     }
 
     const effect = async () => {
       await dispatch(
-        asyncGetCurrentTaskFolder(history.location.pathname.slice(1), {
+        asyncGetCurrentTaskFolder(history.location.pathname.slice(5), {
           failure: () => {
-            history.push(PATHS.HOME);
+            history.push(PATHS.APP_INBOX);
           },
         })
       );
@@ -97,7 +97,7 @@ const TaskList = () => {
   const dispatchDelete = () => {
     dispatch(
       asyncDeleteTaskFolder(currentTaskFolder, {
-        success: history.push(PATHS.HOME),
+        success: history.push(PATHS.APP_INBOX),
       })
     );
   };
