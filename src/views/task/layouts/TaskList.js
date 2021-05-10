@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  hidden:{
+    display:"none",
+  },
 }));
 
 const TaskList = () => {
@@ -119,6 +122,7 @@ const TaskList = () => {
           {currentTaskFolder.name}
         </Typography>
         <Button
+          className={currentTaskFolder.id ? "" : classes.hidden}
           variant="outlined"
           onClick={() => {
             dispatchEdit();
@@ -127,6 +131,7 @@ const TaskList = () => {
           Rename
         </Button>
         <Button
+          className={currentTaskFolder.id ? "" : classes.hidden}
           variant="outlined"
           color="secondary"
           onClick={() => {
