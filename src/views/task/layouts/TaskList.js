@@ -10,6 +10,7 @@ import TaskCard from "./TaskCard";
 import DeleteDialog from "../modals/DeleteDialog";
 import TaskDialog from "../modals/TaskDialog";
 import {
+  convertToEndPoint,
   asyncGetCurrentTaskFolder,
   asyncDeleteTaskFolder,
   asyncCreateTask,
@@ -47,11 +48,14 @@ const TaskList = () => {
 
     const effect = async () => {
       await dispatch(
-        asyncGetCurrentTaskFolder(history.location.pathname.slice(5), {
-          failure: () => {
-            history.push(PATHS.APP_INBOX);
-          },
-        })
+        asyncGetCurrentTaskFolder(
+          convertToEndPoint(history.location.pathname),
+          {
+            failure: () => {
+              history.push(PATHS.APP_INBOX);
+            },
+          }
+        )
       );
       if (isMounted) {
         setIsLoading(false);
@@ -85,7 +89,9 @@ const TaskList = () => {
       asyncCreateTask(data, {
         success: () => {
           dispatch(
-            asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+            asyncGetCurrentTaskFolder(
+              convertToEndPoint(history.location.pathname)
+            )
           );
           setIsCreating(false);
           reset();
