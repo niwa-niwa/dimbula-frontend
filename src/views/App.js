@@ -108,6 +108,8 @@ const App = () => {
     return (
       <Switch>
 
+        <AuthRoute exact path={PATHS.HOME} component={Task} layout={MainLayout}/>
+        
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
         <GuestRoute exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />
@@ -116,7 +118,7 @@ const App = () => {
         <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
         <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
 
-        <AuthRoute exact path={PATHS.HOME} component={Task} layout={MainLayout}/>
+        <AuthRoute exact path={`${PATHS.APP_ROOT}:id/`} component={Task} layout={MainLayout}/>
         <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Task} layout={MainLayout}/>
 
       </Switch>

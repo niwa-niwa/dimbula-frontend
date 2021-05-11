@@ -44,8 +44,8 @@ export default function ElevateAppBar(props) {
       <ElevationScroll {...props}>
         <AppBar>
           <Toolbar>
-            <Typography variant="h6"><Link to={PATHS.HOME}>{NAMES.TITLE}</Link></Typography>
-            <IconButton><Link to={PATHS.HOME}><CloseIcon color="error" /></Link></IconButton>
+            <Typography variant="h6"><Link to={PATHS.APP_INBOX}>{NAMES.TITLE}</Link></Typography>
+            <IconButton><Link to={PATHS.APP_INBOX}><CloseIcon color="error" /></Link></IconButton>
           </Toolbar>
         </AppBar>
       </ElevationScroll>

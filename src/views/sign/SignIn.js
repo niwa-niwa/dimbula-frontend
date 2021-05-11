@@ -42,9 +42,9 @@ const SignIn = () => {
     formState: { errors },
   } = useForm();
 
-  function success(path=PATHS.HOME){
-    <Redirect to={PATHS.HOME} />;
-    // <Redirect to={localStorage.getItem(NAMES.STORAGE_REDIRECT || PATHS.HOME)} />;
+  function success(path=PATHS.APP_INBOX){
+    <Redirect to={PATHS.APP_INBOX} />;
+    // <Redirect to={localStorage.getItem(NAMES.STORAGE_REDIRECT || PATHS.APP_INBOX)} />;
     localStorage.removeItem(NAMES.STORAGE_REDIRECT);
   }
 

@@ -20,6 +20,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 
 import PATHS from "../../const/paths";
+import NAMES from "../../const/names";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -194,8 +195,8 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            <Link to={PATHS.HOME}>
-              Dimbula
+            <Link to={PATHS.APP_INBOX}>
+              {NAMES.TITLE}
             </Link>
           </Typography>
           <div className={classes.search}>

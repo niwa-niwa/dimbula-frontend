@@ -71,6 +71,9 @@ const TaskCard = ({ task }) => {
         {
           success: () => {
             set_Task({..._task,is_star:!_task.is_star});
+            dispatch(
+              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+            );
           },
         },
       )
@@ -84,6 +87,9 @@ const TaskCard = ({ task }) => {
         {
           success: () => {
             set_Task({..._task,is_done:!_task.is_done});
+            dispatch(
+              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+            );
           },
         },
       )

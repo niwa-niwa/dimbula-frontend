@@ -68,11 +68,11 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const default_menu = [
-  { text: "Inbox", icon: <InboxIcon /> },
-  { text: "Today", icon: <TodayIcon />},
-  { text: "Starred", icon: <StarsIcon /> },
-  { text: "All", icon: <AllInboxIcon /> },
+const special_folders = [
+  { text: "Inbox", icon: <InboxIcon />, link: PATHS.APP_INBOX, },
+  { text: "Today", icon: <TodayIcon />, link: PATHS.APP_TODAY, },
+  { text: "Stars", icon: <StarsIcon />, link: PATHS.APP_STARS, },
+  { text: "All Tasks", icon: <AllInboxIcon />, link:PATHS.APP_ALL_TASKS,},
 ];
 
 export default function PersistentDrawer({ children, isDrawer}) {
@@ -117,11 +117,13 @@ export default function PersistentDrawer({ children, isDrawer}) {
         <Toolbar />
         <div className={classes.drawerContainer}>
           <List>
-            {default_menu.map((menu) => (
-              <ListItem button key={menu.text}>
-                <ListItemIcon>{menu.icon}</ListItemIcon>
-                <ListItemText primary={menu.text} />
-              </ListItem>
+            {special_folders.map((menu) => (
+              <Link key={menu.text} to={menu.link} >
+                <ListItem button >
+                  <ListItemIcon>{menu.icon}</ListItemIcon>
+                  <ListItemText primary={menu.text} />
+                </ListItem>
+              </Link>
             ))}
           </List>
           <Divider />

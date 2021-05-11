@@ -147,7 +147,20 @@ export const asyncGetCurrentTaskFolder = (
 ) => async (dispatch) => {
   try {
     const { data } = await backend.get(NAMES.V1 + path);
-    dispatch(setCurrentTaskFolder(data));
+
+    /**
+     * the if syntax is confirm special folder or not
+     * Special folder are inbox today all task
+     */
+    if(path.indexOf('task-folders') !== -1){
+      dispatch(setCurrentTaskFolder(data));
+    }
+    if(path.indexOf('task-folders') === -1){
+
+      const name = path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ').replace(/\//g, "");//the function make replace UpperCase and - & / delete
+      dispatch(setCurrentTaskFolder({id:"", name, tasks:[...data], }))
+    }
+
     if (success) {
       success();
     }
@@ -170,7 +183,10 @@ export const asyncCreateTask = (
 ) => async (dispatch) => {
   try {
     const { data } = await backend.post(NAMES.V1 + "tasks/create/", payload);
-    dispatch(incrementTaskCount(data));
+    if(data.taskFolder){
+      //The task that has not a taskFolder is into inbox
+      dispatch(incrementTaskCount(data));
+    }
     dispatch(setSnackBar({ message: `Created "${payload.name}".` }));
     if (success) {
       success();
@@ -222,7 +238,10 @@ export const asyncDeleteTask = (
 ) => async (dispatch) => {
   try {
     await backend.delete(NAMES.V1 + `tasks/delete/${task.id}/`);
-    dispatch(decrementTaskCount(task));
+    if(task.taskFolder){
+      //The task that has not a taskFolder is into inbox
+      dispatch(decrementTaskCount(task));
+    }
     dispatch(setSnackBar({ message: `Deleted "${task.name}".` }));
     if (success) {
       success();
