@@ -4,6 +4,17 @@ import { setSnackBar } from "./snackBarSlice";
 
 import NAMES from "../const/names";
 
+/**
+ * 
+ * The function removes prefix that is "/app/" in path
+ * @param {String} path 
+ * @returns endpoint (String)
+ */
+export function convertToEndPoint(path){
+  return path.slice(5);
+}
+
+
 const initialState = {
   taskFolders: [],
   currentTaskFolder: {},

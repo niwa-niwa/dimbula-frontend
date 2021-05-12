@@ -18,6 +18,7 @@ import {
   closeTaskFolderDialog,
 } from "../../../slices/taskFolderDialogSlice";
 import {
+  convertToEndPoint,
   asyncGetCurrentTaskFolder,
   asyncCreateTaskFolder,
   asyncEditTaskFolder,
@@ -63,7 +64,9 @@ export default function FormDialog() {
           {
             success: () => {
               dispatch(
-                asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+                asyncGetCurrentTaskFolder(
+                  convertToEndPoint(history.location.pathname)
+                )
               );
               handleClose();
             },

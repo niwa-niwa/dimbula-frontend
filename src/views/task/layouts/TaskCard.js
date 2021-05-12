@@ -9,11 +9,13 @@ import {
 } from "@material-ui/core";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from '@material-ui/icons/Star';
+
 import history from "../../../history";
 import TaskDialog from "../modals/TaskDialog";
 import DeleteDialog from "../modals/DeleteDialog";
 
 import {
+  convertToEndPoint,
   asyncGetCurrentTaskFolder,
   asyncEditTask,
   asyncDeleteTask,
@@ -40,7 +42,9 @@ const TaskCard = ({ task }) => {
           setIsEditing(false);
           set_Task({ _task, ...edited_task });
           dispatch(
-            asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+            asyncGetCurrentTaskFolder(
+              convertToEndPoint(history.location.pathname)
+            )
           );
         },
       })
@@ -52,7 +56,9 @@ const TaskCard = ({ task }) => {
       asyncDeleteTask(_task, {
         success: () => {
           dispatch(
-            asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+            asyncGetCurrentTaskFolder(
+              convertToEndPoint(history.location.pathname)
+            )
           );
           setIsEditing(false);
           setIsDeleting(false);
@@ -72,7 +78,9 @@ const TaskCard = ({ task }) => {
           success: () => {
             set_Task({..._task,is_star:!_task.is_star});
             dispatch(
-              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+              asyncGetCurrentTaskFolder(
+                convertToEndPoint(history.location.pathname)
+              )
             );
           },
         },
@@ -88,7 +96,9 @@ const TaskCard = ({ task }) => {
           success: () => {
             set_Task({..._task,is_done:!_task.is_done});
             dispatch(
-              asyncGetCurrentTaskFolder(history.location.pathname.slice(1))
+              asyncGetCurrentTaskFolder(
+                convertToEndPoint(history.location.pathname)
+              )
             );
           },
         },
