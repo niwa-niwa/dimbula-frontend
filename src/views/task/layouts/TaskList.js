@@ -19,6 +19,10 @@ import {
   selectCurrentTaskFolder,
 } from "../../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
+import {
+  openProgressLiner,
+  closeProgressLiner,
+} from "../../../slices/progressLinerSlice";
 
 import PATHS from "../../../const/paths";
 import NAMES from "../../../const/names";
@@ -44,6 +48,7 @@ const TaskList = () => {
   const [showCompleted, setShowCompleted] = useState(false);
 
   useEffect(() => {
+    dispatch(openProgressLiner());
     let isMounted = true;
     if (!id) {
       history.push(PATHS.APP_INBOX);
@@ -61,6 +66,7 @@ const TaskList = () => {
         )
       );
       if (isMounted) {
+        dispatch(closeProgressLiner());
         setIsLoading(false);
       }
     };

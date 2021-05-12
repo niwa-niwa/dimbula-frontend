@@ -1,5 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
-
+import { createSlice } from "@reduxjs/toolkit";
 
 const progressCircleSlice = createSlice({
   name: "progressCircle",
@@ -8,13 +7,14 @@ const progressCircleSlice = createSlice({
   },
   reducers: {
     openProgressCircle(state) {
-      state.isOpen_progressCircle = true
+      state.isOpen_progressCircle = true;
     },
-    closeProgressCircle(state){
-      state.isOpen_progressCircle = false
-    }
+    closeProgressCircle(state) {
+      state.isOpen_progressCircle = false;
+    },
   },
-})
+});
 
-export const {openProgressCircle, closeProgressCircle} = progressCircleSlice.actions
-export default progressCircleSlice.reducer
+export const { openProgressCircle, closeProgressCircle } =
+  progressCircleSlice.actions;
+export default progressCircleSlice.reducer;
