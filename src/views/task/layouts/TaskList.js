@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 
 import history from "../../../history";
 import TaskCard from "./TaskCard";
@@ -39,6 +41,7 @@ const TaskList = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showCompleted, setShowCompleted] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -108,7 +111,7 @@ const TaskList = () => {
     );
   };
 
-  const renderTaskCard = () => {
+  const renderTaskCard = (list_flag = true) => {
     if (
       !Object.keys(currentTaskFolder).length ||
       !currentTaskFolder.tasks.length
@@ -116,7 +119,19 @@ const TaskList = () => {
       return <h1>Nothing tasks for now.</h1>;
     }
 
-    return currentTaskFolder.tasks.map((task) => {
+    const render_tasks = currentTaskFolder.tasks.filter((task) => {
+      if (list_flag && !task.is_done) {
+        // not done tasks
+        return task;
+      }
+      if (!list_flag && task.is_done) {
+        // already done tasks
+        return task;
+      }
+      return false;
+    });
+
+    return render_tasks.map((task) => {
       return <TaskCard key={task.id} task={task} />;
     });
   };
@@ -198,19 +213,40 @@ const TaskList = () => {
       // TODO: centering Loading...
       return <h1>Now Loading...</h1>;
     }
-    if (!id) {
-      // This is temporary process until implemented inbox
-      return (
-        <Box display="flex" alignItems="center">
-          <Typography variant="h6" className={classes.title}>
-            nothing tasks
-          </Typography>
-        </Box>
-      );
-    }
     return renderTaskList();
   };
 
-  return <Container maxWidth="md">{rendering()}</Container>;
+
+  return (
+    <Container maxWidth="md">
+      {rendering()}
+      <Box mt={3}>
+        { showCompleted ?
+          <Button
+              onClick={() => {
+                setShowCompleted(false);
+              }}
+              startIcon={<RemoveCircleOutlineIcon />}
+            >
+            Hide completed Tasks
+          </Button>
+          :
+          <Button
+              onClick={() => {
+                setShowCompleted(true);
+              }}
+              startIcon={<AddCircleOutlineIcon />}
+            >
+            Show already completed Tasks
+          </Button>
+        }
+        { showCompleted ?
+          renderTaskCard(false)
+          :
+          false
+        }
+      </Box>
+    </Container>
+  );
 };
 export default TaskList;

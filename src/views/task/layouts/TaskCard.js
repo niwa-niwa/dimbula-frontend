@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   item_style: {
     borderBottom: "1px solid #f0f0f0",
   },
+  done_style: {
+    color:"#cccccc",
+  }
 }));
 
 const TaskCard = ({ task }) => {
@@ -113,22 +116,24 @@ const TaskCard = ({ task }) => {
           edge="start"
           color="default"
           checked={_task.is_done}
-          onChange={()=>{onDone()}}
+          onChange={() => {
+            onDone();
+          }}
         />
         <ListItemText
           button="true"
+          className={_task.is_done ? classes.done_style : ""}
           onClick={() => {
             setIsEditing(true);
           }}
           primary={_task.name}
         />
         <IconButton
-          onClick={()=>{onStar()}}
+          onClick={() => {
+            onStar();
+          }}
         >
-          { _task.is_star ?
-            <StarIcon /> :
-            <StarBorderIcon />
-          }
+          {_task.is_star ? <StarIcon /> : <StarBorderIcon />}
         </IconButton>
       </ListItem>
 
