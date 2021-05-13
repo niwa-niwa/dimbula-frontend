@@ -1,4 +1,9 @@
 import React from "react";
+import { useDispatch } from 'react-redux';
+import {
+  Button,
+}from "@material-ui/core";
+import { asyncDeleteUser } from '../../slices/userSlice';
 
 import firebase from "firebase/app";
 import firebase_config from "../../apis/firebase";
@@ -11,6 +16,8 @@ import {
 } from "@react-firebase/auth";
 
 const Settings = () => {
+  const dispatch = useDispatch();
+
   return (
     <React.Fragment>
       <h1>Settings Index Page</h1>
@@ -128,6 +135,16 @@ const Settings = () => {
           </div>
         </div>
       </FirebaseAuthProvider>
+
+      <Button
+        color="secondary"
+        variant="contained"
+        onClick={() => {
+          dispatch(asyncDeleteUser());
+        }}
+      >
+        Delete Account.
+      </Button>
     </React.Fragment>
   );
 };
