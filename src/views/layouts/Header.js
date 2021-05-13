@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
@@ -10,7 +11,9 @@ import {
   InputBase,
   Badge,
   MenuItem,
-  Menu, 
+  Menu,
+  LinearProgress,
+  Fade,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
@@ -18,6 +21,8 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
+
+import { selectProgressLiner } from "../../slices/progressLinerSlice";
 
 import PATHS from "../../const/paths";
 import NAMES from "../../const/names";
@@ -91,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
   const classes = useStyles();
+  const isOpen_progressLiner = useSelector(selectProgressLiner);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -195,9 +201,7 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            <Link to={PATHS.APP_INBOX}>
-              {NAMES.TITLE}
-            </Link>
+            <Link to={PATHS.APP_INBOX}>{NAMES.TITLE}</Link>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -247,6 +251,9 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
             </IconButton>
           </div>
         </Toolbar>
+        <Fade in={isOpen_progressLiner}>
+          <LinearProgress className={classes.progressBar} />
+        </Fade>
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
