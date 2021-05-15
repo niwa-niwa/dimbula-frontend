@@ -167,7 +167,6 @@ export const asyncGetCurrentTaskFolder = (
       dispatch(setCurrentTaskFolder(data));
     }
     if(path.indexOf('task-folders') === -1){
-
       const name = path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ').replace(/\//g, "");//the function make replace UpperCase and - & / delete
       dispatch(setCurrentTaskFolder({id:"", name, tasks:[...data], }))
     }
