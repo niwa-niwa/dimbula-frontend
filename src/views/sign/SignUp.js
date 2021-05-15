@@ -97,7 +97,9 @@ const SignUp = () => {
   return (
     <SignLayout>
       <Box my={3}>
-        <h2 className={classes.sub_title}>Sign Up</h2>
+        <h2 className={classes.sub_title} data-testid="page_title">
+          Sign Up
+        </h2>
       </Box>
 
       <Box mb={4}>
@@ -108,6 +110,7 @@ const SignUp = () => {
             signUpWithGoogle();
           }}
           className={classes.google_button}
+          data-testid="google_submit"
         >
           <img
             className={classes.google_logo}
@@ -145,6 +148,7 @@ const SignUp = () => {
               margin="none"
               error={Boolean(errors.email)}
               helperText={errors.email && errors.email.message}
+              data-testid="email"
             />
           )}
           rules={{
@@ -172,6 +176,7 @@ const SignUp = () => {
               margin="normal"
               error={Boolean(errors.password)}
               helperText={errors.password && errors.password.message}
+              data-testid="password"
             />
           )}
           rules={{
@@ -187,7 +192,13 @@ const SignUp = () => {
           }}
         />
         <Box mt={2}>
-          <Button fullWidth variant="contained" color="primary" type="submit">
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="submit"
+            data-testid="submit"
+          >
             Sign Up
           </Button>
         </Box>

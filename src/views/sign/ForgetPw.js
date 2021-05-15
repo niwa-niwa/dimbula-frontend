@@ -74,7 +74,9 @@ const ForgetPw = () => {
   return (
     <SignLayout>
       <Box my={3}>
-        <h2 className={classes.sub_title}>Forget Password</h2>
+        <h2 className={classes.sub_title} data-testid="page_title">
+          Forget Password
+        </h2>
       </Box>
 
       <Box
@@ -98,6 +100,7 @@ const ForgetPw = () => {
               margin="none"
               error={Boolean(errors.email)}
               helperText={errors.email && errors.email.message}
+              data-testid="email"
             />
           )}
           rules={{
@@ -110,7 +113,13 @@ const ForgetPw = () => {
         />
 
         <Box mt={2}>
-          <Button fullWidth variant="contained" color="primary" type="submit">
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="submit"
+            data-testid="submit"
+          >
             Reset Password
           </Button>
         </Box>

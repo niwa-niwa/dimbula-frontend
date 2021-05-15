@@ -42,13 +42,13 @@ const SignIn = () => {
     formState: { errors },
   } = useForm();
 
-  function success(path=PATHS.APP_INBOX){
+  function success(path = PATHS.APP_INBOX) {
     <Redirect to={PATHS.APP_INBOX} />;
     // <Redirect to={localStorage.getItem(NAMES.STORAGE_REDIRECT || PATHS.APP_INBOX)} />;
     localStorage.removeItem(NAMES.STORAGE_REDIRECT);
   }
 
-  function fail(error){
+  function fail(error) {
     dispatch(
       setSnackBar({
         isOpen: true,
@@ -78,17 +78,17 @@ const SignIn = () => {
     firebase
       .auth()
       .signInWithEmailAndPassword(data.email, data.password)
-      .then( () => {
+      .then(() => {
         success();
       })
       .catch((e) => {
         fail(e);
       })
       .finally(() => {
-        if(save){
+        if (save) {
           localStorage.setItem(NAMES.STORAGE_PASSWORD, data.password);
           localStorage.setItem(NAMES.STORAGE_EMAIL, data.email);
-        }else{
+        } else {
           localStorage.removeItem(NAMES.STORAGE_PASSWORD);
           localStorage.removeItem(NAMES.STORAGE_EMAIL, data.email);
         }
@@ -102,13 +102,16 @@ const SignIn = () => {
   return (
     <SignLayout>
       <Box my={3}>
-        <h2 className={classes.sub_title}>Sign In</h2>
+        <h2 className={classes.sub_title} data-testid="page_title">
+          Sign In
+        </h2>
       </Box>
 
       <Box mb={4}>
         <Button
           fullWidth
           variant="outlined"
+          data-testid="google_submit"
           onClick={() => {
             signInWithGoogle();
           }}
@@ -184,7 +187,13 @@ const SignIn = () => {
         />
 
         <Box mt={2}>
-          <Button fullWidth variant="contained" color="primary" type="submit">
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="submit"
+            data-testid="submit"
+          >
             Sign In
           </Button>
         </Box>
@@ -198,7 +207,9 @@ const SignIn = () => {
               name="save"
               onChange={() => setSave(!save)}
               checked={save}
-              data-testid="submit"
+              inputProps={{
+                "data-testid": "save_checkbox",
+              }}
             />
           }
           label="Save login information"
