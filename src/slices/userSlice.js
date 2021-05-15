@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import firebase from "../apis/firebase";
-
 import { backend } from "../apis/backend";
+import { setSnackBar } from "./snackBarSlice";
+import { openProgressCircle, closeProgressCircle } from "./progressCircleSlice";
 import NAMES from "../const/names";
 
 export const asyncSignIn = createAsyncThunk(
@@ -25,31 +26,31 @@ export const asyncSignIn = createAsyncThunk(
     }
   }
 );
+
+function deleteState(state) {
+  localStorage.removeItem(NAMES.STORAGE_TOKEN);
+  localStorage.removeItem(NAMES.STORAGE_REFRESH_TOKEN);
+  localStorage.removeItem(NAMES.STORAGE_UID);
+  state.userInfo = {};
+}
+
 const initialState = {
   isSignedIn: false,
-  id: "",
-  name: "",
-  email: "",
-  photo_url: "",
+  userInfo: {},
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    signIn(state) {
-      state.isSignedIn = true;
-    },
     signOut(state) {
-      localStorage.removeItem(NAMES.STORAGE_TOKEN);
-      localStorage.removeItem(NAMES.STORAGE_REFRESH_TOKEN);
-      localStorage.removeItem(NAMES.STORAGE_UID);
+      deleteState(state);
       state.isSignedIn = false;
-      state.id = "";
-      state.name = "";
-      state.email = "";
-      state.photo_url = "";
       firebase.auth().signOut();
+    },
+    deleteUserState(state) {
+      deleteState(state);
+      state.isSignedIn = false;
     },
   },
   extraReducers: (builder) => {
@@ -58,7 +59,7 @@ const userSlice = createSlice({
       return {
         ...state,
         isSignedIn: true,
-        ...action.payload,
+        userInfo: { ...action.payload },
       };
     });
     builder.addCase(asyncSignIn.rejected, (state, action) => {
@@ -75,5 +76,49 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { signIn, signOut } = userSlice.actions;
+export const { signOut, deleteUserState } = userSlice.actions;
 export const selectUser = (state) => state.user;
+
+export const asyncDeleteUser = () => (dispatch) => {
+  dispatch(openProgressCircle());
+
+  backend
+    .delete(
+      NAMES.V1 + `persons/delete/${localStorage.getItem(NAMES.STORAGE_UID)}/`
+    )
+    .then(() => {
+      firebase
+        .auth()
+        .currentUser.delete()
+        .then(() => {
+          dispatch(
+            setSnackBar({
+              message: "Thank you for using my app.",
+            })
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+          dispatch(
+            setSnackBar({
+              message: "Sorry something is wrong. retry after log-in again.",
+            })
+          );
+        })
+        .finally(() => {
+          dispatch(deleteUserState());
+        });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch(
+        setSnackBar({
+          severity: "error",
+          message: "Sorry couldn't delete account. Try again later",
+        })
+      );
+    })
+    .finally(() => {
+      dispatch(closeProgressCircle());
+    });
+};
