@@ -90,7 +90,12 @@ export default function PersistentDrawer({ children, isDrawer}) {
     }
     return task_folders.map((folder) => (
       <Link key={folder.id} to={PATHS.TASK_FOLDERS + folder.id + "/"}>
-        <ListItem button key={folder.id} dense>
+        <ListItem
+          button
+          key={folder.id}
+          dense
+          data-testid={`list-${folder.name}`}
+        >
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
@@ -119,7 +124,10 @@ export default function PersistentDrawer({ children, isDrawer}) {
           <List>
             {special_folders.map((menu) => (
               <Link key={menu.text} to={menu.link} >
-                <ListItem button >
+                <ListItem
+                  button
+                  data-testid={`list-${menu.text}`}
+                >
                   <ListItemIcon>{menu.icon}</ListItemIcon>
                   <ListItemText primary={menu.text} />
                 </ListItem>
@@ -146,6 +154,7 @@ export default function PersistentDrawer({ children, isDrawer}) {
                       })
                     )
                   }
+                  data-testid="create_taskFolder_button"
                 >
                   <AddCircleOutlineIcon />
                 </IconButton>
