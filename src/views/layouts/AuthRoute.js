@@ -1,7 +1,6 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import PATHS from "../../const/paths";
 
 const AuthRoute = ({ component: Component, layout: Layout, ...props }) => {
