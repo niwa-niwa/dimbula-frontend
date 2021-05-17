@@ -82,7 +82,9 @@ const ResendEmail = () => {
   return (
     <SignLayout>
       <Box my={3}>
-        <h2 className={classes.sub_title}>Re-Send Email</h2>
+        <h2 className={classes.sub_title} data-testid="page_title">
+          Re-Send Email
+        </h2>
       </Box>
 
       <Box
@@ -106,6 +108,7 @@ const ResendEmail = () => {
               margin="none"
               error={Boolean(errors.email)}
               helperText={errors.email && errors.email.message}
+              data-testid="email"
             />
           )}
           rules={{
@@ -132,12 +135,19 @@ const ResendEmail = () => {
               autoComplete="off"
               variant="outlined"
               margin="normal"
+              data-testid="password"
             />
           )}
         />
 
         <Box mt={2}>
-          <Button fullWidth variant="contained" color="primary" type="submit">
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="submit"
+            data-testid="submit"
+          >
             Re-send
           </Button>
         </Box>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Router, Switch } from "react-router-dom";
+import { Route, Router, Switch } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import history from "../history";
 import firebase from "../apis/firebase";
@@ -19,6 +19,8 @@ import ForgetPw from "./sign/ForgetPw";
 import Task from "./task/Task";
 import Settings from "./settings/Settings";
 import SettingsHeader from "./settings/layouts/Header";
+import Page404 from "./Page404";
+import HomePage from "./HomePage";
 
 import PATHS from "../const/paths";
 import NAMES from "../const/names";
@@ -108,7 +110,7 @@ const App = () => {
     return (
       <Switch>
 
-        <AuthRoute exact path={PATHS.HOME} component={Task} layout={MainLayout}/>
+        <Route exact path={PATHS.HOME} component={HomePage} />
         
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
@@ -120,6 +122,8 @@ const App = () => {
 
         <AuthRoute exact path={`${PATHS.APP_ROOT}:id/`} component={Task} layout={MainLayout}/>
         <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Task} layout={MainLayout}/>
+
+        <Route path="*" component={Page404} />
 
       </Switch>
     );
