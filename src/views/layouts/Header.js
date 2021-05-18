@@ -8,7 +8,7 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  InputBase,
+  // InputBase,
   Badge,
   MenuItem,
   Menu,
@@ -16,7 +16,7 @@ import {
   Fade,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
+// import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -135,7 +135,6 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
       <MenuItem onClick={handleMenuClose}>
         <Link to={PATHS.SETTINGS}>Settings</Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem>
         <Link to={PATHS.SIGN_OUT}>
           Sign Out
@@ -203,7 +202,7 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
           <Typography className={classes.title} variant="h6" noWrap>
             <Link to={PATHS.APP_INBOX}>{NAMES.TITLE}</Link>
           </Typography>
-          <div className={classes.search}>
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -215,10 +214,10 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
               }}
               inputProps={{ "aria-label": "search" }}
             />
-          </div>
+          </div> */}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
+            {/* <IconButton aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>
@@ -227,7 +226,7 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
               <Badge badgeContent={17} color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
             <IconButton
               edge="end"
               aria-label="account of current user"
