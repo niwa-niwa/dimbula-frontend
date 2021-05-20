@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
   subHeader:{
     display: "flex",
     justifyContent: "space-between",
+    backgroundColor: "#ffffff",
   }
 
 }));
