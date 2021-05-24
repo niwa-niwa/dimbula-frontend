@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { backend } from "../apis/backend";
 import { setSnackBar } from "./snackBarSlice";
+import debug from "../utils/debug";
 
 import NAMES from "../const/names";
 
@@ -61,7 +62,7 @@ export const asyncGetTaskFolders = () => async (dispatch) => {
     const { data } = await backend.get(NAMES.V1 + "task-folders/");
     dispatch(setTaskFolders(data));
   } catch (e) {
-    console.error(e);
+    debug(()=>console.error(e));
     dispatch(
       setSnackBar({
         severity: "error",
@@ -86,7 +87,7 @@ export const asyncCreateTaskFolder = (
       success();
     }
   } catch (e) {
-    console.error(e);
+    debug(()=>console.error(e));
     dispatch(
       setSnackBar({
         severity: "error",
@@ -114,7 +115,7 @@ export const asyncEditTaskFolder = (
       success();
     }
   } catch (e) {
-    console.error(e);
+    debug(()=>console.error(e));
     dispatch(
       setSnackBar({
         severity: "error",
@@ -139,7 +140,7 @@ export const asyncDeleteTaskFolder = (
       success();
     }
   } catch (e) {
-    console.error(e);
+    debug(()=>console.error(e));
     dispatch(
       setSnackBar({
         severity: "error",
@@ -202,7 +203,7 @@ export const asyncCreateTask = (
       success();
     }
   } catch (e) {
-    console.error(e);
+    debug(()=>console.error(e));
     dispatch(
       setSnackBar({
         severity: "error",
@@ -229,7 +230,7 @@ export const asyncEditTask = (
       success();
     }
   } catch (e) {
-    console.error(e);
+    debug(()=>console.error(e));
     dispatch(
       setSnackBar({
         severity: "error",
@@ -257,7 +258,7 @@ export const asyncDeleteTask = (
       success();
     }
   } catch (e) {
-    console.error(e);
+    debug(()=>console.error(e));
     dispatch(
       setSnackBar({
         severity: "error",
