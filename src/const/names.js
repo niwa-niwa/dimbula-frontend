@@ -7,5 +7,6 @@ const NAMES = {
   STORAGE_EMAIL: "email",
   STORAGE_REDIRECT: "redirect",
   V1 : "api/v1/",
+  REFRESH_URL : "https://securetoken.googleapis.com/v1/token?key=",
 };
 export default Object.freeze(NAMES);

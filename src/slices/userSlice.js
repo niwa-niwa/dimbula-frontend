@@ -4,6 +4,8 @@ import { backend } from "../apis/backend";
 import { setSnackBar } from "./snackBarSlice";
 import { openProgressCircle, closeProgressCircle } from "./progressCircleSlice";
 import NAMES from "../const/names";
+import debug from "../utils/debug";
+
 
 export const asyncSignIn = createAsyncThunk(
   "user/signin",
@@ -15,7 +17,7 @@ export const asyncSignIn = createAsyncThunk(
       return response.data;
     } catch (e) {
       if (!e.response) {
-        console.error("asyncSignIn unexpected error", e);
+        debug(()=>console.error("asyncSignIn unexpected error", e));
         throw new Error(e);
       }
       const data = {
@@ -66,10 +68,10 @@ const userSlice = createSlice({
       if (action.payload) {
         state.error = { ...action.payload };
       } else {
-        console.error(
+        debug(()=>console.error(
           "Unexpected error from asyncSignIn = ",
           action.error.message
-        );
+        ));
       }
     });
   },
@@ -98,7 +100,7 @@ export const asyncDeleteUser = () => (dispatch) => {
           );
         })
         .catch((error) => {
-          console.error(error);
+          debug(()=>console.error(error));
           dispatch(
             setSnackBar({
               message: "Sorry something is wrong. retry after log-in again.",
@@ -110,7 +112,7 @@ export const asyncDeleteUser = () => (dispatch) => {
         });
     })
     .catch((error) => {
-      console.error(error);
+      debug(()=>console.error(error));
       dispatch(
         setSnackBar({
           severity: "error",

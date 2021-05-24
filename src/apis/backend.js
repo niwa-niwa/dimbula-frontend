@@ -1,6 +1,7 @@
 import axios from "axios";
 import NAMES from "../const/names";
 import PATHS from "../const/paths";
+import debug from "../utils/debug";
 
 let instance = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL,
@@ -29,7 +30,7 @@ instance.interceptors.response.use(
     ) {
       return Promise.reject(error);
     }
-    console.log(error.response.data.detail); // for debug
+    debug(()=>console.error(error.response.data.detail)); 
 
     is_retry = false; // the flag that prevent looping
     const params = new URLSearchParams();
@@ -41,7 +42,7 @@ instance.interceptors.response.use(
 
     const response = await axios
       .post(
-        process.env.REACT_APP_REFRESH_TOKEN_URL + process.env.REACT_APP_API_KEY,
+        NAMES.REFRESH_URL + process.env.REACT_APP_API_KEY,
         params,
         {
           headers: {
