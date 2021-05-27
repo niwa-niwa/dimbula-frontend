@@ -4,7 +4,8 @@
 You can duplicate .env.example to rename .env   
 - REACT_APP_DEBUG=True
 - REACT_APP_BACKEND_URL=http://127.0.0.1:8000/
-// Firebase auth
+  
+  // Firebase auth
 - REACT_APP_API_KEY=
 - REACT_APP_AUTH_DOMAIN=
 - REACT_APP_PROJECT_ID=
