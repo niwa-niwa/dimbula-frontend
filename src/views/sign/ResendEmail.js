@@ -48,7 +48,7 @@ const ResendEmail = () => {
       .then(({ user }) => {
         if (!user.emailVerified) {
           user.sendEmailVerification({
-            url: process.env.REACT_APP_FRONTEND_URL,
+            url: window.location.origin+"/",
             handleCodeInApp: false,
           });
           dispatch(closeProgressCircle());
