@@ -20,14 +20,14 @@ const taskFolderDialogSlice = createSlice({
     closeTaskFolderDialog(state) {
       state.isOpen_taskFolderDialog = initialState.isOpen_taskFolderDialog;
       state.action_type = initialState.action_type;
-      state.taskFolder = initialState.taskFolder;
+      //maybe not necessary // state.taskFolder = initialState.taskFolder;
       state.taskFolder_id = initialState.taskFolder_id;
       state.taskFolder_name = initialState.taskFolder_name;
     },
   },
 });
 
-export const selectTaskFolderDialog = (state) => state.taskFolderDialog;
+export const selectTaskFolderDialog = (state:any) => state.taskFolderDialog;
 export const {
   openTaskFolderDialog,
   closeTaskFolderDialog,

@@ -18,5 +18,5 @@ const progressLinerSlice = createSlice({
 export const { openProgressLiner, closeProgressLiner } =
   progressLinerSlice.actions;
 export default progressLinerSlice.reducer;
-export const selectProgressLiner = (state) =>
+export const selectProgressLiner = (state:any) =>
   state.progressLiner.isOpen_progressLiner;

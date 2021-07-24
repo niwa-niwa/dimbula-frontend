@@ -11,12 +11,16 @@ import NAMES from "../const/names";
  * @param {String} path 
  * @returns endpoint (String)
  */
-export function convertToEndPoint(path){
+export function convertToEndPoint(path:string){
   return path.slice(5);
 }
 
 
-const initialState = {
+interface iniProps {
+  taskFolders:any
+  currentTaskFolder:any
+};
+const initialState:iniProps = {
   taskFolders: [],
   currentTaskFolder: {},
 };
@@ -32,13 +36,13 @@ export const taskSlice = createSlice({
       state.currentTaskFolder = { ...action.payload };
     },
     incrementTaskCount(state, action) {
-      const task_folder = state.taskFolders.find((folder) => {
+      const task_folder = state.taskFolders.find((folder:any) => {
         return action.payload.taskFolder === folder.id;
       });
       task_folder.task_count++;
     },
     decrementTaskCount(state, action) {
-      const task_folder = state.taskFolders.find((folder) => {
+      const task_folder = state.taskFolders.find((folder:any) => {
         return action.payload.taskFolder === folder.id;
       });
       task_folder.task_count--;
@@ -47,9 +51,9 @@ export const taskSlice = createSlice({
 });
 
 export default taskSlice.reducer;
-export const selectAll = (state) => state.task;
-export const selectTaskFolders = (state) => state.task.taskFolders;
-export const selectCurrentTaskFolder = (state) => state.task.currentTaskFolder;
+export const selectAll = (state:any) => state.task;
+export const selectTaskFolders = (state:any) => state.task.taskFolders;
+export const selectCurrentTaskFolder = (state:any) => state.task.currentTaskFolder;
 export const {
   setTaskFolders,
   setCurrentTaskFolder,
@@ -57,7 +61,7 @@ export const {
   decrementTaskCount,
 } = taskSlice.actions;
 
-export const asyncGetTaskFolders = () => async (dispatch) => {
+export const asyncGetTaskFolders = () => async (dispatch:any) => {
   try {
     const { data } = await backend.get(NAMES.V1 + "task-folders/");
     dispatch(setTaskFolders(data));
@@ -73,9 +77,9 @@ export const asyncGetTaskFolders = () => async (dispatch) => {
 };
 
 export const asyncCreateTaskFolder = (
-  payload,
-  { success = null, failure = null } = {}
-) => async (dispatch) => {
+  payload:any,
+  { success = ()=>false, failure = ()=>false } = {}
+) => async (dispatch:any) => {
   try {
     const { data } = await backend.post(
       NAMES.V1 + "task-folders/create/",
@@ -86,6 +90,7 @@ export const asyncCreateTaskFolder = (
     if (success) {
       success();
     }
+
   } catch (e) {
     debug(()=>console.error(e));
     dispatch(
@@ -101,9 +106,9 @@ export const asyncCreateTaskFolder = (
 };
 
 export const asyncEditTaskFolder = (
-  payload,
-  { success = null, failure = null } = {}
-) => async (dispatch) => {
+  payload:any,
+  { success = ()=>false, failure = ()=>false } = {}
+) => async (dispatch:any) => {
   try {
     const { data } = await backend.patch(
       NAMES.V1 + `task-folders/edit/${payload.id}/`,
@@ -129,9 +134,9 @@ export const asyncEditTaskFolder = (
 };
 
 export const asyncDeleteTaskFolder = (
-  task_folder,
-  { success = null, failure = null } = {}
-) => async (dispatch) => {
+  task_folder:any,
+  { success = ()=>false, failure = ()=>false } = {}
+) => async (dispatch:any) => {
   try {
     await backend.delete(NAMES.V1 + `task-folders/delete/${task_folder.id}/`);
     dispatch(asyncGetTaskFolders());
@@ -154,9 +159,9 @@ export const asyncDeleteTaskFolder = (
 };
 
 export const asyncGetCurrentTaskFolder = (
-  path,
-  { success = null, failure = null } = {}
-) => async (dispatch) => {
+  path:string,
+  { success = ()=>false, failure = ()=>false } = {}
+) => async (dispatch:any) => {
   try {
     const { data } = await backend.get(NAMES.V1 + path);
 
@@ -189,9 +194,9 @@ export const asyncGetCurrentTaskFolder = (
 };
 
 export const asyncCreateTask = (
-  payload,
-  { success = null, failure = null } = {}
-) => async (dispatch) => {
+  payload:any,
+  { success = ()=>false, failure = ()=>false } = {}
+) => async (dispatch:any) => {
   try {
     const { data } = await backend.post(NAMES.V1 + "tasks/create/", payload);
     if(data.taskFolder){
@@ -217,9 +222,9 @@ export const asyncCreateTask = (
 };
 
 export const asyncEditTask = (
-  payload,
-  { success = null, failure = null } = {}
-) => async (dispatch) => {
+  payload:any,
+  { success = ()=>false, failure = ()=>false } = {}
+) => async (dispatch:any) => {
   try {
     await backend.patch(
       NAMES.V1 + `tasks/edit/${payload.id}/`,
@@ -244,9 +249,10 @@ export const asyncEditTask = (
 };
 
 export const asyncDeleteTask = (
-  task,
-  { success = null, failure = null } = {}
-) => async (dispatch) => {
+  task:any,
+  // edited arguments fot typeScript
+  { success = ()=>false, failure = ()=>false } = {}
+) => async (dispatch:any) => {
   try {
     await backend.delete(NAMES.V1 + `tasks/delete/${task.id}/`);
     if(task.taskFolder){

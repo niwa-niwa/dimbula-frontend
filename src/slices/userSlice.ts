@@ -7,7 +7,11 @@ import NAMES from "../const/names";
 import debug from "../utils/debug";
 
 
-export const asyncSignIn = createAsyncThunk(
+type props_asyncSignIn = {
+  token:any
+  refreshToken:any
+}
+export const asyncSignIn = createAsyncThunk<any, props_asyncSignIn, {}>(
   "user/signin",
   async ({ token, refreshToken }, { rejectWithValue }) => {
     try {
@@ -29,7 +33,7 @@ export const asyncSignIn = createAsyncThunk(
   }
 );
 
-function deleteState(state) {
+function deleteState(state:any) {
   localStorage.removeItem(NAMES.STORAGE_TOKEN);
   localStorage.removeItem(NAMES.STORAGE_REFRESH_TOKEN);
   localStorage.removeItem(NAMES.STORAGE_UID);
@@ -65,23 +69,23 @@ const userSlice = createSlice({
       };
     });
     builder.addCase(asyncSignIn.rejected, (state, action) => {
-      if (action.payload) {
-        state.error = { ...action.payload };
-      } else {
+      // if (action.payload) {
+      //   state.error = { ...action.payload };
+      // } else {
         debug(()=>console.error(
           "Unexpected error from asyncSignIn = ",
           action.error.message
         ));
-      }
+      // }
     });
   },
 });
 
 export default userSlice.reducer;
 export const { signOut, deleteUserState } = userSlice.actions;
-export const selectUser = (state) => state.user;
+export const selectUser = (state:any) => state.user;
 
-export const asyncDeleteUser = () => (dispatch) => {
+export const asyncDeleteUser = () => (dispatch:any) => {
   dispatch(openProgressCircle());
 
   backend
@@ -91,7 +95,7 @@ export const asyncDeleteUser = () => (dispatch) => {
     .then(() => {
       firebase
         .auth()
-        .currentUser.delete()
+        .currentUser?.delete()
         .then(() => {
           dispatch(
             setSnackBar({

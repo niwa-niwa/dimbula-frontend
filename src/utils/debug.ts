@@ -3,7 +3,7 @@
  * @param {callback function} console
  * @Usage. debug( () => console.log(message));
  */
-export default function debug(callback) {
+export default function debug(callback:Function) {
   if (
     process.env.REACT_APP_DEBUG === "True"
     ||

@@ -33,14 +33,14 @@ instance.interceptors.response.use(
     debug(()=>console.error(error.response.data.detail)); 
 
     is_retry = false; // the flag that prevent looping
-    const params = new URLSearchParams();
+    const params:any = new URLSearchParams();
     params.append("grant_type", "refresh_token");
     params.append(
       "refresh_token",
       localStorage.getItem(NAMES.STORAGE_REFRESH_TOKEN)
     );
 
-    const response = await axios
+    const response:any = await axios
       .post(
         NAMES.REFRESH_URL + process.env.REACT_APP_API_KEY,
         params,
