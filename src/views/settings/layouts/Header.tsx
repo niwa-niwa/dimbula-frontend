@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
   AppBar,
@@ -8,7 +8,7 @@ import {
   useScrollTrigger,
   IconButton,
 } from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from "@material-ui/icons/Close";
 
 import NAMES from "../../../const/names";
 import PATHS from "../../../const/paths";
@@ -38,14 +38,20 @@ ElevationScroll.propTypes = {
   window: PropTypes.func,
 };
 
-export default function ElevateAppBar(props) {
+export default function ElevateAppBar(props:any) {
   return (
     <React.Fragment>
       <ElevationScroll {...props}>
         <AppBar>
           <Toolbar>
-            <Typography variant="h6"><Link to={PATHS.APP_INBOX}>{NAMES.TITLE}</Link></Typography>
-            <IconButton><Link to={PATHS.APP_INBOX}><CloseIcon color="error" /></Link></IconButton>
+            <Typography variant="h6">
+              <Link to={PATHS.APP_INBOX}>{NAMES.TITLE}</Link>
+            </Typography>
+            <IconButton>
+              <Link to={PATHS.APP_INBOX}>
+                <CloseIcon color="error" />
+              </Link>
+            </IconButton>
           </Toolbar>
         </AppBar>
       </ElevationScroll>
