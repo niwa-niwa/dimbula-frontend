@@ -33,10 +33,10 @@ import DialogTitle from "@material-ui/core/DialogTitle";
  */
 export default function SelectDialog({
   isOpen = false,
-  onClose = null,
+  onClose = ()=>{},
   title = "Are You Sure ?",
   subtitle = "You are going to do it.",
-  OnCallback = null,
+  OnCallback = ()=>{},
 }) {
 
   const handleClose = () => {

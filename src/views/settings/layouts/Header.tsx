@@ -13,7 +13,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import NAMES from "../../../const/names";
 import PATHS from "../../../const/paths";
 
-function ElevationScroll(props) {
+function ElevationScroll(props:any) {
   const { children, window } = props;
   // attention that you normally won't need to set the window ref as useScrollTrigger
   // will default to window.

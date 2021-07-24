@@ -4,7 +4,7 @@ import TaskFolderDialog from "../task/modals/TaskFolderDialog";
 import Header from "./Header";
 import LeftDrawer from "./LeftDrawer";
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children }:{children:any}) => {
   const [isDrawer, setIsDrawer] = useState(true);
 
   return (
