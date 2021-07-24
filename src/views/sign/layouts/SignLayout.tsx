@@ -4,10 +4,11 @@ import { Box, Container } from "@material-ui/core";
 import { signStyle } from "../styles/signStyle";
 import NAMES from "../../../const/names";
 
-const useStyles = makeStyles((theme) => ({ ...signStyle }));
+const styles: any = { ...signStyle };
+const useStyles = makeStyles(() => styles);
 
-const SignLayout = ({ children }) => {
-  const classes = useStyles();
+const SignLayout = ({ children }: { children: JSX.Element }) => {
+  const classes: any = useStyles();
 
   return (
     <React.Fragment>

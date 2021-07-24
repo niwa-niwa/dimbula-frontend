@@ -4,8 +4,8 @@ import { Link as UiLink } from "@material-ui/core";
 
 import PATHS from "../../../const/paths";
 
-const SignLinks = (path = null) => {
-  const getLink = (_path) => {
+const SignLinks = (path: any) => {
+  const getLink = (_path: string) => {
     switch (_path) {
       case PATHS.SIGN_UP:
         return <Link to={PATHS.SIGN_UP}>Sign Up</Link>;

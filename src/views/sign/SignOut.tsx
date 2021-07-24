@@ -7,11 +7,11 @@ import { signOut } from "../../slices/userSlice";
 import PATHS from "../../const/paths";
 
 /**
- * This component is for sign out 
+ * This component is for sign out
  * @returns component
  */
 const SignOut = () => {
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   useEffect(() => dispatch(signOut()), [dispatch]);
 
