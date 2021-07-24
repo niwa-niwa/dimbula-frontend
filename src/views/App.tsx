@@ -41,7 +41,7 @@ const App = () => {
     dispatch(openProgressCircle());
 
     const effect = async () => {
-      firebase.auth().onAuthStateChanged(async (user) => {
+      firebase.auth().onAuthStateChanged(async (user: firebase.User | null) => {
         if (!user) {
           dispatch(signOut());
         }
@@ -60,7 +60,7 @@ const App = () => {
         if (user && user.emailVerified) {
           let token = localStorage.getItem(NAMES.STORAGE_TOKEN);
           if (!token) {
-            token = await firebase.auth().currentUser.getIdToken(true);
+            token = await user.getIdToken(true);
           }
           const signIn = () =>
             new Promise((resolve) => {
@@ -70,7 +70,7 @@ const App = () => {
                 )
               );
             });
-          const response = await signIn();
+          const response:any = await signIn();
 
           if (response.type === "user/signin/rejected") {
             dispatch(signOut());
@@ -96,7 +96,7 @@ const App = () => {
     };
   }, [dispatch]);
 
-  const SettingsLayout = ({children}) => (
+  const SettingsLayout = ({children}:{children:JSX.Element}) => (
     <React.Fragment>
       <SettingsHeader />
       {children}
