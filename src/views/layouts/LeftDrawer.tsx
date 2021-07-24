@@ -1,4 +1,4 @@
-import React,{ useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -19,8 +19,8 @@ import InboxIcon from "@material-ui/icons/MoveToInbox";
 import StarsIcon from "@material-ui/icons/Stars";
 import TodayIcon from "@material-ui/icons/Today";
 import AllInboxIcon from "@material-ui/icons/AllInbox";
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 import { selectTaskFolders, asyncGetTaskFolders } from "../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../slices/taskFolderDialogSlice";
@@ -61,22 +61,27 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginLeft: 0,
   },
-  subHeader:{
+  subHeader: {
     display: "flex",
     justifyContent: "space-between",
     backgroundColor: "#ffffff",
-  }
-
+  },
 }));
 
 const special_folders = [
-  { text: "Inbox", icon: <InboxIcon />, link: PATHS.APP_INBOX, },
-  { text: "Today", icon: <TodayIcon />, link: PATHS.APP_TODAY, },
-  { text: "Stars", icon: <StarsIcon />, link: PATHS.APP_STARS, },
-  { text: "All Tasks", icon: <AllInboxIcon />, link:PATHS.APP_ALL_TASKS,},
+  { text: "Inbox", icon: <InboxIcon />, link: PATHS.APP_INBOX },
+  { text: "Today", icon: <TodayIcon />, link: PATHS.APP_TODAY },
+  { text: "Stars", icon: <StarsIcon />, link: PATHS.APP_STARS },
+  { text: "All Tasks", icon: <AllInboxIcon />, link: PATHS.APP_ALL_TASKS },
 ];
 
-export default function PersistentDrawer({ children, isDrawer}) {
+export default function PersistentDrawer({
+  children,
+  isDrawer,
+}: {
+  children: JSX.Element;
+  isDrawer: any;
+}) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const task_folders = useSelector(selectTaskFolders);
@@ -89,7 +94,7 @@ export default function PersistentDrawer({ children, isDrawer}) {
     if (!task_folders) {
       return false;
     }
-    return task_folders.map((folder) => (
+    return task_folders.map((folder: any) => (
       <Link key={folder.id} to={PATHS.TASK_FOLDERS + folder.id + "/"}>
         <ListItem
           button
@@ -124,11 +129,8 @@ export default function PersistentDrawer({ children, isDrawer}) {
         <div className={classes.drawerContainer}>
           <List>
             {special_folders.map((menu) => (
-              <Link key={menu.text} to={menu.link} >
-                <ListItem
-                  button
-                  data-testid={`list-${menu.text}`}
-                >
+              <Link key={menu.text} to={menu.link}>
+                <ListItem button data-testid={`list-${menu.text}`}>
                   <ListItemIcon>{menu.icon}</ListItemIcon>
                   <ListItemText primary={menu.text} />
                 </ListItem>

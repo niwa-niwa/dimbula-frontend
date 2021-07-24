@@ -25,7 +25,7 @@ import HomePage from "./HomePage";
 import PATHS from "../const/paths";
 import NAMES from "../const/names";
 
-import { setSnackBar } from "../slices/snackBarSlice"
+import { setSnackBar } from "../slices/snackBarSlice";
 import { signOut, asyncSignIn } from "../slices/userSlice";
 import {
   openProgressCircle,
@@ -70,7 +70,7 @@ const App = () => {
                 )
               );
             });
-          const response:any = await signIn();
+          const response: any = await signIn();
 
           if (response.type === "user/signin/rejected") {
             dispatch(signOut());
@@ -90,18 +90,18 @@ const App = () => {
       });
     };
     effect();
-  
+
     return () => {
       isMounted = false;
     };
   }, [dispatch]);
 
-  const SettingsLayout = ({children}:{children:JSX.Element}) => (
+  const SettingsLayout = ({ children }: { children: JSX.Element }) => (
     <React.Fragment>
       <SettingsHeader />
       {children}
     </React.Fragment>
-  )
+  );
 
   const render = () => {
     if (isChecking) {
@@ -109,22 +109,40 @@ const App = () => {
     }
     return (
       <Switch>
-
         <Route exact path={PATHS.HOME} component={HomePage} />
-        
+
         <GuestRoute exact path={PATHS.SIGN_IN} component={SignIn} />
         <GuestRoute exact path={PATHS.SIGN_UP} component={SignUp} />
         <GuestRoute exact path={PATHS.RESEND_EMAIL} component={ResendEmail} />
         <GuestRoute exact path={PATHS.FORGET_PASSWORD} component={ForgetPw} />
 
-        <AuthRoute exact path={PATHS.SETTINGS} component={Settings} layout={SettingsLayout} />
-        <AuthRoute exact path={PATHS.SIGN_OUT} component={SignOut} layout={SettingsLayout} />
+        <AuthRoute
+          exact
+          path={PATHS.SETTINGS}
+          component={Settings}
+          layout={SettingsLayout}
+        />
+        <AuthRoute
+          exact
+          path={PATHS.SIGN_OUT}
+          component={SignOut}
+          layout={SettingsLayout}
+        />
 
-        <AuthRoute exact path={`${PATHS.APP_ROOT}:id/`} component={Task} layout={MainLayout}/>
-        <AuthRoute exact path={`${PATHS.TASK_FOLDERS}:id`} component={Task} layout={MainLayout}/>
+        <AuthRoute
+          exact
+          path={`${PATHS.APP_ROOT}:id/`}
+          component={Task}
+          layout={MainLayout}
+        />
+        <AuthRoute
+          exact
+          path={`${PATHS.TASK_FOLDERS}:id`}
+          component={Task}
+          layout={MainLayout}
+        />
 
         <Route path="*" component={Page404} />
-
       </Switch>
     );
   };

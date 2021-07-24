@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import PATHS from "../../const/paths";
 
 const AuthRoute = ({ component: Component, layout: Layout, ...props }) => {
-  const isSignedIn = useSelector((state) => state.user.isSignedIn);
+  const isSignedIn = useSelector((state: any) => state.user.isSignedIn);
 
   const render = () => {
     if (!isSignedIn) {

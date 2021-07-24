@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
@@ -94,7 +94,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
+export default function PrimarySearchAppBar({
+  isDrawer,
+  onDrawer,
+}: {
+  isDrawer: any;
+  onDrawer: any;
+}) {
   const classes = useStyles();
   const isOpen_progressLiner = useSelector(selectProgressLiner);
 
@@ -104,7 +110,7 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -117,7 +123,7 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
     handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = (event) => {
+  const handleMobileMenuOpen = (event: any) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
@@ -136,9 +142,7 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
         <Link to={PATHS.SETTINGS}>Settings</Link>
       </MenuItem>
       <MenuItem>
-        <Link to={PATHS.SIGN_OUT}>
-          Sign Out
-        </Link>
+        <Link to={PATHS.SIGN_OUT}>Sign Out</Link>
       </MenuItem>
     </Menu>
   );
@@ -251,7 +255,8 @@ export default function PrimarySearchAppBar({ isDrawer, onDrawer }) {
           </div>
         </Toolbar>
         <Fade in={isOpen_progressLiner}>
-          <LinearProgress className={classes.progressBar} />
+          {/* <LinearProgress className={classes.progressBar} /> */}
+          <LinearProgress />
         </Fade>
       </AppBar>
       {renderMobileMenu}
