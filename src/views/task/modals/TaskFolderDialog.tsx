@@ -52,7 +52,7 @@ export default function FormDialog() {
     reset({ name: "" });
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     if (action_type === ACTIONS.TASK_FOLDERS_EDIT) {
       dispatch(
         asyncEditTaskFolder(
@@ -82,7 +82,11 @@ export default function FormDialog() {
             ...data,
             person: localStorage.getItem(NAMES.STORAGE_UID),
           },
-          { success: handleClose() }
+          {
+            success: () => {
+              handleClose();
+            },
+          }
         )
       );
     }

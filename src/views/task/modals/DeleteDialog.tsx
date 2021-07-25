@@ -7,36 +7,36 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 /**
- * 
- * @param 
+ *
+ * @param
  * isOpen
  * default false
- * 
+ *
  * @param
  * onClose
  * callback function that made this dialog close
- *      
+ *
  * @param
- * title 
+ * title
  * default "Are You Sure ?"
- * 
+ *
  * @param
  * subtitle
  * Type of String
  * default "You are going to delete it."
- *      
+ *
  * @param
  * onDelete
  * callback function that delete something
- * 
+ *
  * @returns nothing
  */
 export default function DeleteDialog({
   isOpen = false,
-  onClose = null,
+  onClose = () => {},
   title = "Are You Sure ?",
   subtitle = "You are going to delete it.",
-  onDelete = null,
+  onDelete = () => {},
 }) {
   const handleClose = () => {
     onClose();

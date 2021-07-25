@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
-import StarIcon from '@material-ui/icons/Star';
+import StarIcon from "@material-ui/icons/Star";
 
 import history from "../../../history";
 import TaskDialog from "../modals/TaskDialog";
@@ -27,18 +27,18 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "1px solid #f0f0f0",
   },
   done_style: {
-    color:"#cccccc",
-  }
+    color: "#cccccc",
+  },
 }));
 
-const TaskCard = ({ task }) => {
+const TaskCard = ({ task }: { task: any }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [_task, set_Task] = useState({ ...task });
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const dispatchEdit = (edited_task) => {
+  const dispatchEdit = (edited_task: any) => {
     dispatch(
       asyncEditTask(edited_task, {
         success: () => {
@@ -73,38 +73,38 @@ const TaskCard = ({ task }) => {
     );
   };
 
-  function onStar(){
+  function onStar() {
     dispatch(
       asyncEditTask(
-        {..._task,is_star:!_task.is_star},
+        { ..._task, is_star: !_task.is_star },
         {
           success: () => {
-            set_Task({..._task,is_star:!_task.is_star});
+            set_Task({ ..._task, is_star: !_task.is_star });
             dispatch(
               asyncGetCurrentTaskFolder(
                 convertToEndPoint(history.location.pathname)
               )
             );
           },
-        },
+        }
       )
     );
   }
 
-  function onDone(){
+  function onDone() {
     dispatch(
       asyncEditTask(
-        {..._task,is_done:!_task.is_done},
+        { ..._task, is_done: !_task.is_done },
         {
           success: () => {
-            set_Task({..._task,is_done:!_task.is_done});
+            set_Task({ ..._task, is_done: !_task.is_done });
             dispatch(
               asyncGetCurrentTaskFolder(
                 convertToEndPoint(history.location.pathname)
               )
             );
           },
-        },
+        }
       )
     );
   }
@@ -121,7 +121,7 @@ const TaskCard = ({ task }) => {
           }}
         />
         <ListItemText
-          button="true"
+          // button="true"
           className={_task.is_done ? classes.done_style : ""}
           onClick={() => {
             setIsEditing(true);
@@ -145,7 +145,7 @@ const TaskCard = ({ task }) => {
         onClose={() => {
           setIsEditing(false);
         }}
-        onCallback={(edited_task) => {
+        onCallback={(edited_task: any) => {
           dispatchEdit(edited_task);
         }}
         onDelete={() => {

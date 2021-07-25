@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Box, Typography, List, Container } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 
 import history from "../../../history";
 import TaskCard from "./TaskCard";
@@ -32,15 +32,15 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-  hidden:{
-    display:"none",
+  hidden: {
+    display: "none",
   },
 }));
 
 const TaskList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { id } = useParams<any>();
   const currentTaskFolder = useSelector(selectCurrentTaskFolder);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -93,7 +93,7 @@ const TaskList = () => {
    * @param {CallBack Function for reset values of form} reset
    * @returns nothing
    */
-  const dispatchCreate = (data, reset) => {
+  const dispatchCreate = (data: any, reset: any) => {
     dispatch(
       asyncCreateTask(data, {
         success: () => {
@@ -112,7 +112,9 @@ const TaskList = () => {
   const dispatchDelete = () => {
     dispatch(
       asyncDeleteTaskFolder(currentTaskFolder, {
-        success: history.push(PATHS.APP_INBOX),
+        success: () => {
+          history.push(PATHS.APP_INBOX);
+        },
       })
     );
   };
@@ -125,7 +127,7 @@ const TaskList = () => {
       return <h1>Nothing tasks for now.</h1>;
     }
 
-    const render_tasks = currentTaskFolder.tasks.filter((task) => {
+    const render_tasks = currentTaskFolder.tasks.filter((task: any) => {
       if (list_flag && !task.is_done) {
         // not done tasks
         return task;
@@ -137,7 +139,7 @@ const TaskList = () => {
       return false;
     });
 
-    return render_tasks.map((task) => {
+    return render_tasks.map((task: any) => {
       return <TaskCard key={task.id} task={task} />;
     });
   };
@@ -203,7 +205,7 @@ const TaskList = () => {
         onClose={() => {
           setIsCreating(false);
         }}
-        onCallback={(data, reset) => {
+        onCallback={(data: any, reset: any) => {
           dispatchCreate(data, reset);
         }}
         editTask={{
@@ -222,35 +224,30 @@ const TaskList = () => {
     return renderTaskList();
   };
 
-
   return (
     <Container maxWidth="md">
       {rendering()}
       <Box mt={3}>
-        { showCompleted ?
+        {showCompleted ? (
           <Button
-              onClick={() => {
-                setShowCompleted(false);
-              }}
-              startIcon={<RemoveCircleOutlineIcon />}
-            >
+            onClick={() => {
+              setShowCompleted(false);
+            }}
+            startIcon={<RemoveCircleOutlineIcon />}
+          >
             Hide completed Tasks
           </Button>
-          :
+        ) : (
           <Button
-              onClick={() => {
-                setShowCompleted(true);
-              }}
-              startIcon={<AddCircleOutlineIcon />}
-            >
+            onClick={() => {
+              setShowCompleted(true);
+            }}
+            startIcon={<AddCircleOutlineIcon />}
+          >
             Show already completed Tasks
           </Button>
-        }
-        { showCompleted ?
-          renderTaskCard(false)
-          :
-          false
-        }
+        )}
+        {showCompleted ? renderTaskCard(false) : false}
       </Box>
     </Container>
   );

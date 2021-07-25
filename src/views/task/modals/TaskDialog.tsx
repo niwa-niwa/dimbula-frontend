@@ -57,7 +57,18 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TaskDialog = ({
+type Props_TaskDialog = {
+  isOpen:boolean;
+  title?:string;
+  subtitle?:string;
+  action_type:string;
+  editTask:any;
+  onClose:any;
+  onCallback:any;
+  onDelete?:any;
+};
+
+const TaskDialog:React.FC<Props_TaskDialog> = ({
   isOpen = false,
   title = "",
   subtitle = "",
@@ -75,9 +86,9 @@ const TaskDialog = ({
     setValue,
     formState: { errors },
   } = useForm();
-  const [selectedDue, setSelectedDue] = useState({ date: null, time: null });
-  const [selectedFolder, setSelectedFolder] = useState("inbox");
-  const [selectedStar, setSelectedStar] = useState(false);
+  const [selectedDue, setSelectedDue] = useState<any>({ date: null, time: null });
+  const [selectedFolder, setSelectedFolder] = useState<any>("inbox");
+  const [selectedStar, setSelectedStar] = useState<boolean>(false);
   const taskFolders = useSelector(selectTaskFolders);
 
   useEffect(() => {
@@ -112,7 +123,7 @@ const TaskDialog = ({
     setSelectedFolder(editTask.taskFolder || "inbox");
   }
   
-  function convertDate(stateDate){
+  function convertDate(stateDate:any){
     const date = moment(stateDate.date).format("YYYY-MM-DD")
     const time = moment(stateDate.time).format("HH:mm:ss")
     
@@ -136,7 +147,7 @@ const TaskDialog = ({
     setSelectedFolder("inbox")
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = (data:any) => {
     const taskFolder = selectedFolder === "inbox" ? null : selectedFolder;
     const due_date = convertDate(selectedDue);
     const task = { ...editTask, ...data, due_date, taskFolder, is_star:selectedStar };
@@ -228,7 +239,7 @@ const TaskDialog = ({
                     }}
                   >
                     <MenuItem value="inbox">Inbox</MenuItem>
-                    {taskFolders.map((folder) => (
+                    {taskFolders.map((folder:any) => (
                       <MenuItem key={folder.id} value={folder.id}>
                         {folder.name}
                       </MenuItem>
