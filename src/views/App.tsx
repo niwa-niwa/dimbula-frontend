@@ -34,10 +34,10 @@ import {
 
 const App = () => {
   const dispatch = useDispatch();
-  const [isChecking, setIsChecking] = useState(true); // the flag is loading user state
+  const [isLoading, setIsLoading] = useState<boolean>(true); // the flag is loading user state
 
   useEffect(() => {
-    let isMounted = true; // the flag is prevented to leak memory
+    let isMounted: boolean = true; // the flag is prevented to leak memory
     dispatch(openProgressCircle());
 
     const effect = async () => {
@@ -58,7 +58,7 @@ const App = () => {
         }
 
         if (user && user.emailVerified) {
-          let token = localStorage.getItem(NAMES.STORAGE_TOKEN);
+          let token: string | null = localStorage.getItem(NAMES.STORAGE_TOKEN);
           if (!token) {
             token = await user.getIdToken(true);
           }
@@ -85,7 +85,7 @@ const App = () => {
 
         if (isMounted) {
           dispatch(closeProgressCircle());
-          setIsChecking(false);
+          setIsLoading(false);
         }
       });
     };
@@ -104,7 +104,7 @@ const App = () => {
   );
 
   const render = () => {
-    if (isChecking) {
+    if (isLoading) {
       return false;
     }
     return (
