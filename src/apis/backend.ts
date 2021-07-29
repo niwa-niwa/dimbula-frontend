@@ -13,13 +13,15 @@ let instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem(NAMES.STORAGE_TOKEN)}`;
+    config.headers.Authorization = `Bearer ${localStorage.getItem(
+      NAMES.STORAGE_TOKEN
+    )}`;
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
-let is_retry = true; // the flag that prevent infinite loop
+let is_retry: boolean = true; // the flag that prevent infinite loop
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -30,26 +32,22 @@ instance.interceptors.response.use(
     ) {
       return Promise.reject(error);
     }
-    debug(()=>console.error(error.response.data.detail)); 
+    debug(() => console.error(error.response.data.detail));
 
     is_retry = false; // the flag that prevent looping
-    const params:any = new URLSearchParams();
+    const params: any = new URLSearchParams();
     params.append("grant_type", "refresh_token");
     params.append(
       "refresh_token",
       localStorage.getItem(NAMES.STORAGE_REFRESH_TOKEN)
     );
 
-    const response:any = await axios
-      .post(
-        NAMES.REFRESH_URL + process.env.REACT_APP_API_KEY,
-        params,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      )
+    const response: any = await axios
+      .post(NAMES.REFRESH_URL + process.env.REACT_APP_API_KEY, params, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
       .catch(() => {
         window.location.href = PATHS.SIGN_OUT;
       });

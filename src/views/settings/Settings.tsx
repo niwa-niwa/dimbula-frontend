@@ -40,7 +40,7 @@ const DeleteButton = styled(Button)`
 const Settings = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector(selectUser);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   const onClose = () => {
     setIsOpen(false);
