@@ -7,7 +7,7 @@ export type Task = {
   start_date: string | null;
   due_date: string | null;
   taskSection: string | null;
-  taskFolder: string;
+  taskFolder: string | null;
   person: string;
   updated_at: string;
   created_at: string;

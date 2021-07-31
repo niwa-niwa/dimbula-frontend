@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { backend } from "../apis/backend";
 import { setSnackBar } from "./snackBarSlice";
+import { TaskFolder } from "../types/TaskFolder";
 import debug from "../utils/debug";
-
 import NAMES from "../const/names";
 
 /**
@@ -15,13 +15,20 @@ export function convertToEndPoint(path: string) {
   return path.slice(5);
 }
 
-interface iniProps {
-  taskFolders: any;
-  currentTaskFolder: any;
-}
+type iniProps = {
+  taskFolders: TaskFolder[];
+  currentTaskFolder: TaskFolder;
+};
 const initialState: iniProps = {
   taskFolders: [],
-  currentTaskFolder: {},
+  currentTaskFolder: {
+    id: "",
+    name: "",
+    person: "",
+    task_count: 0,
+    updated_at: "",
+    created_at: "",
+  },
 };
 
 export const taskSlice = createSlice({
@@ -35,16 +42,20 @@ export const taskSlice = createSlice({
       state.currentTaskFolder = { ...action.payload };
     },
     incrementTaskCount(state, action) {
-      const task_folder = state.taskFolders.find((folder: any) => {
-        return action.payload.taskFolder === folder.id;
-      });
-      task_folder.task_count++;
+      const task_folder: TaskFolder | undefined = state.taskFolders.find(
+        (folder: any) => {
+          return action.payload.taskFolder === folder.id;
+        }
+      );
+      task_folder && task_folder.task_count++;
     },
     decrementTaskCount(state, action) {
-      const task_folder = state.taskFolders.find((folder: any) => {
-        return action.payload.taskFolder === folder.id;
-      });
-      task_folder.task_count--;
+      const task_folder: TaskFolder | undefined = state.taskFolders.find(
+        (folder: any) => {
+          return action.payload.taskFolder === folder.id;
+        }
+      );
+      task_folder && task_folder.task_count--;
     },
   },
 });
