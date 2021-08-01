@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
@@ -7,7 +7,6 @@ import {
   TextField,
   Dialog,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Box,
   FormControl,
@@ -26,7 +25,6 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 import { makeStyles } from "@material-ui/core/styles";
-import { selectTaskFolders } from "../../../slices/taskSlice";
 import {
   select_isOpenTaskModal,
   select_task,
@@ -34,6 +32,11 @@ import {
 } from "../../../slices/taskModalSlice";
 import { Task } from "../../../types/Task";
 import { TaskFolder } from "../../../types/TaskFolder";
+import {
+  selectTaskFolders,
+  asyncCreateTask,
+} from "../../../slices/taskSlice";
+import NAMES from "../../../const/names";
 
 const useStyles = makeStyles((theme) => ({
   textField: {
@@ -70,7 +73,6 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     handleSubmit,
     control,
     reset,
-    setValue,
     formState: { errors },
   } = useForm();
   const taskFolders: TaskFolder[] = useSelector(selectTaskFolders);
@@ -85,25 +87,58 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
   );
   const [selectedStar, setSelectedStar] = useState<boolean>(task.is_star);
 
-  function onSubmit() {
-    console.log("onClick submit");
-    console.log(isOpen, task);
-    console.log(taskFolders);
+  function convertDate(stateDate: any) {
+    const date = moment(stateDate.date).format("YYYY-MM-DD");
+    const time = moment(stateDate.time).format("HH:mm:ss");
+
+    let due = null;
+    if (stateDate.data !== null && stateDate.time !== null) {
+      due = date + "T" + time;
+    }
+    if (!stateDate.date && stateDate.time) {
+      due = moment(stateDate.time).format();
+    }
+    if (stateDate.date && !stateDate.time) {
+      due = date + "T00:00:00";
+    }
+    return due;
+  }
+
+  const onSubmit = (data: any) => {
+    const taskFolder = selectedFolder === "inbox" ? null : selectedFolder;
+    const due_date = convertDate(selectedDue);
+    const new_task = {
+      person: localStorage.getItem(NAMES.STORAGE_UID),
+      ...data,
+      due_date,
+      taskFolder,
+      is_star: selectedStar,
+    };
+    dispatch(asyncCreateTask(new_task));
+  };
+
+  function handleClose() {
+    dispatch(
+      setIsOpen_TaskModal({
+        isOpen: false,
+      })
+    );
+    reset({name:"", memo:"",})
+    setSelectedDue({ date: null, time: null })
+    setSelectedStar(false)
+    setSelectedFolder("inbox")
   }
 
   return (
     <React.Fragment>
       <Dialog
         open={isOpen}
-        // onClose={handleClose}
+        onClose={handleClose}
         aria-labelledby="task-form-dialog"
       >
         <DialogTitle>
           {task.id ? "Edit a Task" : "Create a Task"}
-          <Button
-            onClick={() => setIsOpen_TaskModal({ isOpen: false, task })}
-            color="primary"
-          >
+          <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
           {task.id && (
@@ -118,8 +153,6 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
             </Button>
           )}
         </DialogTitle>
-
-        {/* <DialogContentText>{subtitle}</DialogContentText> */}
 
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
@@ -173,8 +206,8 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
                   <InputLabel>Task Folder</InputLabel>
                   <Select
                     value={selectedFolder}
-                    onChange={(event) => {
-                      // setSelectedFolder(event.target.value);
+                    onChange={(event: any) => {
+                      setSelectedFolder(event.target.value);
                     }}
                   >
                     <MenuItem value="inbox">Inbox</MenuItem>

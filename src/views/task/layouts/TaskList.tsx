@@ -23,6 +23,9 @@ import {
   openProgressLiner,
   closeProgressLiner,
 } from "../../../slices/progressLinerSlice";
+import {
+  setIsOpen_TaskModal,
+} from "../../../slices/taskModalSlice";
 
 import PATHS from "../../../const/paths";
 import NAMES from "../../../const/names";
@@ -174,7 +177,12 @@ const TaskList = () => {
       <Box>
         <Button
           onClick={() => {
-            setIsCreating(true);
+            // setIsCreating(true);
+            dispatch(setIsOpen_TaskModal(
+              { 
+                isOpen: true
+              }
+            ))
           }}
           color="primary"
           startIcon={<AddIcon />}

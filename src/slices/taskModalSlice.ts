@@ -6,7 +6,7 @@ type Props_Initial = {
   task: Task;
 };
 
-const initialState: Props_Initial = {
+export const initialState: Props_Initial = {
   isOpen_TaskModal: false,
   task: {
     id: "",
@@ -29,14 +29,19 @@ export const taskModalSlice = createSlice({
   initialState,
   reducers: {
     setIsOpen_TaskModal(state, action) {
-      state.task = { ...action.payload.task };
-      state.isOpen_TaskModal = !action.payload.isOpen;
+      state.task = action.payload.task
+        ? { ...action.payload.task }
+        : { ...initialState };
+      state.isOpen_TaskModal = action.payload.isOpen;
     },
   },
 });
+
 export default taskModalSlice.reducer;
 
 export const select_isOpenTaskModal = (state: any) =>
   state.taskModal.isOpen_TaskModal;
+
 export const select_task = (state: any) => state.taskModal.task;
+
 export const { setIsOpen_TaskModal } = taskModalSlice.actions;
