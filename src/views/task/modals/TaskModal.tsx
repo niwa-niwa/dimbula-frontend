@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
+import history from "../../../history";
 import moment from "moment";
 import {
   Button,
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 
 type Props_TaskModal = {};
 
+// TODO : implement edit
 export const TaskModal: React.FC<Props_TaskModal> = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -127,6 +129,7 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     setSelectedDue({ date: null, time: null })
     setSelectedStar(false)
     setSelectedFolder("inbox")
+    history.push(history.location.pathname);
   }
 
   return (

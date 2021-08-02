@@ -201,6 +201,17 @@ export const asyncGetCurrentTaskFolder =
     }
   };
 
+
+export const asyncGetCurrentTask = async (task_id:string)=>{
+  try{
+    const { data } = await backend.get(NAMES.V1 + "tasks/" + task_id);
+    return data
+  }catch(e){
+    console.log(e)
+    return false
+  }
+}
+
 export const asyncCreateTask =
   (payload: any, { success = () => {}, failure = () => {} } = {}) =>
   async (dispatch: any) => {
