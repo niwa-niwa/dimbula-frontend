@@ -19,6 +19,7 @@ type iniProps = {
   taskFolders: TaskFolder[];
   currentTaskFolder: TaskFolder;
 };
+
 const initialState: iniProps = {
   taskFolders: [],
   currentTaskFolder: {
@@ -176,12 +177,14 @@ export const asyncGetCurrentTaskFolder =
        * Special folder are inbox today all task
        */
       if (path.indexOf("task-folders") !== -1) {
+        dispatch(setCurrentTaskFolder({}));
         dispatch(setCurrentTaskFolder(data));
       }
       if (path.indexOf("task-folders") === -1) {
         const name =
           path.charAt(0).toUpperCase() +
           path.slice(1).replace(/-/g, " ").replace(/\//g, ""); //the function make replace UpperCase and - & / delete
+        dispatch(setCurrentTaskFolder({}));//for reset tasks data
         dispatch(setCurrentTaskFolder({ id: "", name, tasks: [...data] }));
       }
 
@@ -200,7 +203,6 @@ export const asyncGetCurrentTaskFolder =
       }
     }
   };
-
 
 export const asyncGetCurrentTask = async (task_id:string)=>{
   try{

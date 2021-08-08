@@ -21,6 +21,11 @@ import {
   asyncDeleteTask,
 } from "../../../slices/taskSlice";
 import ACTIONS from "../../../const/actions";
+import { Task } from "../../../types/Task";
+import {
+  setIsOpen_TaskModal,
+} from "../../../slices/taskModalSlice";
+
 
 const useStyles = makeStyles((theme) => ({
   item_style: {
@@ -31,12 +36,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TaskCard = ({ task }: { task: any }) => {
+const TaskCard = ({ task }: { task: Task }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [_task, set_Task] = useState({ ...task });
-  const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [_task, set_Task] = useState<Task>({ ...task });
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const dispatchEdit = (edited_task: any) => {
     dispatch(
@@ -124,7 +129,13 @@ const TaskCard = ({ task }: { task: any }) => {
           // button="true"
           className={_task.is_done ? classes.done_style : ""}
           onClick={() => {
-            setIsEditing(true);
+            // setIsEditing(true);
+            dispatch(setIsOpen_TaskModal(
+              { 
+                isOpen: true,
+                task:_task,
+              }
+            ))
           }}
           primary={_task.name}
         />

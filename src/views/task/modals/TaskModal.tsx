@@ -34,8 +34,12 @@ import {
 import { Task } from "../../../types/Task";
 import { TaskFolder } from "../../../types/TaskFolder";
 import {
+  convertToEndPoint,
+  asyncGetCurrentTaskFolder,
   selectTaskFolders,
   asyncCreateTask,
+  asyncEditTask,
+  asyncDeleteTask,
 } from "../../../slices/taskSlice";
 import NAMES from "../../../const/names";
 
@@ -75,11 +79,13 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm();
   const taskFolders: TaskFolder[] = useSelector(selectTaskFolders);
   const isOpen: boolean = useSelector(select_isOpenTaskModal);
   const task: Task = useSelector(select_task);
+  const is_edit: boolean = task.id ? true : false;
   const [selectedDue, setSelectedDue] = useState<any>({
     date: task.due_date,
     time: task.due_date,
@@ -88,6 +94,19 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     task.taskFolder || "inbox"
   );
   const [selectedStar, setSelectedStar] = useState<boolean>(task.is_star);
+
+  React.useEffect(() => {
+    // TODO implement initValue with useCallBack
+    if(is_edit){
+      setValue("name", task.name);
+      setValue("memo", task.memo);
+      setSelectedDue({
+        date: task.due_date,
+        time: task.due_date
+      });
+    }
+  }, [setValue, task, is_edit])
+
 
   function convertDate(stateDate: any) {
     const date = moment(stateDate.date).format("YYYY-MM-DD");
@@ -109,14 +128,49 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
   const onSubmit = (data: any) => {
     const taskFolder = selectedFolder === "inbox" ? null : selectedFolder;
     const due_date = convertDate(selectedDue);
-    const new_task = {
-      person: localStorage.getItem(NAMES.STORAGE_UID),
-      ...data,
-      due_date,
-      taskFolder,
-      is_star: selectedStar,
-    };
-    dispatch(asyncCreateTask(new_task));
+
+    if(is_edit){
+      // TODO : implement asyncEditTask
+      const edit_task = {
+        ...task,
+        ...data,
+        due_date,
+        taskFolder,
+        is_star: selectedStar,
+      };
+      dispatch(
+        asyncEditTask(edit_task, {
+          success: () => {
+            dispatch(
+              asyncGetCurrentTaskFolder(
+                convertToEndPoint(history.location.pathname)
+              )
+            );
+            handleClose();
+          },
+        })
+      );
+    }else{
+      const new_task = {
+        person: localStorage.getItem(NAMES.STORAGE_UID),
+        ...data,
+        due_date,
+        taskFolder,
+        is_star: selectedStar,
+      };
+      dispatch(
+        asyncCreateTask(new_task, {
+          success: () => {
+            dispatch(
+              asyncGetCurrentTaskFolder(
+                convertToEndPoint(history.location.pathname)
+              )
+            );
+            handleClose();
+          },
+        })
+      );
+    }
   };
 
   function handleClose() {
@@ -292,5 +346,20 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
         </MuiPickersUtilsProvider>
       </Dialog>
     </React.Fragment>
+  );
+};
+
+
+const dispatchDelete = (_task:Task, dispatch:any) => {
+  dispatch(
+    asyncDeleteTask(_task, {
+      success: () => {
+        dispatch(
+          asyncGetCurrentTaskFolder(
+            convertToEndPoint(history.location.pathname)
+          )
+        );
+      },
+    })
   );
 };
