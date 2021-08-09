@@ -72,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
 
 type Props_TaskModal = {};
 
-// TODO : implement edit
 export const TaskModal: React.FC<Props_TaskModal> = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -98,7 +97,6 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
   const [selectedStar, setSelectedStar] = useState<boolean>(task.is_star);
 
   React.useEffect(() => {
-    // TODO implement initValue with useCallBack
     if(is_edit){
       setValue("name", task.name);
       setValue("memo", task.memo);
@@ -152,7 +150,6 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     const due_date = convertDate(selectedDue);
 
     if(is_edit){
-      // TODO : implement asyncEditTask
       const edit_task = {
         ...task,
         ...data,
@@ -263,7 +260,6 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
                       className={classes.textField}
                       required
                       autoFocus
-                      // fullWidth
                       margin="normal"
                       label="Title"
                       type="text"
@@ -381,4 +377,3 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     </React.Fragment>
   );
 };
-

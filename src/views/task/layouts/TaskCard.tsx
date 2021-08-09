@@ -10,16 +10,12 @@ import {
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
 import history from "../../../history";
-import TaskDialog from "../modals/TaskDialog";
-import DeleteDialog from "../modals/DeleteDialog";
 
 import {
   convertToEndPoint,
   asyncGetCurrentTaskFolder,
   asyncEditTask,
-  asyncDeleteTask,
 } from "../../../slices/taskSlice";
-import ACTIONS from "../../../const/actions";
 import { Task } from "../../../types/Task";
 import { setIsOpen_TaskModal } from "../../../slices/taskModalSlice";
 
@@ -36,43 +32,6 @@ const TaskCard = ({ task }: { task: Task }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [_task, set_Task] = useState<Task>({ ...task });
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-
-  const dispatchEdit = (edited_task: any) => {
-    dispatch(
-      asyncEditTask(edited_task, {
-        success: () => {
-          setIsEditing(false);
-          set_Task({ _task, ...edited_task });
-          dispatch(
-            asyncGetCurrentTaskFolder(
-              convertToEndPoint(history.location.pathname)
-            )
-          );
-        },
-      })
-    );
-  };
-
-  const dispatchDelete = () => {
-    dispatch(
-      asyncDeleteTask(_task, {
-        success: () => {
-          dispatch(
-            asyncGetCurrentTaskFolder(
-              convertToEndPoint(history.location.pathname)
-            )
-          );
-          setIsEditing(false);
-          setIsDeleting(false);
-        },
-        failure: () => {
-          setIsDeleting(false);
-        },
-      })
-    );
-  };
 
   function onStar() {
     dispatch(
@@ -145,33 +104,6 @@ const TaskCard = ({ task }: { task: Task }) => {
           {_task.is_star ? <StarIcon /> : <StarBorderIcon />}
         </IconButton>
       </ListItem>
-
-      <TaskDialog
-        isOpen={isEditing}
-        title={"Edit A Task."}
-        action_type={ACTIONS.TASKS_EDIT}
-        editTask={_task}
-        onClose={() => {
-          setIsEditing(false);
-        }}
-        onCallback={(edited_task: any) => {
-          dispatchEdit(edited_task);
-        }}
-        onDelete={() => {
-          setIsDeleting(true);
-        }}
-      />
-
-      <DeleteDialog
-        isOpen={isDeleting}
-        onClose={() => {
-          setIsDeleting(false);
-        }}
-        onDelete={() => {
-          dispatchDelete();
-        }}
-        subtitle={`You are going to delete "${_task.name}".`}
-      />
     </React.Fragment>
   );
 };
