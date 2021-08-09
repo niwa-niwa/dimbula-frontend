@@ -194,6 +194,7 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
   };
 
   function handleClose() {
+    history.push(history.location.pathname.split('?')[0]);
     dispatch(
       setIsOpen_TaskModal({
         isOpen: false,
@@ -203,7 +204,6 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     setSelectedDue({ date: null, time: null })
     setSelectedStar(false)
     setSelectedFolder("inbox")
-    history.push(history.location.pathname);
   }
 
   return (

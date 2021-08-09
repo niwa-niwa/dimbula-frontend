@@ -8,11 +8,14 @@ import NAMES from "../const/names";
 /**
  *
  * The function removes prefix that is "/app/" in path
+ * and
+ * removes query
  * @param {String} path
  * @returns endpoint (String)
  */
 export function convertToEndPoint(path: string) {
-  return path.slice(5);
+
+  return path.slice(5).split('?')[0];
 }
 
 type iniProps = {

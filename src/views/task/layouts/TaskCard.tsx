@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
-
 import history from "../../../history";
 import TaskDialog from "../modals/TaskDialog";
 import DeleteDialog from "../modals/DeleteDialog";
@@ -22,10 +21,7 @@ import {
 } from "../../../slices/taskSlice";
 import ACTIONS from "../../../const/actions";
 import { Task } from "../../../types/Task";
-import {
-  setIsOpen_TaskModal,
-} from "../../../slices/taskModalSlice";
-
+import { setIsOpen_TaskModal } from "../../../slices/taskModalSlice";
 
 const useStyles = makeStyles((theme) => ({
   item_style: {
@@ -126,16 +122,18 @@ const TaskCard = ({ task }: { task: Task }) => {
           }}
         />
         <ListItemText
-          // button="true"
           className={_task.is_done ? classes.done_style : ""}
           onClick={() => {
-            // setIsEditing(true);
-            dispatch(setIsOpen_TaskModal(
-              { 
+            dispatch(
+              setIsOpen_TaskModal({
                 isOpen: true,
-                task:_task,
-              }
-            ))
+                task: _task,
+              })
+            );
+            history.push({
+              pathname: history.location.pathname,
+              search: `?task_id=${_task.id}`,
+            });
           }}
           primary={_task.name}
         />
