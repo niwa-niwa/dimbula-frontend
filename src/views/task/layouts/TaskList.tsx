@@ -177,10 +177,10 @@ const TaskList = () => {
       <Box>
         <Button
           onClick={() => {
-            // setIsCreating(true);
             dispatch(setIsOpen_TaskModal(
               { 
-                isOpen: true
+                isOpen: true,
+                task :{taskFolder: currentTaskFolder.id}
               }
             ))
           }}

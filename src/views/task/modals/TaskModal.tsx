@@ -106,7 +106,9 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
         date: task.due_date,
         time: task.due_date
       });
+      setSelectedStar(task.is_star);
     }
+    setSelectedFolder(task.taskFolder || "inbox");
   }, [setValue, task, is_edit])
 
   function convertDate(stateDate: any) {

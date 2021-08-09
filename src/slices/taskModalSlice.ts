@@ -30,7 +30,7 @@ export const taskModalSlice = createSlice({
   reducers: {
     setIsOpen_TaskModal(state, action) {
       state.task = action.payload.task
-        ? { ...action.payload.task }
+        ? { ...initialState, ...action.payload.task }
         : { ...initialState };
       state.isOpen_TaskModal = action.payload.isOpen;
     },
