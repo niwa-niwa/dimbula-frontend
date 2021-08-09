@@ -226,8 +226,7 @@ const TaskList = () => {
 
   const rendering = () => {
     if (isLoading) {
-      // TODO: centering Loading...
-      return <h1>Now Loading...</h1>;
+      return <h3 style={{textAlign:'center'}}>Now Loading...</h3>;
     }
     return renderTaskList();
   };
