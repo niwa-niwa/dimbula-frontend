@@ -31,6 +31,7 @@ import {
   select_task,
   setIsOpen_TaskModal,
 } from "../../../slices/taskModalSlice";
+import DeleteDialog from "../modals/DeleteDialog";
 import { Task } from "../../../types/Task";
 import { TaskFolder } from "../../../types/TaskFolder";
 import {
@@ -86,6 +87,7 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
   const isOpen: boolean = useSelector(select_isOpenTaskModal);
   const task: Task = useSelector(select_task);
   const is_edit: boolean = task.id ? true : false;
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [selectedDue, setSelectedDue] = useState<any>({
     date: task.due_date,
     time: task.due_date,
@@ -107,7 +109,6 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     }
   }, [setValue, task, is_edit])
 
-
   function convertDate(stateDate: any) {
     const date = moment(stateDate.date).format("YYYY-MM-DD");
     const time = moment(stateDate.time).format("HH:mm:ss");
@@ -124,6 +125,25 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     }
     return due;
   }
+
+  const dispatchDelete = () => {
+    dispatch(
+      asyncDeleteTask(task, {
+        success: () => {
+          dispatch(
+            asyncGetCurrentTaskFolder(
+              convertToEndPoint(history.location.pathname)
+            )
+          );
+          handleClose();
+          setIsDeleting(false);
+        },
+        failure: () => {
+          setIsDeleting(false);
+        },
+      })
+    );
+  };
 
   const onSubmit = (data: any) => {
     const taskFolder = selectedFolder === "inbox" ? null : selectedFolder;
@@ -194,16 +214,16 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
         aria-labelledby="task-form-dialog"
       >
         <DialogTitle>
-          {task.id ? "Edit a Task" : "Create a Task"}
+          {is_edit ? "Edit a Task" : "Create a Task"}
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          {task.id && (
+          {is_edit && (
             <Button
               variant="outlined"
               color="secondary"
               onClick={() => {
-                // onDelete();
+                setIsDeleting(true);
               }}
             >
               Delete
@@ -345,21 +365,18 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
           </form>
         </MuiPickersUtilsProvider>
       </Dialog>
+
+      <DeleteDialog
+        isOpen={isDeleting}
+        onClose={() => {
+          setIsDeleting(false);
+        }}
+        onDelete={() => {
+          dispatchDelete();
+        }}
+        subtitle={`You are going to delete "${task.name}".`}
+      />
     </React.Fragment>
   );
 };
 
-
-const dispatchDelete = (_task:Task, dispatch:any) => {
-  dispatch(
-    asyncDeleteTask(_task, {
-      success: () => {
-        dispatch(
-          asyncGetCurrentTaskFolder(
-            convertToEndPoint(history.location.pathname)
-          )
-        );
-      },
-    })
-  );
-};
