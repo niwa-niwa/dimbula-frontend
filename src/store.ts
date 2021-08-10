@@ -6,6 +6,7 @@ import alertDialogReducer from "./slices/alertDialogSlice";
 import progressCircleReducer from "./slices/progressCircleSlice";
 import progressLinerReducer from "./slices/progressLinerSlice";
 import taskReducer from "./slices/taskSlice";
+import taskModalReducer from "./slices/taskModalSlice";
 import taskFolderDialogReducer from "./slices/taskFolderDialogSlice";
 
 export default configureStore({
@@ -17,5 +18,6 @@ export default configureStore({
     alertDialog: alertDialogReducer,
     task: taskReducer,
     taskFolderDialog: taskFolderDialogReducer,
+    taskModal: taskModalReducer,
   },
 });

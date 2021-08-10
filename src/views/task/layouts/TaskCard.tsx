@@ -9,18 +9,15 @@ import {
 } from "@material-ui/core";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
-
 import history from "../../../history";
-import TaskDialog from "../modals/TaskDialog";
-import DeleteDialog from "../modals/DeleteDialog";
 
 import {
   convertToEndPoint,
   asyncGetCurrentTaskFolder,
   asyncEditTask,
-  asyncDeleteTask,
 } from "../../../slices/taskSlice";
-import ACTIONS from "../../../const/actions";
+import { Task } from "../../../types/Task";
+import { setIsOpen_TaskModal } from "../../../slices/taskModalSlice";
 
 const useStyles = makeStyles((theme) => ({
   item_style: {
@@ -31,47 +28,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TaskCard = ({ task }: { task: any }) => {
+const TaskCard = ({ task }: { task: Task }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [_task, set_Task] = useState({ ...task });
-  const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const dispatchEdit = (edited_task: any) => {
-    dispatch(
-      asyncEditTask(edited_task, {
-        success: () => {
-          setIsEditing(false);
-          set_Task({ _task, ...edited_task });
-          dispatch(
-            asyncGetCurrentTaskFolder(
-              convertToEndPoint(history.location.pathname)
-            )
-          );
-        },
-      })
-    );
-  };
-
-  const dispatchDelete = () => {
-    dispatch(
-      asyncDeleteTask(_task, {
-        success: () => {
-          dispatch(
-            asyncGetCurrentTaskFolder(
-              convertToEndPoint(history.location.pathname)
-            )
-          );
-          setIsEditing(false);
-          setIsDeleting(false);
-        },
-        failure: () => {
-          setIsDeleting(false);
-        },
-      })
-    );
-  };
+  const [_task, set_Task] = useState<Task>({ ...task });
 
   function onStar() {
     dispatch(
@@ -121,10 +81,18 @@ const TaskCard = ({ task }: { task: any }) => {
           }}
         />
         <ListItemText
-          // button="true"
           className={_task.is_done ? classes.done_style : ""}
           onClick={() => {
-            setIsEditing(true);
+            dispatch(
+              setIsOpen_TaskModal({
+                isOpen: true,
+                task: _task,
+              })
+            );
+            history.push({
+              pathname: history.location.pathname,
+              search: `?task_id=${_task.id}`,
+            });
           }}
           primary={_task.name}
         />
@@ -136,33 +104,6 @@ const TaskCard = ({ task }: { task: any }) => {
           {_task.is_star ? <StarIcon /> : <StarBorderIcon />}
         </IconButton>
       </ListItem>
-
-      <TaskDialog
-        isOpen={isEditing}
-        title={"Edit A Task."}
-        action_type={ACTIONS.TASKS_EDIT}
-        editTask={_task}
-        onClose={() => {
-          setIsEditing(false);
-        }}
-        onCallback={(edited_task: any) => {
-          dispatchEdit(edited_task);
-        }}
-        onDelete={() => {
-          setIsDeleting(true);
-        }}
-      />
-
-      <DeleteDialog
-        isOpen={isDeleting}
-        onClose={() => {
-          setIsDeleting(false);
-        }}
-        onDelete={() => {
-          dispatchDelete();
-        }}
-        subtitle={`You are going to delete "${_task.name}".`}
-      />
     </React.Fragment>
   );
 };

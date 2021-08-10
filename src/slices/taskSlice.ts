@@ -1,27 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { backend } from "../apis/backend";
 import { setSnackBar } from "./snackBarSlice";
+import { TaskFolder } from "../types/TaskFolder";
 import debug from "../utils/debug";
-
 import NAMES from "../const/names";
 
 /**
  *
  * The function removes prefix that is "/app/" in path
+ * and
+ * removes query
  * @param {String} path
  * @returns endpoint (String)
  */
 export function convertToEndPoint(path: string) {
-  return path.slice(5);
+
+  return path.slice(5).split('?')[0];
 }
 
-interface iniProps {
-  taskFolders: any;
-  currentTaskFolder: any;
-}
+type iniProps = {
+  taskFolders: TaskFolder[];
+  currentTaskFolder: TaskFolder;
+};
+
 const initialState: iniProps = {
   taskFolders: [],
-  currentTaskFolder: {},
+  currentTaskFolder: {
+    id: "",
+    name: "",
+    person: "",
+    task_count: 0,
+    updated_at: "",
+    created_at: "",
+  },
 };
 
 export const taskSlice = createSlice({
@@ -35,16 +46,20 @@ export const taskSlice = createSlice({
       state.currentTaskFolder = { ...action.payload };
     },
     incrementTaskCount(state, action) {
-      const task_folder = state.taskFolders.find((folder: any) => {
-        return action.payload.taskFolder === folder.id;
-      });
-      task_folder.task_count++;
+      const task_folder: TaskFolder | undefined = state.taskFolders.find(
+        (folder: any) => {
+          return action.payload.taskFolder === folder.id;
+        }
+      );
+      task_folder && task_folder.task_count++;
     },
     decrementTaskCount(state, action) {
-      const task_folder = state.taskFolders.find((folder: any) => {
-        return action.payload.taskFolder === folder.id;
-      });
-      task_folder.task_count--;
+      const task_folder: TaskFolder | undefined = state.taskFolders.find(
+        (folder: any) => {
+          return action.payload.taskFolder === folder.id;
+        }
+      );
+      task_folder && task_folder.task_count--;
     },
   },
 });
@@ -165,12 +180,14 @@ export const asyncGetCurrentTaskFolder =
        * Special folder are inbox today all task
        */
       if (path.indexOf("task-folders") !== -1) {
+        dispatch(setCurrentTaskFolder({}));
         dispatch(setCurrentTaskFolder(data));
       }
       if (path.indexOf("task-folders") === -1) {
         const name =
           path.charAt(0).toUpperCase() +
           path.slice(1).replace(/-/g, " ").replace(/\//g, ""); //the function make replace UpperCase and - & / delete
+        dispatch(setCurrentTaskFolder({}));//for reset tasks data
         dispatch(setCurrentTaskFolder({ id: "", name, tasks: [...data] }));
       }
 
@@ -189,6 +206,16 @@ export const asyncGetCurrentTaskFolder =
       }
     }
   };
+
+export const asyncGetCurrentTask = async (task_id:string)=>{
+  try{
+    const { data } = await backend.get(NAMES.V1 + "tasks/" + task_id);
+    return data
+  }catch(e){
+    console.log(e)
+    return false
+  }
+}
 
 export const asyncCreateTask =
   (payload: any, { success = () => {}, failure = () => {} } = {}) =>

@@ -10,12 +10,10 @@ import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import history from "../../../history";
 import TaskCard from "./TaskCard";
 import DeleteDialog from "../modals/DeleteDialog";
-import TaskDialog from "../modals/TaskDialog";
 import {
   convertToEndPoint,
   asyncGetCurrentTaskFolder,
   asyncDeleteTaskFolder,
-  asyncCreateTask,
   selectCurrentTaskFolder,
 } from "../../../slices/taskSlice";
 import { openTaskFolderDialog } from "../../../slices/taskFolderDialogSlice";
@@ -23,9 +21,11 @@ import {
   openProgressLiner,
   closeProgressLiner,
 } from "../../../slices/progressLinerSlice";
+import {
+  setIsOpen_TaskModal,
+} from "../../../slices/taskModalSlice";
 
 import PATHS from "../../../const/paths";
-import NAMES from "../../../const/names";
 import ACTIONS from "../../../const/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,6 @@ const TaskList = () => {
   const { id } = useParams<any>();
   const currentTaskFolder = useSelector(selectCurrentTaskFolder);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showCompleted, setShowCompleted] = useState(false);
 
@@ -83,28 +82,6 @@ const TaskList = () => {
         action_type: ACTIONS.TASK_FOLDERS_EDIT,
         taskFolder_id: currentTaskFolder.id,
         taskFolder_name: currentTaskFolder.name,
-      })
-    );
-  };
-
-  /**
-   *
-   * @param {*name, memo, due_date, start_date, is_done, is_star, *person, *taskFolder} data
-   * @param {CallBack Function for reset values of form} reset
-   * @returns nothing
-   */
-  const dispatchCreate = (data: any, reset: any) => {
-    dispatch(
-      asyncCreateTask(data, {
-        success: () => {
-          dispatch(
-            asyncGetCurrentTaskFolder(
-              convertToEndPoint(history.location.pathname)
-            )
-          );
-          setIsCreating(false);
-          reset();
-        },
       })
     );
   };
@@ -174,7 +151,12 @@ const TaskList = () => {
       <Box>
         <Button
           onClick={() => {
-            setIsCreating(true);
+            dispatch(setIsOpen_TaskModal(
+              { 
+                isOpen: true,
+                task :{taskFolder: currentTaskFolder.id}
+              }
+            ))
           }}
           color="primary"
           startIcon={<AddIcon />}
@@ -187,39 +169,12 @@ const TaskList = () => {
         <List>{renderTaskCard()}</List>
       </Box>
 
-      <DeleteDialog
-        isOpen={isDeleting}
-        onClose={() => {
-          setIsDeleting(false);
-        }}
-        onDelete={() => {
-          dispatchDelete();
-        }}
-        subtitle={`You are going to delete "${currentTaskFolder.name}".`}
-      />
-
-      <TaskDialog
-        isOpen={isCreating}
-        title={"Create a new task."}
-        action_type={ACTIONS.TASKS_CREATE}
-        onClose={() => {
-          setIsCreating(false);
-        }}
-        onCallback={(data: any, reset: any) => {
-          dispatchCreate(data, reset);
-        }}
-        editTask={{
-          taskFolder: currentTaskFolder.id,
-          person: localStorage.getItem(NAMES.STORAGE_UID),
-        }}
-      />
     </React.Fragment>
   );
 
   const rendering = () => {
     if (isLoading) {
-      // TODO: centering Loading...
-      return <h1>Now Loading...</h1>;
+      return <h3 style={{textAlign:'center'}}>Now Loading...</h3>;
     }
     return renderTaskList();
   };
@@ -249,6 +204,18 @@ const TaskList = () => {
         )}
         {showCompleted ? renderTaskCard(false) : false}
       </Box>
+
+      <DeleteDialog
+        isOpen={isDeleting}
+        onClose={() => {
+          setIsDeleting(false);
+        }}
+        onDelete={() => {
+          dispatchDelete();
+        }}
+        subtitle={`You are going to delete "${currentTaskFolder.name}".`}
+      />
+
     </Container>
   );
 };
