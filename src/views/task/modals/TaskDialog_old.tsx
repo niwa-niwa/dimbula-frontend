@@ -1,3 +1,7 @@
+/**
+ * this file is not used until creating TaskModal.tsx
+ */
+
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -92,7 +96,7 @@ const TaskDialog:React.FC<Props_TaskDialog> = ({
   const taskFolders = useSelector(selectTaskFolders);
 
   useEffect(() => {
-    // TODO implement initValue with useCallBack
+    // TO-DO implement initValue with useCallBack
     if(action_type === ACTIONS.TASKS_EDIT){
       setValue("name", editTask.name);
       setValue("memo", editTask.memo);
