@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { backend } from "../apis/backend";
 import { setSnackBar } from "./snackBarSlice";
-import { TaskFolder } from "../types/TaskFolder";
+import { TaskFolder } from "../types/taskFolder";
 import debug from "../utils/debug";
 import NAMES from "../const/names";
 
@@ -14,8 +14,7 @@ import NAMES from "../const/names";
  * @returns endpoint (String)
  */
 export function convertToEndPoint(path: string) {
-
-  return path.slice(5).split('?')[0];
+  return path.slice(5).split("?")[0];
 }
 
 type iniProps = {
@@ -187,7 +186,7 @@ export const asyncGetCurrentTaskFolder =
         const name =
           path.charAt(0).toUpperCase() +
           path.slice(1).replace(/-/g, " ").replace(/\//g, ""); //the function make replace UpperCase and - & / delete
-        dispatch(setCurrentTaskFolder({}));//for reset tasks data
+        dispatch(setCurrentTaskFolder({})); //for reset tasks data
         dispatch(setCurrentTaskFolder({ id: "", name, tasks: [...data] }));
       }
 
@@ -207,15 +206,15 @@ export const asyncGetCurrentTaskFolder =
     }
   };
 
-export const asyncGetCurrentTask = async (task_id:string)=>{
-  try{
+export const asyncGetCurrentTask = async (task_id: string) => {
+  try {
     const { data } = await backend.get(NAMES.V1 + "tasks/" + task_id);
-    return data
-  }catch(e){
-    console.log(e)
-    return false
+    return data;
+  } catch (e) {
+    console.log(e);
+    return false;
   }
-}
+};
 
 export const asyncCreateTask =
   (payload: any, { success = () => {}, failure = () => {} } = {}) =>

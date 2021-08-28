@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import { setIsOpen_TaskModal, select_task } from "../../slices/taskModalSlice";
 import { asyncGetCurrentTask } from "../../slices/taskSlice";
 
-import { Task as type_task } from "../../types/Task";
+import { Task as type_task } from "../../types/task";
 
 const Task = () => {
   const dispatch = useDispatch();

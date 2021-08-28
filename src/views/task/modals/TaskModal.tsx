@@ -32,8 +32,8 @@ import {
   setIsOpen_TaskModal,
 } from "../../../slices/taskModalSlice";
 import DeleteDialog from "../modals/DeleteDialog";
-import { Task } from "../../../types/Task";
-import { TaskFolder } from "../../../types/TaskFolder";
+import { Task } from "../../../types/task";
+import { TaskFolder } from "../../../types/taskFolder";
 import {
   convertToEndPoint,
   asyncGetCurrentTaskFolder,
@@ -97,17 +97,17 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
   const [selectedStar, setSelectedStar] = useState<boolean>(task.is_star);
 
   React.useEffect(() => {
-    if(is_edit){
+    if (is_edit) {
       setValue("name", task.name);
       setValue("memo", task.memo);
       setSelectedDue({
         date: task.due_date,
-        time: task.due_date
+        time: task.due_date,
       });
       setSelectedStar(task.is_star);
     }
     setSelectedFolder(task.taskFolder || "inbox");
-  }, [setValue, task, is_edit])
+  }, [setValue, task, is_edit]);
 
   function convertDate(stateDate: any) {
     const date = moment(stateDate.date).format("YYYY-MM-DD");
@@ -149,7 +149,7 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
     const taskFolder = selectedFolder === "inbox" ? null : selectedFolder;
     const due_date = convertDate(selectedDue);
 
-    if(is_edit){
+    if (is_edit) {
       const edit_task = {
         ...task,
         ...data,
@@ -169,7 +169,7 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
           },
         })
       );
-    }else{
+    } else {
       const new_task = {
         person: localStorage.getItem(NAMES.STORAGE_UID),
         ...data,
@@ -193,16 +193,16 @@ export const TaskModal: React.FC<Props_TaskModal> = () => {
   };
 
   function handleClose() {
-    history.push(history.location.pathname.split('?')[0]);
+    history.push(history.location.pathname.split("?")[0]);
     dispatch(
       setIsOpen_TaskModal({
         isOpen: false,
       })
     );
-    reset({name:"", memo:"",})
-    setSelectedDue({ date: null, time: null })
-    setSelectedStar(false)
-    setSelectedFolder("inbox")
+    reset({ name: "", memo: "" });
+    setSelectedDue({ date: null, time: null });
+    setSelectedStar(false);
+    setSelectedFolder("inbox");
   }
 
   return (

@@ -16,7 +16,7 @@ import {
   asyncGetCurrentTaskFolder,
   asyncEditTask,
 } from "../../../slices/taskSlice";
-import { Task } from "../../../types/Task";
+import { Task } from "../../../types/task";
 import { setIsOpen_TaskModal } from "../../../slices/taskModalSlice";
 
 const useStyles = makeStyles((theme) => ({
