@@ -6,11 +6,10 @@ import { openProgressCircle, closeProgressCircle } from "./progressCircleSlice";
 import NAMES from "../const/names";
 import debug from "../utils/debug";
 
-
 type props_asyncSignIn = {
-  token:any
-  refreshToken:any
-}
+  token: any;
+  refreshToken: any;
+};
 export const asyncSignIn = createAsyncThunk<any, props_asyncSignIn, {}>(
   "user/signin",
   async ({ token, refreshToken }, { rejectWithValue }) => {
@@ -20,8 +19,8 @@ export const asyncSignIn = createAsyncThunk<any, props_asyncSignIn, {}>(
       const response = await backend(NAMES.V1 + "persons/");
       return response.data;
     } catch (e) {
-      if (!e.response) {
-        debug(()=>console.error("asyncSignIn unexpected error", e));
+      if (!e || !e.response) {
+        debug(() => console.error("asyncSignIn unexpected error", e));
         throw new Error(e);
       }
       const data = {
@@ -33,7 +32,7 @@ export const asyncSignIn = createAsyncThunk<any, props_asyncSignIn, {}>(
   }
 );
 
-function deleteState(state:any) {
+function deleteState(state: any) {
   localStorage.removeItem(NAMES.STORAGE_TOKEN);
   localStorage.removeItem(NAMES.STORAGE_REFRESH_TOKEN);
   localStorage.removeItem(NAMES.STORAGE_UID);
@@ -72,10 +71,12 @@ const userSlice = createSlice({
       // if (action.payload) {
       //   state.error = { ...action.payload };
       // } else {
-        debug(()=>console.error(
+      debug(() =>
+        console.error(
           "Unexpected error from asyncSignIn = ",
           action.error.message
-        ));
+        )
+      );
       // }
     });
   },
@@ -83,9 +84,9 @@ const userSlice = createSlice({
 
 export default userSlice.reducer;
 export const { signOut, deleteUserState } = userSlice.actions;
-export const selectUser = (state:any) => state.user;
+export const selectUser = (state: any) => state.user;
 
-export const asyncDeleteUser = () => (dispatch:any) => {
+export const asyncDeleteUser = () => (dispatch: any) => {
   dispatch(openProgressCircle());
 
   backend
@@ -104,7 +105,7 @@ export const asyncDeleteUser = () => (dispatch:any) => {
           );
         })
         .catch((error) => {
-          debug(()=>console.error(error));
+          debug(() => console.error(error));
           dispatch(
             setSnackBar({
               message: "Sorry something is wrong. retry after log-in again.",
@@ -116,7 +117,7 @@ export const asyncDeleteUser = () => (dispatch:any) => {
         });
     })
     .catch((error) => {
-      debug(()=>console.error(error));
+      debug(() => console.error(error));
       dispatch(
         setSnackBar({
           severity: "error",
