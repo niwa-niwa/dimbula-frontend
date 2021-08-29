@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Task } from "../types/Task";
+import { Task } from "../types/task";
 
 type Props_Initial = {
   isOpen_TaskModal: boolean;
