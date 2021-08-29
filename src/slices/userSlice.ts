@@ -18,8 +18,8 @@ export const asyncSignIn = createAsyncThunk<any, props_asyncSignIn, {}>(
       localStorage.setItem(NAMES.STORAGE_REFRESH_TOKEN, refreshToken);
       const response = await backend(NAMES.V1 + "persons/");
       return response.data;
-    } catch (e) {
-      if (!e || !e.response) {
+    } catch (e: any) {
+      if (!e.response) {
         debug(() => console.error("asyncSignIn unexpected error", e));
         throw new Error(e);
       }
